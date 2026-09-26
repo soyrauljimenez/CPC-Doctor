@@ -29,7 +29,7 @@ Basada en Amstrad Diagnostics 1.4 (commit 7ac70fc).
   portados del fork de Ismael Salvador (issalig).
 - Salir al BASIC con ESC desde el menú.
 
-### Corregido (ver README)
+### Corregido
 - Issues #11, #12, #13, #15 y #17 de Amstrad Diagnostics; PRs #14 y #18
   incorporados.
 - Salida con ESC de la RAM alta, comprobación C3, ClearScreen,

@@ -101,25 +101,6 @@ Otras piezas de terceros:
 - Emulador de pruebas: [chips](https://github.com/floooh/chips), de Andre Weissflog (licencia zlib).
 - Detección del tipo de Z80: métodos de [Sergey Kiselev](https://www.malinov.com/sergeys-blog/z80-type-detection.html) y [redcode/Z80_XCF_Flavor](https://github.com/redcode/Z80_XCF_Flavor).
 
-## Qué se ha corregido de Amstrad Diagnostics
-
-| | Problema | Solución |
-|---|---|---|
-| [#11](https://github.com/llopis/amstrad-diagnostics/issues/11) | "ROM detection is broken" | El nombre de una ROM desconocida podía desbordar su búfer. Una ROM desconocida ya no es un error, sino un resultado inconcluso con su CRC. |
-| [#12](https://github.com/llopis/amstrad-diagnostics/issues/12) | El CPR no funciona en C4CPC | PR #18 de Renaud Guérin. |
-| [#13](https://github.com/llopis/amstrad-diagnostics/issues/13) | DDI-5 de 512 KB falla tras el octavo banco | Detección de bancos con firmas únicas; `SetErrorFound` ya no machaca BC, que provocaba un bucle infinito. |
-| [#14](https://github.com/llopis/amstrad-diagnostics/pull/14) | MARCH C- sin integrar | Incorporado. |
-| [#15](https://github.com/llopis/amstrad-diagnostics/issues/15) | 6128 danés: ROM desconocida | Se añade su CRC (**pendiente de confirmar** con un segundo equipo). |
-| [#17](https://github.com/llopis/amstrad-diagnostics/issues/17) | Prueba continua: RAM alta 0K desde la segunda vuelta | Se vuelve a detectar la memoria en cada vuelta. |
-
-Y otros que no se habían reportado: la salida con ESC de la RAM alta saltaba a
-una dirección errónea, la comprobación C3 decía siempre "admitida",
-`ClearScreen` escribía un byte en #0000, `WaitForVsync` podía volver dos veces
-en el mismo cuadro, la prueba continua se paraba tras la vuelta 255, la
-detección del Plus escribía en la RAM principal, la versión de disco solo
-probaba 16 KB de RAM baja y la prueba de sonido sumaba los canales en vez de
-probarlos por separado.
-
 ## Estado
 
 Versión **0.9**. Se han probado en un **CPC 464 real** (con M4 Board y la ROM
@@ -177,9 +158,7 @@ zlib (`tools/emu/chips/LICENSE`).
 
 **CPC Doctor** is a guided diagnostic tool for Amstrad CPC computers that runs
 on the machine itself. It is based on Noel Llopis' [Amstrad
-Diagnostics](https://github.com/llopis/amstrad-diagnostics) and fixes the issues
-reported there that were never resolved (#11, #12, #13, #15, #17, plus pending
-PRs #14 and #18). The disc drive speed test and the Z80 type detection come
+Diagnostics](https://github.com/llopis/amstrad-diagnostics). The disc drive speed test and the Z80 type detection come
 from Ismael Salvador's fork,
 [issalig/amstrad-diagnostics](https://github.com/issalig/amstrad-diagnostics) —
 thank you, Ismael.
