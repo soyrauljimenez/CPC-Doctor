@@ -1,0 +1,60 @@
+
+
+TxtOS464EN: db 'OS 464 EN',0
+TxtOS464SP: db 'OS 464 SP',0
+TxtOS464FR: db 'OS 464 FR',0
+TxtOS664EN: db 'OS 664',0
+TxtOS6128EN: db 'OS 6128 EN',0
+TxtOS6128SP: db 'OS 6128 SP',0
+TxtOS6128FR: db 'OS 6128 FR',0
+TxtOS6128DK: db 'OS 6128 DK',0
+TxtOSSch464SP: db 'OS 464 SCHNEIDER SP',0
+TxtOS6128PLUSEN: db 'OS PLUS EN',0
+TxtOS6128PLUSSP: db 'OS PLUS SP',0
+TxtOS6128PLUSFR: db 'OS PLUS FR',0
+
+TxtBASIC464EN: db '464 BASIC EN',0
+TxtBASIC464SP: db '464 BASIC SP',0
+TxtBASIC464FR: db '464 BASIC FR',0
+TxtBASIC664EN: db '664 BASIC',0
+TxtBASIC6128EN: db '6128 BASIC EN',0
+TxtBASIC6128SP: db '6128 BASIC SP',0
+TxtBASIC6128FR: db '6128 BASIC FR',0
+TxtBASIC6128PLUS: db 'BASIC PLUS',0
+
+TxtAMSDOS: db 'AMSDOS',0
+TxtPARADOS: db 'PARADOS',0
+TxtCPMPLUS: db 'CPM PLUS',0
+
+
+
+ROMInfoTable:
+	defw #5D07, TxtOS464EN
+	defw #3E84, TxtOS464SP
+	defw #0EEA, TxtOS464FR
+	defw #FD6F, TxtOS664EN
+	defw #B360, TxtOS6128EN
+	defw #BAF7, TxtOS6128SP
+	defw #8051, TxtOS6128FR
+	defw #6895, TxtOS6128DK		; issue #15, CRC de un único equipo real: falta confirmarlo
+	defw #DCCF, TxtOSSch464SP
+	defw #8A32, TxtOS6128PLUSEN
+	defw #8F7A, TxtOS6128PLUSSP
+	defw #66D2, TxtOS6128PLUSFR
+
+	defw #6098, TxtBASIC464EN
+	defw #5646, TxtBASIC464SP
+	defw #FA76, TxtBASIC464FR		; fork nicolas-robin, probado en un 464 real
+	defw #1440, TxtBASIC664EN
+	defw #CAA0, TxtBASIC6128EN
+	defw #03E4, TxtBASIC6128SP
+	defw #814D, TxtBASIC6128FR
+	defw #A277, TxtBASIC6128PLUS
+
+	defw #0F91, TxtAMSDOS
+	defw #D75F, TxtPARADOS
+	defw #7FDA, TxtCPMPLUS
+
+	defw #FFF0, TxtEmpty		; zócalo vacío (el texto está en lang/)
+
+ROMCount equ ($-ROMInfoTable)/4

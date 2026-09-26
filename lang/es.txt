@@ -1,0 +1,259 @@
+# CPC Doctor — textos en español
+#
+# Formato: Clave = texto.  '|' es un salto de línea.
+# [GUIDED] marca los textos que solo usa la versión guiada (cinta y disco);
+# los demás entran también en las ROM, donde el espacio es muy justo.
+# La pantalla tiene 53 columnas. Los textos marcados con (máx. N) no
+# pueden pasar de N caracteres o se saldrán de su hueco.
+
+[ALL]
+# ---------------------------------------------------------------- general
+PressAnyKey = Pulsa una tecla para volver al menú
+KB = KB
+
+# ---------------------------------------------------------------- menú principal
+# Cabeceras (máx. 20)
+SystemInfo = SISTEMA
+TestResults = RESULTADOS
+SelectTest = ELIGE UNA PRUEBA
+# Etiquetas de la columna izquierda (máx. 9)
+Model = Modelo
+Vendor = Marca
+Refresh = Refresco
+RAM = RAM
+CRTC = CRTC
+FDC = Disquetera
+PSG = Sonido
+Detected = Sí
+None = No
+UnknownModel = ?
+# Resultados (máx. 9)
+ResultLowerRAM = RAM baja
+ResultUpperRAM = RAM alta
+ResultLowerROM = ROM baja
+ResultUpperROM = ROM alta
+ResultKeyboard = Teclado
+ResultJoystick = Joystick
+# Estados (máx. 13)
+Untested = Sin probar
+Passed = Superado
+Failed = Error
+Aborted = Cancelado
+NotAvailable = No disponible
+Inconclusive = Inconcluso
+# Opciones del menú (máx. 19)
+MenuLowerRAM = RAM baja
+MenuUpperRAM = RAM alta
+MenuROM = ROMs
+MenuKeyboard = Teclado y joystick
+MenuSoak = Prueba continua
+MenuSound = Sonido
+MenuHint = {ARRIBA}{ABAJO} y ENTER, o el número.
+Empty = Vacía
+
+# ---------------------------------------------------------------- RAM alta
+UpperRAMTitle = RAM alta
+Bank = Banco
+TotalMemory = RAM alta encontrada:
+RAMTestPassed = Prueba de la RAM alta superada
+RAMTestFailed = Error en la RAM alta. Bits:
+C3Config = Configuración C3:
+Supported = admitida
+Not = no
+PressESCToCancel = Pulsa ESC para cancelar
+TestAborted = Prueba cancelada
+NoUpperRAM = No hay RAM alta: es lo normal en un 464 o un 664 sin ampliación de memoria.
+
+# ---------------------------------------------------------------- ROM
+ROMTitle = ROMs
+CheckingLowerROM = Comprobando la ROM baja...
+LowerROM = ROM baja:
+DetectingUpperROMs = Buscando ROMs altas...
+UnknownROM = Desconocida:
+ThisROM = CPC DOCTOR (esta ROM)
+CantAccessLowerROM = No se puede leer la ROM del sistema
+
+# ---------------------------------------------------------------- teclado
+KeyboardTitle = Teclado y joystick
+KeyboardOptions = Mantén ESC o FUEGO para salir. Mantén TAB: otra vista.
+
+# ---------------------------------------------------------------- prueba continua
+SoakTitle = Continua, vuelta
+SoakHint = Mantén ESC para terminar la prueba continua
+SoakStopped = Prueba detenida por un error en la vuelta
+
+# ---------------------------------------------------------------- sonido
+SoundTitle = Sonido
+CheckingPSG = Chip de sonido:
+SoundOn = sonando
+SoundDone = Prueba de sonido terminada
+SoundStepA = Canal A (tono medio)
+SoundStepB = Canal B (tono más agudo)
+SoundStepC = Canal C (tono aún más agudo)
+SoundStepNoise = Ruido
+SoundStepVolume = Volumen que baja
+
+[GUIDED]
+# ================================================================ versión guiada
+MenuVideo = Imagen
+MenuSummary = Resumen final
+MenuHelp = Ayuda
+ResultVideo = Imagen
+ResultSound = Sonido
+MenuHint2 = Consejo: haz las pruebas en orden y termina con el 0.
+PressOKToStart = Pulsa ENTER o FUEGO para seguir (ESC vuelve)
+Result = Resultado:
+Observed = LO QUE HAS OBSERVADO
+Measured = LO QUE SE HA MEDIDO
+NotAnswered = sin respuesta
+AnswerYes = Sí
+AnswerNo = No
+AnswerUnsure = No estoy seguro
+AnswerRepeat = Repetir
+
+# ---------------------------------------------------------------- sonido guiado
+SoundIntro = Vamos a comprobar el chip de sonido (AY) y la salida de audio. Sube el volumen del CPC con la ruedecilla.|| Oirás cinco sonidos, uno cada vez. Después de cada uno te preguntaremos si lo has oído: el programa no puede medir el sonido, así que el resultado depende de tu respuesta.|| El altavoz interno mezcla los tres canales. Si conectas auriculares o un amplificador a la salida STEREO, el canal A suena a la izquierda, el B en el centro y el C a la derecha.
+SoundHelpA = Suena solo el canal A. Con auriculares en la salida STEREO debe oírse por el lado izquierdo.
+SoundHelpB = Suena solo el canal B. Con auriculares debe oírse por los dos lados.
+SoundHelpC = Suena solo el canal C. Con auriculares debe oírse por el lado derecho.
+SoundHelpNoise = Suena el generador de ruido del AY, como un soplido o una interferencia.
+SoundHelpVolume = Suena un tono que empieza fuerte y se apaga poco a poco. Así se comprueba la envolvente de volumen del AY.
+SoundQuestion = ¿Lo has oído bien?
+SoundAllOk = Has oído todos los sonidos: el chip AY, el amplificador y la salida que has usado funcionan.
+SoundUnsure = No has podido confirmar algún sonido. Repite la prueba con más volumen o con auriculares en la salida STEREO. Hasta entonces el resultado queda inconcluso.
+SoundNothing = No has oído ningún sonido. Comprueba primero lo más sencillo: la ruedecilla de volumen, que no haya nada enchufado en la salida STEREO (en algunos modelos corta el altavoz) y el propio altavoz. Si todo está bien, las posibles causas son el amplificador de audio o el chip AY. Para distinguirlas, prueba con auriculares en la salida STEREO: si ahí suena, el fallo está en el amplificador o el altavoz internos.
+SoundSomeMissing = Algún sonido no se oye y otros sí. Si usabas auriculares, repite con el altavoz interno, que mezcla los tres canales: si allí se oye todo, revisa el cable o la clavija de la salida STEREO. Si un canal tampoco se oye por el altavoz, la posible causa es el chip AY. Anota qué canal falla.
+
+# ---------------------------------------------------------------- teclado guiado
+KbIntro = Vamos a comprobar todas las teclas y el joystick.|| Pulsa cada tecla una vez, sin prisa. En el dibujo se ilumina mientras la pulsas y queda marcada al soltarla. Si tienes joystick, muévelo en las cuatro direcciones y pulsa sus botones. Para darlo por bueno bastan las direcciones y el FUEGO 1: el 2 y el 3 solo existen en algunos mandos.|| Para terminar, mantén pulsada ESC (o FUEGO) hasta que se llene la barra de abajo. TAB cambia el dibujo del teclado.|| Si pulsas tres teclas a la vez puede iluminarse una cuarta que no has tocado. Es normal en el CPC (tecla fantasma de la matriz) y no es una avería.|| No toques nada ahora: las teclas que aparezcan pulsadas al empezar se anotarán como atascadas.
+KbPressed = Teclas que han respondido:
+KbMissing = Sin respuesta:
+KbStuck = Pulsadas desde el principio (atascadas):
+KbFlaky = Con rebotes (contacto intermitente):
+KbNone = No ha respondido ninguna tecla. Posibles causas: el cable plano de la membrana está suelto o sus pistas están cortadas junto al conector. Para confirmarlo, apaga el CPC, desconecta la membrana, limpia los contactos y vuelve a conectarla.
+KbAllOk = Todas las teclas han respondido y ninguna ha dado rebotes. El teclado funciona.
+KbStuckAdvice = Todas las teclas responden, pero alguna estaba pulsada antes de tocarla. Posibles causas: una tecla trabada físicamente, suciedad o líquido en la membrana. Para confirmarlo, comprueba que la tecla sube bien y repite la prueba.
+KbFlakyAdvice = Todas las teclas responden, pero alguna ha dado rebotes: se activa y desactiva sola en muy poco tiempo. Suele ser un contacto sucio o gastado. Repite la prueba pulsando despacio; si vuelve a salir la misma tecla, limpia esa zona de la membrana. Hasta entonces el resultado queda inconcluso.
+KbTooFew = Has probado pocas teclas para sacar conclusiones. Repite la prueba y pulsa todas las teclas, una a una.
+KbLineDead = No responde ninguna tecla de la línea
+KbColumnDead = No responde ninguna tecla de la columna (bit)
+KbPatternAdvice = Cuando falla una línea o una columna entera, las teclas comparten algo: una pista de la membrana, el conector o, para las líneas, una salida del chip 74LS145. Es una posible causa, no una certeza: para confirmarla, revisa la membrana con un polímetro o prueba con otra membrana.
+KbScatteredAdvice = Las teclas que fallan no forman una línea ni una columna completa, así que lo más probable es la propia membrana en esos puntos (pistas cortadas o contactos sucios). Para confirmarlo, repite la prueba y fíjate en si fallan siempre las mismas teclas.
+PressOKToReturn = Pulsa ENTER o FUEGO para volver al menú
+KeyNames = {ARRIBA}|{DERECHA}|{ABAJO}|f9|f6|f3|ENTER|f.|{IZQUIERDA}|COPY|f7|f8|f5|f1|f2|f0|CLR|[|RETURN|]|f4|SHIFT|\|CTRL|^|-|@|P|;|:/Ñ|/|.|0|9|O|I|L|K|M|,|8|7|U|Y|H|J|N|ESPACIO|6|5|R|T|G|F|B|V|4|3|E|W|S|D|C|X|1|2|ESC|Q|TAB|A|CAPS|Z|J{ARRIBA}|J{ABAJO}|J{IZQUIERDA}|J{DERECHA}|FUEGO1|FUEGO2|FUEGO3|DEL
+PressOKToContinue = Pulsa ENTER o FUEGO para continuar
+
+# ---------------------------------------------------------------- imagen guiada
+VideoTitle = Imagen
+VideoIntro = Vamos a comprobar la imagen: los colores, la geometría, la nitidez y la estabilidad.|| El programa no puede ver tu pantalla. Te enseñará unas pantallas de prueba, sin texto o con muy poco. Míralas con calma y pulsa ENTER o FUEGO cuando termines; después te preguntaremos qué has visto.|| Si una pantalla de prueba no se ve, también es un dato: pulsa ENTER igualmente y contesta "No".
+VideoWhichDisplay = ¿Qué pantalla estás usando?
+DisplayColour = Monitor de color CTM
+DisplayGreen = Monitor verde GT64 o GT65
+DisplayTV = Televisor con modulador MP-1/MP-2
+DisplayRGB = TV o monitor por cable RGB/SCART
+DisplayHDMI = Conversor a HDMI o VGA
+DisplayUsed = Pantalla:
+VideoRed = Rojo
+VideoGreen = Verde
+VideoBlue = Azul
+VideoGrey = Gris y blanco
+VideoRampName = Escala de brillo
+VideoGridName = Rejilla
+VideoSharpName = Líneas finas
+VideoScrollName = Imagen en movimiento
+VideoQBars = Has visto tres franjas: a la izquierda negro, en el centro el color con brillo medio y a la derecha el mismo color brillante, con el borde también de ese color.|| ¿Se veían las tres franjas distintas y del color que dice el nombre?
+VideoQGrey = Has visto tres franjas: negro, gris y blanco.|| ¿Se veían las tres distintas, sin tintes de color?
+VideoQRamp = Has visto 16 franjas verticales, de la más oscura a la izquierda a la más clara a la derecha.|| ¿Se distinguían las 16, cada una algo más clara que la anterior?
+VideoQGrid = Has visto una rejilla blanca sobre fondo negro, rodeada de un borde rojo.|| ¿Se veía la rejilla completa, con las cuatro esquinas, el borde rojo alrededor y las líneas rectas?
+VideoQSharp = Has visto líneas verticales muy finas arriba y un tablero de puntos abajo.|| ¿Se distinguían las líneas, sin mezclarse en una mancha gris?
+VideoQScroll = Has visto la rejilla desplazándose hacia un lado.|| ¿Se movía suave, sin temblar, rodar ni perder el color?
+VideoAllOk = Has visto bien todas las pantallas de prueba. La salida de vídeo del CPC, el cable y la pantalla funcionan correctamente.
+VideoAdvColour = Si falta un color o dos franjas se ven iguales, algo se pierde entre la salida de vídeo y la pantalla. Cada color va por su propia patilla del conector DIN, así que un cable o un conector en mal estado suele afectar a un solo color. Posibles causas, de la más probable a la menos: el cable o el conector, la propia pantalla y, por último, la salida de vídeo del CPC (sus resistencias o el Gate Array). Para confirmarlo, prueba con otro cable u otra pantalla: si el fallo cambia, no está en el CPC.
+VideoAdvGrey = Si el gris o el blanco tienen un tinte de color, uno de los tres colores llega más débil que los otros. Suele deberse al cable o a los ajustes de color de la pantalla. Para confirmarlo, repite la prueba con otra pantalla.
+VideoAdvRamp = Si varias franjas se ven iguales, ajusta primero el brillo y el contraste del monitor y repite la prueba. Si siguen iguales, la posible causa es el cable o el propio monitor. Para confirmarlo, prueba el monitor con otro CPC o el CPC con otra pantalla.
+VideoAdvGrid = Si la imagen sale cortada, torcida o sin borde, casi siempre son ajustes de la pantalla: tamaño y posición vertical y horizontal. En televisores y conversores, prueba otro formato de imagen (4:3, sin zoom).
+VideoAdvSharp = Con un modulador de TV es normal que las líneas finas se vean borrosas: el modo de 80 columnas no se ve bien por antena. En un monitor, ajusta el foco. Si se ve borroso por RGB o en un monitor bien ajustado, la posible causa es el cable.
+VideoAdvScroll = Si la imagen tiembla o rueda, ajusta el sincronismo vertical y horizontal de la pantalla (V-HOLD y H-HOLD). Algunos televisores y conversores modernos no aceptan bien la señal del CPC. Si la imagen es inestable en varias pantallas distintas, la posible causa está en el circuito de sincronía del CPC.
+DisplayAdvColour = Estás usando un monitor CTM: sus mandos de brillo, foco y sincronismo están en el lateral o en la parte trasera.
+DisplayAdvGreen = Estás usando un monitor verde: no muestra colores, solo brillos distintos. Sus mandos de brillo y contraste están en el frontal o en el lateral.
+DisplayAdvTV = Con el modulador la imagen siempre pierde calidad. Antes de sospechar del CPC, sintoniza bien el canal del televisor.
+DisplayAdvRGB = Por RGB la imagen debería verse nítida. Si el cable es casero o de adaptación, es el primer sospechoso.
+DisplayAdvHDMI = Los conversores a HDMI o VGA pueden alterar los colores o perder la sincronía. Si puedes, repite la prueba con un monitor CTM o un televisor por RGB.
+
+# ---------------------------------------------------------------- resumen y ayuda
+SummaryTitle = Resumen final
+SummaryMachine = EQUIPO
+SummaryNotStated = no indicada
+SummaryPending = PENDIENTE:
+SummaryNothingPending = nada
+SummaryCode = Código:
+SummaryPhoto = Haz una foto de esta pantalla si vas a pedir ayuda en un foro.
+SummaryKeys =  teclas
+SummaryBits = bits 
+Help1 = CPC Doctor te ayuda a comprobar un Amstrad CPC paso a paso y a explicar lo que le pasa.|| Manejo: elige con los cursores o el joystick y confirma con ENTER, espacio o FUEGO. También puedes pulsar el número de la opción. ESC vuelve atrás.|| Resultados:| Superado: la prueba ha salido bien.| Error: se ha observado un fallo.| Inconcluso: no se puede asegurar; repite la prueba.| Sin probar: todavía no se ha hecho.|| Las pruebas de imagen y sonido dependen de lo que tú veas y oigas: el programa no puede medirlas. Las causas que se proponen son posibilidades para comprobar, no un diagnóstico seguro.
+Help2 = Si tu CPC no llega a cargar este programa, prueba la versión en ROM: la ROM baja sustituye a la del sistema y funciona aunque falle la RAM.|| CPC Doctor está basado en Amstrad Diagnostics de Noel Llopis, con aportaciones de Brendan Alford, Gérald Vincent, Kevin Thacker, Rhino, KaosOverride, Spirax, issalig, Cacharreo, kuro68k, Renaud Guérin, Lordheavy, Cheshirecat, nicolas-robin e Ismael Salvador (disquetera y Z80).|| Licencia MIT. Código fuente y documentación en el repositorio del proyecto.
+
+# ---------------------------------------------------------------- RAM baja guiada
+LowerRAMIntro = Vamos a comprobar los 64 KB de RAM principal.|| Este programa se ha cargado en la propia RAM, así que no puede comprobar la zona que ocupa. Probará todo lo demás y te enseñará un mapa con lo comprobado y lo que no.|| Si el CPC ha llegado a cargar este programa, la RAM funciona al menos en parte: un chip de RAM muerto suele impedir que arranque. Para comprobar también esa zona, usa la versión en ROM: la ROM baja comprueba de #4000 a #FFFF y la ROM alta de #0000 a #BFFF.|| La pantalla se llenará de rayas durante unos segundos: es normal.
+LowerRAMMap = Mapa de la RAM (1 KB por casilla):
+LowerRAMLegendOk =  bien   
+LowerRAMLegendBad =  con fallos   
+LowerRAMLegendBusy =  ocupado por CPC Doctor
+LowerRAMTested = Comprobados:
+LowerRAMOf64 =  KB de 64 KB.
+LowerRAMOkAdvice = No se ha encontrado ningún fallo en la memoria comprobada. La zona ocupada por el programa también ha funcionado al cargarlo y ejecutarlo, aunque no se ha probado a fondo.
+LowerRAMFailAdvice = Se han encontrado fallos. En el 464, el 664 y el 6128 cada chip de la RAM principal guarda un bit de cada byte: si falla el mismo bit en varios bloques, el sospechoso es el chip de ese bit. Si fallan varios bits en un solo bloque, puede ser un problema de direcciones. Para confirmarlo, repite la prueba en frío y en caliente, y usa la versión en ROM baja, que también comprueba la zona que ocupa este programa.
+
+# ---------------------------------------------------------------- cassette
+MenuTape = Cassette
+ResultTape = Cassette
+TapeTitle = Cassette
+TapeIntro = Vamos a medir la velocidad del motor del cassette y la calidad de la señal que lee el cabezal.|| Necesitas el tono de calibración que va grabado justo después de CPC Doctor en su cinta (o el fichero cpcdoctor-tono-2000hz.wav). Si acabas de cargar el programa desde cinta, no la rebobines: el tono empieza a continuación.|| Pulsa PLAY en el cassette y después ENTER aquí. La medida se repite cada segundo: puedes ajustar el tornillo del azimut o el del motor mientras miras la pantalla.
+TapeMeasuring = Midiendo el tono de calibración (2000 Hz)...
+TapeStop = ENTER o FUEGO: terminar   I: ajustar la velocidad
+TapeNoSignal = No llega el tono. Comprueba que el cassette está en PLAY, que la cinta está después del programa y, si usas un reproductor externo, el cable y el volumen.
+TapeFrequency = Frecuencia:
+TapeHz =  Hz
+TapeSpeed = Velocidad:
+TapeQuality = Estabilidad:
+TapeAdvOk = La velocidad y la señal son correctas: el motor, la correa y el cabezal funcionan bien.
+TapeAdvSpeed = La velocidad se sale de lo normal: por encima del 3% empiezan los errores de carga. Un motor lento suele ser la correa gastada o dada de sí; si la correa está bien, se puede ajustar el potenciómetro de velocidad del motor. Ajústalo poco a poco con la medida en pantalla hasta acercarte al 0%.
+TapeAdvQuality = La velocidad es correcta, pero la señal es inestable: se pierden pulsos. Las causas más habituales son el cabezal sucio (límpialo con alcohol isopropílico) o el azimut desajustado. Para ajustar el azimut, gira muy poco a poco el tornillo junto al cabezal mientras miras la estabilidad, hasta que sea máxima y no baje.
+TapeAdvNoSignal = No se ha podido medir: no llegaba el tono. Si el motor gira pero no hay señal, las posibles causas son el cabezal, su cable o el circuito de lectura. Si el motor no gira, revisa la correa. Para confirmarlo, prueba a cargar cualquier cinta que sepas que funciona.
+
+# ---------------------------------------------------------------- modelo dudoso
+ModelTitle = Modelo
+ModelDoubt = La ROM de este ordenador es la de un CPC 6128, pero solo tiene 64 KB de RAM.|| Puede ser un 464 o un 664 con la ROM del 6128 (una ampliación habitual con la M4 o con placas de ROM), o un 6128 con la RAM alta averiada.|| ¿Qué modelo es? Lo pone en la etiqueta de la parte de abajo o de atrás.
+Model464 = CPC 464
+Model664 = CPC 664
+Model6128 = CPC 6128
+Model6128NoUpper = Un CPC 6128 debe tener 128 KB, pero no se encuentra la RAM alta (los otros 64 KB). Queda anotado como error.|| Posibles causas: los chips de RAM de la segunda fila, su conexión o el circuito que la selecciona (la PAL). Para confirmarlo, usa la versión en ROM de CPC Doctor o prueba la RAM alta con otro programa.
+JoyNotPressed = - sin pulsar:
+TapeResultHint = ENTER o FUEGO: volver al menú   I: cómo ajustar
+TapeSpeedHowTitle = Ajustar la velocidad
+TapeSpeedHow1 = Antes de ajustar nada|| Mira la correa del cassette. Si está dada de sí, brillante o agrietada, cámbiala: un motor bien ajustado no arregla una correa gastada, y con una correa nueva la velocidad suele volver a su sitio sin tocar nada más.|| Limpia también el cabrestante (el eje metálico que arrastra la cinta) y la rueda de goma que lo acompaña con alcohol isopropílico.
+TapeSpeedHow2 = Dónde está el ajuste|| En el 464 hay que abrir el ordenador: apágalo, desconecta el cable del monitor y quita los tornillos de la base. Levanta la tapa con cuidado: el teclado sigue unido a la placa por dos cintas planas.|| En la mayoría de los 464 el motor del cassette tiene un agujero pequeño en su parte trasera y, dentro, el potenciómetro de velocidad. Se gira con un destornillador plano pequeño, mejor de plástico.|| En una pletina externa (664, 6128) el ajuste suele estar en el propio motor o marcado como SPEED.
+TapeSpeedHow3 = Cómo ajustarlo|| Vuelve a conectar el monitor con la tapa abierta y apoyada a un lado, sin tirar de las cintas del teclado. No abras el monitor: por dentro tiene tensiones peligrosas.|| Pon el tono de calibración y empieza la medida. Gira el potenciómetro muy poco cada vez y espera a la siguiente medida (una por segundo). Si la velocidad se aleja del 0 %, gira hacia el otro lado. Entre -1 % y +1 % es un buen resultado.|| El tono dura un minuto: si se acaba, rebobina un poco la cinta. Cuando termines, apaga, cierra y comprueba que cargan tus cintas.
+TapeNotTone = La señal que llega no es el tono de calibración: su frecuencia se aleja demasiado de 2000 Hz. Pon la cinta de CPC Doctor justo después del programa, o reproduce cpcdoctor-tono-2000hz.wav. La cinta de un juego no sirve para esta prueba.
+SoundToneBDead = El canal B no suena con tono, pero el ruido, que sale por ese mismo canal, sí. La salida del canal B, el amplificador y el altavoz funcionan: lo que falla es el generador de tono B, que está dentro del chip AY-3-8912. Por eso tampoco se oye el volumen que baja, que usa ese mismo tono.|| Para confirmarlo, en BASIC: SOUND 2,239,200,15 (tono por el canal B) no debería sonar y SOUND 2,0,200,15,0,0,15 (ruido por el canal B) sí. Si es así, la solución es cambiar el chip AY (28 patillas, 600 mil). Mira si va en zócalo: en muchos 464 va soldado y hay que desoldarlo.
+SoundChannelBDead = El canal B no suena ni con tono ni con ruido, y otros canales sí. Falla la salida del canal B: la patilla del chip AY, la resistencia que la mezcla o, si usas auriculares, la conexión central de la salida STEREO. Para confirmarlo, prueba con el altavoz interno y, en BASIC, con SOUND 2,239,200,15.
+SoundEnvelopeDead = Los tres canales y el ruido suenan, pero el volumen no baja poco a poco: falla la envolvente de volumen, que está dentro del chip AY. Muchos juegos la usan, así que sonarán mal aunque el resto funcione. Para confirmarlo, repite la prueba y escucha un juego que conozcas bien.
+MenuHintExit =   ESC: salir al BASIC
+ExitTitle = Salir al BASIC
+ExitQuestion = El ordenador se reiniciará como al encenderlo y se perderán los resultados de las pruebas.|| Si los necesitas, haz antes una foto del resumen final (opción 9).|| ¿Salir al BASIC?
+
+# ---------------------------------------------------------------- disquetera y Z80 (de issalig)
+Z80 = Z80
+MenuDisk = Disquetera
+ResultDisk = Disco
+DiskTitle = Disquetera
+DiskNoFDC = No se detecta la controladora de disco. Es lo normal en un 464 sin la unidad DDI-1; las placas como la M4 no la llevan.|| Si tu CPC tiene disquetera y aparece este mensaje, revisa el cable de la unidad y su conexión a la placa.
+DiskIntro = Vamos a medir la velocidad de giro de la disquetera, que debe ser de 300 rpm.|| Mete un disco cualquiera en la unidad A (sirve el de CPC Doctor). No se escribe nada en él: solo se le pide a la controladora que busque un sector que no existe, y se cronometra el tiempo que tarda en dar dos vueltas.|| La medida se repite continuamente. Pulsa ENTER o FUEGO para terminar.|| Esta prueba viene del trabajo de Ismael Salvador (issalig), basado en el programa RPM de Brice Rive, Philippe Depré y Simon Owen.
+DiskMeasuring = Midiendo la velocidad de giro (300 rpm)...
+DiskStop = Pulsa ENTER o FUEGO para terminar
+DiskSpeed = Velocidad:
+DiskRPM =  rpm
+DiskNoIndex = No llega el agujero índice del disco: puede que no haya disco en la unidad, que el motor no gire o que la correa esté rota.
+DiskAdvOk = La disquetera gira a su velocidad: el motor y la correa funcionan bien.
+DiskAdvSpeed = La velocidad se sale de lo normal. Por debajo de 300 rpm lo más habitual es la correa gastada o dada de sí: cámbiala antes de tocar nada más. Si la correa está bien, algunas unidades tienen un potenciómetro de velocidad en la placa del motor.|| Para confirmarlo, repite la prueba con otro disco.
+DiskAdvNoIndex = No se ha podido medir. Comprueba que hay un disco metido y que la unidad hace ruido al girar. Si no gira, lo más probable es que la correa esté rota o suelta, algo muy habitual en las disqueteras de 3 pulgadas. Si gira pero no se mide, la posible causa es el sensor del agujero índice o el cable de la unidad.

@@ -1,0 +1,259 @@
+# CPC Doctor — English texts
+#
+# Format: Key = text.  '|' is a line break.
+# [GUIDED] marks texts only used by the guided version (tape and disc);
+# the rest also go into the ROMs, where space is very tight.
+# The screen is 53 columns wide. Texts marked (max. N) must not be longer
+# than N characters.
+
+[ALL]
+# ---------------------------------------------------------------- general
+PressAnyKey = Press any key to return to the menu
+KB = KB
+
+# ---------------------------------------------------------------- main menu
+# Headers (max. 20)
+SystemInfo = SYSTEM
+TestResults = RESULTS
+SelectTest = CHOOSE A TEST
+# Left column labels (max. 9)
+Model = Model
+Vendor = Brand
+Refresh = Refresh
+RAM = RAM
+CRTC = CRTC
+FDC = Disc drv
+PSG = Sound
+Detected = Yes
+None = No
+UnknownModel = ?
+# Results (max. 9)
+ResultLowerRAM = Lower RAM
+ResultUpperRAM = Upper RAM
+ResultLowerROM = Lower ROM
+ResultUpperROM = Upper ROM
+ResultKeyboard = Keyboard
+ResultJoystick = Joystick
+# States (max. 13)
+Untested = Untested
+Passed = Passed
+Failed = Failed
+Aborted = Aborted
+NotAvailable = Not available
+Inconclusive = Inconclusive
+# Menu options (max. 19)
+MenuLowerRAM = Lower RAM
+MenuUpperRAM = Upper RAM
+MenuROM = ROMs
+MenuKeyboard = Keyboard, joystick
+MenuSoak = Soak test
+MenuSound = Sound
+MenuHint = {ARRIBA}{ABAJO} and ENTER, or the number.
+Empty = Empty
+
+# ---------------------------------------------------------------- upper RAM
+UpperRAMTitle = Upper RAM
+Bank = Bank
+TotalMemory = Upper RAM found:
+RAMTestPassed = Upper RAM test passed
+RAMTestFailed = Upper RAM failure. Bits:
+C3Config = C3 configuration:
+Supported = supported
+Not = not
+PressESCToCancel = Press ESC to cancel
+TestAborted = Test aborted
+NoUpperRAM = No upper RAM: this is normal on a 464 or 664 without a memory expansion.
+
+# ---------------------------------------------------------------- ROM
+ROMTitle = ROMs
+CheckingLowerROM = Checking the lower ROM...
+LowerROM = Lower ROM:
+DetectingUpperROMs = Looking for upper ROMs...
+UnknownROM = Unknown:
+ThisROM = CPC DOCTOR (this ROM)
+CantAccessLowerROM = Cannot read the system ROM
+
+# ---------------------------------------------------------------- keyboard
+KeyboardTitle = Keyboard and joystick
+KeyboardOptions = Hold ESC or FIRE to exit. Hold TAB: other layout.
+
+# ---------------------------------------------------------------- soak test
+SoakTitle = Soak test, pass
+SoakHint = Hold ESC to end the soak test
+SoakStopped = Test stopped by an error on pass
+
+# ---------------------------------------------------------------- sound
+SoundTitle = Sound
+CheckingPSG = Sound chip:
+SoundOn = playing
+SoundDone = Sound test finished
+SoundStepA = Channel A (middle tone)
+SoundStepB = Channel B (higher tone)
+SoundStepC = Channel C (even higher)
+SoundStepNoise = Noise
+SoundStepVolume = Fading volume
+
+[GUIDED]
+# ================================================================ guided version
+MenuVideo = Picture
+MenuSummary = Final summary
+MenuHelp = Help
+ResultVideo = Picture
+ResultSound = Sound
+MenuHint2 = Tip: do the tests in order and finish with 0.
+PressOKToStart = Press ENTER or FIRE to go on (ESC goes back)
+Result = Result:
+Observed = WHAT YOU OBSERVED
+Measured = WHAT WAS MEASURED
+NotAnswered = no answer
+AnswerYes = Yes
+AnswerNo = No
+AnswerUnsure = Not sure
+AnswerRepeat = Repeat
+
+# ---------------------------------------------------------------- guided sound
+SoundIntro = We are going to check the sound chip (AY) and the audio output. Turn up the CPC volume wheel.|| You will hear five sounds, one at a time. After each one we will ask whether you heard it: the program cannot measure sound, so the result depends on your answer.|| The internal speaker mixes the three channels. If you plug headphones or an amplifier into the STEREO socket, channel A plays on the left, B in the middle and C on the right.
+SoundHelpA = Only channel A is playing. With headphones on the STEREO socket it should be heard on the left.
+SoundHelpB = Only channel B is playing. With headphones it should be heard on both sides.
+SoundHelpC = Only channel C is playing. With headphones it should be heard on the right.
+SoundHelpNoise = The AY noise generator is playing, like a hiss or interference.
+SoundHelpVolume = A tone starts loud and slowly fades out. This checks the AY volume envelope.
+SoundQuestion = Did you hear it clearly?
+SoundAllOk = You heard every sound: the AY chip, the amplifier and the output you used all work.
+SoundUnsure = You could not confirm some sounds. Repeat the test with more volume, or with headphones on the STEREO socket. Until then the result is inconclusive.
+SoundNothing = You heard no sound at all. Check the simple things first: the volume wheel, that nothing is plugged into the STEREO socket (on some models it mutes the speaker) and the speaker itself. If all of that is fine, the possible causes are the audio amplifier or the AY chip. To tell them apart, try headphones on the STEREO socket: if you hear sound there, the fault is in the internal amplifier or speaker.
+SoundSomeMissing = Some sounds are missing and others are not. If you used headphones, repeat with the internal speaker, which mixes the three channels: if you hear everything there, check the STEREO cable or plug. If a channel is also missing on the speaker, the possible cause is the AY chip. Write down which channel fails.
+
+# ---------------------------------------------------------------- guided keyboard
+KbIntro = We are going to check every key and the joystick.|| Press each key once, without hurrying. It lights up on the drawing while pressed and stays marked when released. If you have a joystick, move it in all four directions and press its buttons. The directions and FIRE 1 are enough to pass: FIRE 2 and 3 only exist on some controllers.|| To finish, hold ESC (or FIRE) until the bar at the bottom fills up. TAB changes the keyboard drawing.|| If you press three keys at once a fourth key you did not touch may light up. That is normal on the CPC (a keyboard matrix ghost key) and it is not a fault.|| Do not touch anything now: keys that already look pressed when the test starts will be noted as stuck.
+KbPressed = Keys that responded:
+KbMissing = No response:
+KbStuck = Pressed from the start (stuck):
+KbFlaky = Bouncing (intermittent contact):
+KbNone = No key responded at all. Possible causes: the membrane ribbon cable is loose, or its tracks are broken near the connector. To confirm it, switch the CPC off, unplug the membrane, clean the contacts and plug it back in.
+KbAllOk = Every key responded and none bounced. The keyboard works.
+KbStuckAdvice = Every key responds, but some were pressed before you touched them. Possible causes: a key physically stuck, dirt or liquid on the membrane. To confirm it, check that the key comes back up properly and repeat the test.
+KbFlakyAdvice = Every key responds, but some bounced: they switched on and off by themselves very quickly. It is usually a dirty or worn contact. Repeat the test pressing slowly; if the same key shows up again, clean that area of the membrane. Until then the result is inconclusive.
+KbTooFew = You tested too few keys to draw any conclusion. Repeat the test and press every key, one by one.
+KbLineDead = No key responds on line
+KbColumnDead = No key responds on column (bit)
+KbPatternAdvice = When a whole line or column fails, those keys share something: a membrane track, the connector or, for lines, an output of the 74LS145 chip. This is a possible cause, not a certainty: to confirm it, check the membrane with a multimeter or try another membrane.
+KbScatteredAdvice = The failing keys do not make up a whole line or column, so the most likely cause is the membrane itself at those points (broken tracks or dirty contacts). To confirm it, repeat the test and see whether the same keys fail every time.
+PressOKToReturn = Press ENTER or FIRE to return to the menu
+KeyNames = {ARRIBA}|{DERECHA}|{ABAJO}|f9|f6|f3|ENTER|f.|{IZQUIERDA}|COPY|f7|f8|f5|f1|f2|f0|CLR|[|RETURN|]|f4|SHIFT|\|CTRL|^|-|@|P|;|:|/|.|0|9|O|I|L|K|M|,|8|7|U|Y|H|J|N|SPACE|6|5|R|T|G|F|B|V|4|3|E|W|S|D|C|X|1|2|ESC|Q|TAB|A|CAPS|Z|J{ARRIBA}|J{ABAJO}|J{IZQUIERDA}|J{DERECHA}|FIRE1|FIRE2|FIRE3|DEL
+PressOKToContinue = Press ENTER or FIRE to continue
+
+# ---------------------------------------------------------------- guided picture
+VideoTitle = Picture
+VideoIntro = We are going to check the picture: colours, geometry, sharpness and stability.|| The program cannot see your screen. It will show you some test screens with no text, or very little. Look at them calmly and press ENTER or FIRE when you are done; then we will ask what you saw.|| If a test screen does not show up at all, that is useful too: press ENTER anyway and answer "No".
+VideoWhichDisplay = Which display are you using?
+DisplayColour = CTM colour monitor
+DisplayGreen = GT64 or GT65 green monitor
+DisplayTV = TV through an MP-1/MP-2 modulator
+DisplayRGB = TV or monitor through RGB/SCART
+DisplayHDMI = HDMI or VGA converter
+DisplayUsed = Display:
+VideoRed = Red
+VideoGreen = Green
+VideoBlue = Blue
+VideoGrey = Grey and white
+VideoRampName = Brightness scale
+VideoGridName = Grid
+VideoSharpName = Fine lines
+VideoScrollName = Moving picture
+VideoQBars = You saw three bars: black on the left, the colour at medium brightness in the middle and the same colour at full brightness on the right, with a border of that colour too.|| Were the three bars different and of the colour named?
+VideoQGrey = You saw three bars: black, grey and white.|| Were the three different, with no colour tint?
+VideoQRamp = You saw 16 vertical bars, from the darkest on the left to the brightest on the right.|| Could you tell all 16 apart, each a bit brighter than the last?
+VideoQGrid = You saw a white grid on a black background, surrounded by a red border.|| Was the whole grid visible, with its four corners, the red border all round and straight lines?
+VideoQSharp = You saw very fine vertical lines at the top and a dot pattern at the bottom.|| Could you tell the lines apart, without them blurring into grey?
+VideoQScroll = You saw the grid moving sideways.|| Did it move smoothly, without shaking, rolling or losing colour?
+VideoAllOk = You saw every test screen correctly. The CPC video output, the cable and the display work properly.
+VideoAdvColour = If a colour is missing or two bars look the same, something is lost between the video output and the display. Each colour has its own pin on the DIN connector, so a bad cable or connector usually affects a single colour. Possible causes, from most to least likely: the cable or connector, the display itself and, last, the CPC video output (its resistors or the Gate Array). To confirm it, try another cable or display: if the fault changes, it is not in the CPC.
+VideoAdvGrey = If grey or white have a colour tint, one of the three colours arrives weaker than the others. It is usually the cable or the colour settings of the display. To confirm it, repeat the test on another display.
+VideoAdvRamp = If several bars look the same, first adjust the monitor brightness and contrast and repeat the test. If they still look the same, the possible cause is the cable or the monitor itself. To confirm it, try the monitor with another CPC or the CPC with another display.
+VideoAdvGrid = If the picture is cut off, tilted or has no border, it is almost always the display settings: size and vertical and horizontal position. On TVs and converters, try another picture format (4:3, no zoom).
+VideoAdvSharp = Through a TV modulator it is normal for fine lines to look blurred: 80-column mode does not look good over an aerial input. On a monitor, adjust the focus. If it looks blurred over RGB or on a well adjusted monitor, the possible cause is the cable.
+VideoAdvScroll = If the picture shakes or rolls, adjust the vertical and horizontal hold of the display (V-HOLD and H-HOLD). Some modern TVs and converters do not handle the CPC signal well. If the picture is unstable on several different displays, the possible cause is in the CPC sync circuit.
+DisplayAdvColour = You are using a CTM monitor: its brightness, focus and hold controls are on the side or at the back.
+DisplayAdvGreen = You are using a green monitor: it shows no colours, only different brightness levels. Its brightness and contrast controls are on the front or on the side.
+DisplayAdvTV = The modulator always loses picture quality. Before suspecting the CPC, tune the TV channel properly.
+DisplayAdvRGB = Over RGB the picture should look sharp. If the cable is home-made or an adapter, it is the first suspect.
+DisplayAdvHDMI = HDMI or VGA converters may alter colours or lose sync. If you can, repeat the test with a CTM monitor or a TV through RGB.
+
+# ---------------------------------------------------------------- summary and help
+SummaryTitle = Final summary
+SummaryMachine = MACHINE
+SummaryNotStated = not stated
+SummaryPending = PENDING:
+SummaryNothingPending = nothing
+SummaryCode = Code:
+SummaryPhoto = Take a photo of this screen if you ask for help on a forum.
+SummaryKeys =  keys
+SummaryBits = bits 
+Help1 = CPC Doctor helps you check an Amstrad CPC step by step and explain what is wrong with it.|| Controls: choose with the cursor keys or the joystick and confirm with ENTER, space or FIRE. You can also press the option number. ESC goes back.|| Results:| Passed: the test went well.| Failed: a fault was observed.| Inconclusive: it cannot be confirmed; repeat the test.| Untested: not done yet.|| The picture and sound tests depend on what you see and hear: the program cannot measure them. The causes suggested are possibilities to check, not a certain diagnosis.
+Help2 = If your CPC cannot load this program, try the ROM version: the lower ROM replaces the system one and works even when the RAM fails.|| CPC Doctor is based on Amstrad Diagnostics by Noel Llopis, with contributions from Brendan Alford, Gérald Vincent, Kevin Thacker, Rhino, KaosOverride, Spirax, issalig, Cacharreo, kuro68k, Renaud Guérin, Lordheavy, Cheshirecat, nicolas-robin and Ismael Salvador (disc drive and Z80).|| MIT licence. Source code and documentation in the project repository.
+
+# ---------------------------------------------------------------- guided lower RAM
+LowerRAMIntro = We are going to check the 64 KB of main RAM.|| This program was loaded into that same RAM, so it cannot check the area it uses. It will test everything else and show you a map of what was checked and what was not.|| If the CPC managed to load this program, the RAM works at least in part: a dead RAM chip usually stops it from starting up. To check that area too, use a ROM version: the lower ROM checks #4000 to #FFFF and the upper ROM #0000 to #BFFF.|| The screen will fill with stripes for a few seconds: that is normal.
+LowerRAMMap = RAM map (1 KB per cell):
+LowerRAMLegendOk =  good   
+LowerRAMLegendBad =  faulty   
+LowerRAMLegendBusy =  used by CPC Doctor
+LowerRAMTested = Checked:
+LowerRAMOf64 =  KB out of 64 KB.
+LowerRAMOkAdvice = No fault was found in the memory checked. The area used by the program also worked when loading and running it, although it was not tested thoroughly.
+LowerRAMFailAdvice = Faults were found. On the 464, 664 and 6128 each main RAM chip stores one bit of every byte: if the same bit fails in several blocks, the chip for that bit is the suspect. If several bits fail in a single block, it may be an addressing problem. To confirm it, repeat the test with the machine cold and warm, and use the lower ROM version, which also checks the area used by this program.
+
+# ---------------------------------------------------------------- cassette
+MenuTape = Cassette
+ResultTape = Cassette
+TapeTitle = Cassette
+TapeIntro = We are going to measure the cassette motor speed and the quality of the signal read by the head.|| You need the calibration tone recorded just after CPC Doctor on its tape (or the cpcdoctor-tono-2000hz.wav file). If you have just loaded the program from tape, do not rewind it: the tone comes right after.|| Press PLAY on the cassette and then ENTER here. The measurement repeats every second: you can adjust the azimuth screw or the motor speed while watching the screen.
+TapeMeasuring = Measuring the calibration tone (2000 Hz)...
+TapeStop = ENTER or FIRE: finish   I: adjusting the speed
+TapeNoSignal = The tone is not arriving. Check that the cassette is on PLAY, that the tape is past the program and, if you use an external player, the cable and the volume.
+TapeFrequency = Frequency:
+TapeHz =  Hz
+TapeSpeed = Speed:
+TapeQuality = Stability:
+TapeAdvOk = Speed and signal are fine: the motor, the belt and the head work properly.
+TapeAdvSpeed = The speed is out of the normal range: loading errors start beyond 3%. A slow motor is usually a worn or stretched belt; if the belt is fine, the motor speed trimmer can be adjusted. Adjust it slowly with the measurement on screen until you get close to 0%.
+TapeAdvQuality = The speed is fine but the signal is unstable: pulses are being lost. The most common causes are a dirty head (clean it with isopropyl alcohol) or a misaligned azimuth. To adjust the azimuth, turn the screw next to the head very slightly while watching the stability, until it is highest and steady.
+TapeAdvNoSignal = It could not be measured: the tone was not arriving. If the motor turns but there is no signal, the possible causes are the head, its cable or the read circuit. If the motor does not turn, check the belt. To confirm it, try loading any tape you know works.
+
+# ---------------------------------------------------------------- doubtful model
+ModelTitle = Model
+ModelDoubt = This computer has the ROM of a CPC 6128, but only 64 KB of RAM.|| It may be a 464 or a 664 fitted with the 6128 ROM (a common upgrade with the M4 or ROM boards), or a 6128 whose upper RAM has failed.|| Which model is it? It is written on the label underneath or at the back.
+Model464 = CPC 464
+Model664 = CPC 664
+Model6128 = CPC 6128
+Model6128NoUpper = A CPC 6128 should have 128 KB, but the upper RAM (the other 64 KB) cannot be found. It is recorded as a failure.|| Possible causes: the second row of RAM chips, their connections or the circuit that selects them (the PAL). To confirm it, use the ROM version of CPC Doctor or test the upper RAM with another program.
+JoyNotPressed = - not pressed:
+TapeResultHint = ENTER or FIRE: back to menu   I: how to adjust
+TapeSpeedHowTitle = Adjusting the speed
+TapeSpeedHow1 = Before adjusting anything|| Look at the cassette belt. If it is stretched, shiny or cracked, replace it: a well adjusted motor does not fix a worn belt, and with a new belt the speed often comes back without touching anything else.|| Also clean the capstan (the metal shaft that pulls the tape) and the rubber pinch roller next to it with isopropyl alcohol.
+TapeSpeedHow2 = Where the adjustment is|| On the 464 you have to open the computer: switch it off, unplug the monitor cable and remove the screws underneath. Lift the lid carefully: the keyboard is still joined to the board by two ribbon cables.|| On most 464s the cassette motor has a small hole at the back with the speed trimmer inside. It is turned with a small flat screwdriver, ideally a plastic one.|| On an external deck (664, 6128) the adjustment is usually on the motor itself or marked SPEED.
+TapeSpeedHow3 = How to adjust it|| Plug the monitor back in with the lid open and resting to one side, without pulling the keyboard ribbons. Do not open the monitor: it has dangerous voltages inside.|| Play the calibration tone and start measuring. Turn the trimmer very slightly each time and wait for the next measurement (one per second). If the speed moves away from 0%, turn it the other way. Between -1% and +1% is a good result.|| The tone lasts one minute: if it runs out, rewind the tape a little. When you are done, switch off, close the lid and check that your tapes load.
+TapeNotTone = The signal arriving is not the calibration tone: its frequency is too far from 2000 Hz. Play the CPC Doctor tape just after the program, or play cpcdoctor-tono-2000hz.wav. A game tape cannot be used for this test.
+SoundToneBDead = Channel B makes no sound with a tone, but noise, which comes out of that same channel, does. The channel B output, the amplifier and the speaker work: what fails is the tone B generator, inside the AY-3-8912 chip. That is also why the fading volume is not heard, since it uses that same tone.|| To confirm it, in BASIC: SOUND 2,239,200,15 (tone on channel B) should make no sound and SOUND 2,0,200,15,0,0,15 (noise on channel B) should. If so, the fix is replacing the AY chip (28 pins, 600 mil). Check whether it is socketed: on many 464s it is soldered in and has to be desoldered.
+SoundChannelBDead = Channel B makes no sound either with a tone or with noise, while other channels do. The channel B output fails: the AY chip pin, the resistor that mixes it or, if you use headphones, the middle connection of the STEREO socket. To confirm it, try the internal speaker and, in BASIC, SOUND 2,239,200,15.
+SoundEnvelopeDead = The three channels and the noise sound, but the volume does not fade out: the volume envelope, inside the AY chip, fails. Many games use it, so they will sound wrong even though everything else works. To confirm it, repeat the test and listen to a game you know well.
+MenuHintExit =   ESC: exit to BASIC
+ExitTitle = Exit to BASIC
+ExitQuestion = The computer will restart as if switched on and the test results will be lost.|| If you need them, take a photo of the final summary first (option 9).|| Exit to BASIC?
+
+# ---------------------------------------------------------------- disc drive and Z80 (from issalig)
+Z80 = Z80
+MenuDisk = Disc drive
+ResultDisk = Disc
+DiskTitle = Disc drive
+DiskNoFDC = No disc controller was found. This is normal on a 464 without the DDI-1 unit; boards such as the M4 do not have one.|| If your CPC has a disc drive and you see this message, check the drive cable and its connection to the board.
+DiskIntro = We are going to measure the rotation speed of the disc drive, which should be 300 rpm.|| Insert any disc in drive A (the CPC Doctor one will do). Nothing is written to it: the controller is just asked to look for a sector that does not exist, and the time it takes to spin twice is measured.|| The measurement repeats continuously. Press ENTER or FIRE to finish.|| This test comes from the work of Ismael Salvador (issalig), based on the RPM program by Brice Rive, Philippe Depré and Simon Owen.
+DiskMeasuring = Measuring the rotation speed (300 rpm)...
+DiskStop = Press ENTER or FIRE to finish
+DiskSpeed = Speed:
+DiskRPM =  rpm
+DiskNoIndex = The index hole of the disc is not arriving: there may be no disc in the drive, the motor may not be turning or the belt may be broken.
+DiskAdvOk = The disc drive spins at its speed: the motor and the belt work properly.
+DiskAdvSpeed = The speed is out of the normal range. Below 300 rpm the most common cause is a worn or stretched belt: replace it before touching anything else. If the belt is fine, some drives have a speed trimmer on the motor board.|| To confirm it, repeat the test with another disc.
+DiskAdvNoIndex = It could not be measured. Check that a disc is inserted and that the drive makes a noise when spinning. If it does not spin, the most likely cause is a broken or loose belt, very common in 3-inch drives. If it spins but cannot be measured, the possible cause is the index hole sensor or the drive cable.

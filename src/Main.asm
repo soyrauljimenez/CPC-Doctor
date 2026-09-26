@@ -1,0 +1,264 @@
+ INCLUDE "Config.asm"
+
+ ;; Cartridge output uses SAVECPR (device mode), not raw OUTPUT
+ IFNDEF CartridgeBuild
+  ;OUTPUT "build/AmstradDiag.rom"
+   OUTPUT OutFile
+ ENDIF
+ IFDEF PAD_TO_16K
+	SIZE #4000					;; Round it up to 16 KB
+ ENDIF
+
+;; *******************************
+;; LOWER ROM BUILD
+ IFDEF LowerROMBuild
+	DISPLAY "Lower ROM build"
+
+ ORG #0000
+ProgramStart:
+ INCLUDE "HardwareInit.asm"
+ ENDIF
+
+
+;; **********************************
+;; UPPER ROM BUILD
+ IFDEF UpperROMBuild
+	DISPLAY "Upper ROM build"
+ ORG #C000
+ProgramStart:
+ INCLUDE "UpperROMHeader.asm"
+ ENDIF
+
+
+;; *******************************
+;; CARTRIDGE BUILD
+ IFDEF CartridgeBuild
+	IF __SJASMPLUS__ < #011500
+		DISPLAY "Cartridge build requires sjasmplus >= 1.21.0 (SAVECPR)"
+		ERROR "sjasmplus >= 1.21.0 required for SAVECPR"
+	ENDIF
+	DISPLAY "Cartridge build"
+
+	DEVICE AMSTRADCPCPLUS
+	SLOT 0
+	PAGE 0
+
+ ORG #0000
+ProgramStart:
+ INCLUDE "HardwareInit.asm"
+ ENDIF
+
+
+
+;; **********************************
+;; RAM BUILD
+ IFDEF RAMBuild
+	DISPLAY "RAM build"
+ ORG #400
+ProgramStart:
+	;; Cargado desde cinta o disco: el firmware ya no hace falta
+	di
+	ld	sp, #C000
+ ENDIF
+
+
+
+;; COMMON
+	ld ix, SoakTestIndicator
+	ld (ix), 0
+	ld (ix+1), 0
+	ld (ix+2), 0
+	ld (ix+3), 0
+	xor a
+	ld (SoakTestCount), a
+ IFDEF GUIDED
+	ld (RAMBlockCopied), a
+ ENDIF
+
+; This is where the Soak test loops
+TestStart:
+	DEFINE SOUND_CHANNEL %101
+	DEFINE SOUND_DURATION #6000
+	DEFINE SILENCE_DURATION #1
+	DEFINE SOUND_TONE_L #FF
+	DEFINE SOUND_TONE_H #00
+	INCLUDE "PlaySound.asm"
+	UNDEFINE SOUND_DURATION
+	UNDEFINE SILENCE_DURATION
+	UNDEFINE SOUND_TONE_L
+	UNDEFINE SOUND_TONE_H
+
+	ld 	iyl, 0			; Soak flag
+	ld 	ix, SoakTestIndicator	; This is out in RAM
+	ld 	a, (ix)			; See if we can find the two bytes that tells us we're doing a soak test
+	cp 	SoakTestByte1
+	jr 	nz,.startTests
+	ld 	a,(ix+1)
+	cp 	SoakTestByte2
+	jr 	nz,.startTests
+	ld 	a,(ix+2)
+	cp 	SoakTestByte3
+	jr 	nz,.startTests
+	ld 	a,(ix+3)
+	cp 	SoakTestByte4
+	jr 	nz,.startTests
+	ld 	a,(SoakTestCount)
+	or	a			; 0 significa "no hay prueba continua": tras la
+	jr	nz, .countOk		; vuelta 255 se sigue en la 1 en vez de pararse
+	inc	a
+.countOk:
+	ld 	iyl, a			; Remember that we're in a soak test
+ IFDEF UpperROMBuild
+	ld 	a, (UpperROMConfig)
+	ld 	iyh, a			; Save the upper ROM config
+ ENDIF
+.startTests:
+ IFNDEF GUIDED
+ INCLUDE "LowerRAMTest.asm"
+ ELSE
+	;; Versión cargada: la RAM baja se comprueba desde el menú con
+	;; LowerRAMGuide.asm, que cubre todo lo que no ocupa el programa
+	di
+	jp	RAMTestPassed
+ ENDIF
+
+RAMTestPassed:
+	call RAMInitialize
+
+ IFDEF UpperROMBuild
+	ld 	a, iyh			; Restore the upper ROM config to RAM
+	ld 	(UpperROMConfig), a
+ ENDIF
+	ld 	a, iyl
+	or 	a
+	jp 	nz, .soakTest
+
+	DEFINE SOUND_DURATION #4000
+	DEFINE SILENCE_DURATION #1000
+	DEFINE SOUND_TONE_L #A0
+	DEFINE SOUND_TONE_H #00
+	INCLUDE "PlaySound.asm"
+	INCLUDE "PlaySound.asm"
+	jp 	MainMenu
+
+.soakTest:
+	ld (SoakTestCount),a
+	call MarkSoakTestActive
+	jp MainMenu
+
+
+RAMInitialize:
+ IFDEF GUIDED
+	;; En la versión cargada la RAM no se borra entre vueltas de la prueba
+	;; continua: copiar otra vez el bloque inicializado borraría los
+	;; resultados y el modelo que ha confirmado el usuario.
+	ld	a, (RAMBlockCopied)
+	or	a
+	jr	nz, .copied
+	inc	a
+	ld	(RAMBlockCopied), a
+ ENDIF
+	;; Copy the part of the program that can't run from ROM into RAM
+	ld 	hl, RAMBlockBegin
+	ld 	de, RAMProgramAddr
+	ld 	bc, RAMDataEnd-RAMBegin
+	ldir
+.copied:
+	call	InitializeCRTC
+	call 	MakeScrTable
+	ret
+
+
+ INCLUDE "MainMenu.asm"
+ INCLUDE "UI.asm"
+ INCLUDE "Model.asm"
+ INCLUDE "Vendor.asm"
+ INCLUDE "SoakTest.asm"
+ INCLUDE "CheckUpperRAM.asm"
+ INCLUDE "UtilsPrint.asm"
+ INCLUDE "Screen.asm"
+ INCLUDE "Keyboard.asm"
+ INCLUDE "DetectCRTC.asm"
+ INCLUDE "KeyboardTest.asm"
+ INCLUDE "SystemInfo.asm"
+ INCLUDE "FDC.asm"
+ IFNDEF UpperROMBuild
+ 	INCLUDE "PrintChar.asm"
+	INCLUDE "Draw.asm"
+ ENDIF
+ IFDEF ROM_CHECK
+	INCLUDE "CheckROMs.asm"
+ ENDIF
+ INCLUDE "SoundTest.asm"
+
+ IFDEF RAMBuild
+	;; El programa no puede llegar al bloque que se copia en RAMProgramAddr
+	ASSERT RAMBlockEnd <= RAMProgramAddr
+	;; Todo lo que se usa con un banco de RAM alta conectado en #4000-#7FFF
+	;; tiene que estar por debajo de #4000 (ver CheckUpperRAM.asm)
+	ASSERT UpperRAMTestCodeEnd <= #4000
+	ASSERT UtilsText.font + 128*8 <= #4000
+	ASSERT PrintCharWithPixels < #4000
+ ENDIF
+
+ IFDEF GUIDED
+ INCLUDE "Colors.asm"			; en las ROM lo incluye DisplayFailingBits.asm
+ INCLUDE "Guide.asm"
+ INCLUDE "KeyboardGuide.asm"
+ INCLUDE "LowerRAMGuide.asm"
+ INCLUDE "TapeTest.asm"
+ INCLUDE "DiskTest.asm"		; de issalig (Ismael Salvador)
+ INCLUDE "Z80Detect.asm"		; de issalig (Ismael Salvador)
+ INCLUDE "VideoTest.asm"
+ INCLUDE "Summary.asm"
+ ENDIF
+
+ INCLUDE "texts.asm"
+
+
+;; This is the code that needs to be in RAM to function
+ IFDEF RAMBuild
+;; En la versión cargada el programa ocupa desde #0400: el bloque va más
+;; arriba para no pisarlo (fuera de la ventana #4000-#7FFF de la RAM alta)
+RAMProgramAddr EQU #9000
+ ELSE
+RAMProgramAddr EQU #8000
+ ENDIF
+RAMBlockBegin:
+ DISP RAMProgramAddr
+RAMBegin:
+ 	INCLUDE "ROMAccess.asm"
+ 	INCLUDE "UpperRAMC3Check.asm"
+ IFDEF UpperROMBuild
+ 	INCLUDE "PrintChar.asm"
+ 	INCLUDE "Draw.asm"
+ ENDIF
+ IFDEF TRY_UNPAGING_LOW_ROM
+ 	INCLUDE "Dandanator.asm"
+ 	INCLUDE "M4.asm"
+ ENDIF
+ 	INCLUDE "VariablesInitialized.asm"
+RAMDataEnd:
+ 	;; This is just saving room in RAM, but it's not taking up any of the ROM size
+ 	OUTEND
+ IFDEF CartridgeBuild
+	;; Uninitialized variables must not occupy the saved CPR page;
+	;; assemble them into page 1 (SAVECPR below only saves page 0)
+	PAGE 1
+ ENDIF
+ 	INCLUDE "Variables.asm"
+RAMEnd:
+ ENT
+ProgramEnd:
+RAMBlockEnd EQU RAMBlockBegin + (RAMDataEnd - RAMBegin)
+
+ IFDEF CartridgeBuild
+	;; Let sjasmplus generate a valid CPR (RIFF + cb00 chunk headers,
+	;; full 16 KiB page). Fixes issue #12 (hand-rolled header was 20 bytes short).
+	SAVECPR OutFile, 1
+ ENDIF
+
+ IFDEF PRINT_PROGRAM_SIZE
+	DISPLAY "Total size: ", ProgramEnd - ProgramStart - (RAMEnd - RAMDataEnd)
+	DISPLAY "RAM size: ", RAMEnd - RAMBegin
+ ENDIF
