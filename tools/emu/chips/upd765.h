@@ -387,6 +387,11 @@ static void _upd765_to_phase_result(upd765_t* upd) {
         default:
             _upd765_fifo_reset(upd, 1);
             upd->fifo[0] = UPD765_ST0_IC;
+            {
+                /* CPC Doctor: la orden VERSION (#10) da #90 en un µPD765B */
+                extern bool cpcdoc_fdc_b;
+                if (cpcdoc_fdc_b && upd->cmd == 0x10) { upd->fifo[0] = 0x90; }
+            }
             break;
     }
 }

@@ -44,7 +44,11 @@ BOOT='wait 150 type run"doctor~ wait 400'
 
 # ---------------------------------------------------------------- arranque
 $EMU $DISK_ES $BOOT vram $OUT/menu6128.vram shot $OUT/menu6128.png
-check menu6128 "CPC 6128" "128KB" "AY-3-8912" "1. Teclado y joystick" "5. Disquetera" "0. Resumen final"
+check menu6128 "CPC 6128" "128KB" "AY-3-8912" "Disquetera: Sí (765A)" "1. Teclado y joystick" "5. Disquetera" "0. Resumen final"
+
+# Controladora que responde a la orden VERSION (µPD765B o posterior)
+$EMU $DISK_ES fdcb $BOOT vram $OUT/fdc765b.vram
+check fdc765b "Disquetera: Sí (765B)"
 
 # ---------------------------------------------------------------- RAM alta
 $EMU $DISK_ES $BOOT key 5:1 wait 900 vram $OUT/upperram.vram shot $OUT/upperram.png

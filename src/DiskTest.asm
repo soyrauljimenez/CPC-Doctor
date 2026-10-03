@@ -30,6 +30,24 @@ MOTOR_PORT	EQU #FA7E
 RPM_OK		EQU 45			; ±4,5 rpm (1,5 %) en décimas
 RPM_WARN	EQU 90			; ±9 rpm (3 %)
 
+;; " (765A)" o " (765B)" detrás de "Sí", si hay controladora y se sabe
+@PrintFDCVersion:
+	ld	a, (FDCPresent)
+	or	a
+	ret	z
+	ld	a, (FDCVersion)
+	ld	hl, TxtFDC765A
+	cp	#80
+	jr	z, .print
+	ld	hl, TxtFDC765B
+	cp	#90
+	ret	nz
+.print:
+	jp	PrintString
+
+TxtFDC765A: db ' (765A)', 0
+TxtFDC765B: db ' (765B)', 0
+
 AUTO_DISK_MEASURES EQU 15		; unos 6 segundos
 
 @DiskTestSelected:

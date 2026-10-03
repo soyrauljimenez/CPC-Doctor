@@ -1,5 +1,13 @@
 # Cambios
 
+## Sin publicar
+
+### Nuevo
+- Identificación: versión de la controladora de disco. Los µPD765A y sus
+  clones no conocen la orden VERSION; el µPD765B y posteriores sí. Se
+  muestra como "Sí (765A)" o "Sí (765B)".
+- Emulador de pruebas: opción `fdcb` para imitar un µPD765B.
+
 ## 0.9.1
 
 ### Nuevo

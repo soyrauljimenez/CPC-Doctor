@@ -58,6 +58,9 @@
 
 	ld	a, 1
 	ld	(FDCPresent), a
+ IFDEF GUIDED
+	call	DetectFDCVersion
+ ENDIF
 
 .noFDC:
 

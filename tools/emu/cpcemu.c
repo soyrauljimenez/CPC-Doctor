@@ -39,6 +39,7 @@
         ay                 muestra los registros del AY
         sloway N   AY lento: N ciclos tras cambiar de línea del teclado se sigue
                    viendo la anterior (cada tecla aparece también en la siguiente)
+        fdcb       la controladora de disco responde como un µPD765B (VERSION = #90)
         slowport N al pasar el puerto A del AY de salida a entrada, se lee 0
                    durante N ciclos (pull-ups débiles)
         fault DIR LEN MASK a partir de aquí, las lecturas de DIR..DIR+LEN-1
@@ -80,6 +81,7 @@ extern bool (*cpcdoc_tape_bit)(void);
 extern uint16_t cpcdoc_fault_start, cpcdoc_fault_len;
 extern uint8_t cpcdoc_fault_mask;
 extern uint32_t cpcdoc_slow_ay, cpcdoc_slow_port;
+bool cpcdoc_fdc_b;      // la controladora responde como un µPD765B
 
 typedef struct { uint32_t len; uint8_t level; } pulse_t;   // len en ticks de 4 MHz
 static pulse_t* tape;
@@ -388,6 +390,7 @@ int main(int argc, char** argv) {
             i += 3;
         }
         else if (!strcmp(cmd, "sloway") && arg) { cpcdoc_slow_ay = (uint32_t)atoi(arg); i++; }
+        else if (!strcmp(cmd, "fdcb")) { cpcdoc_fdc_b = true; }
         else if (!strcmp(cmd, "slowport") && arg) { cpcdoc_slow_port = (uint32_t)atoi(arg); i++; }
         else if (!strcmp(cmd, "level") && arg) {
             audio_sum = 0; audio_count = 0;

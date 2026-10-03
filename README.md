@@ -29,7 +29,7 @@ un diagnóstico seguro.
 
 | Prueba | Cómo se obtiene el resultado |
 |---|---|
-| **Identificación** | Modelo (según la ROM; si hay dudas, lo pregunta), marca, 50/60 Hz, RAM, tipo de CRTC (0 a 5), chip de sonido (AY o YM), disquetera y tipo de Z80. |
+| **Identificación** | Modelo (según la ROM; si hay dudas, lo pregunta), marca, 50/60 Hz, RAM, tipo de CRTC (0 a 5), chip de sonido (AY o YM), disquetera (y si su controladora es un µPD765A o un 765B) y tipo de Z80. |
 | **1. Teclado y joystick** | Medido. Teclas sin respuesta, **atascadas** desde el principio y con **rebotes** (contacto intermitente). Si falla una línea o columna entera de la matriz, o si hay teclas que se encienden juntas, lo señala. Explica las teclas fantasma para que no se tomen por averías. Al arrancar mide además si el puerto del chip AY que lee el teclado es lento, algo que pasa con algunos AY de recambio. |
 | **2. Imagen** | Respuestas del usuario a patrones: niveles de cada color, escala de brillo para el monitor verde, rejilla de geometría, líneas finas en Mode 2 e imagen en movimiento. Los consejos dependen de la pantalla usada (CTM, GT65, modulador, RGB o conversor HDMI). |
 | **3. Sonido** | Respuestas del usuario. Canales A, B y C por separado, ruido y envolvente de volumen. Cruzando las respuestas distingue, por ejemplo, un generador de tono averiado de una salida de audio averiada. |
@@ -116,7 +116,7 @@ del 6128): la carga, la identificación, la pregunta del modelo, el teclado y el
 joystick, el sonido (que encontró una avería real en el chip AY), la RAM baja,
 la prueba continua, la ayuda y la salida al BASIC.
 
-Todo lo demás está comprobado solo en el emulador de pruebas (76 comprobaciones
+Todo lo demás está comprobado solo en el emulador de pruebas (78 comprobaciones
 automáticas). Falta probar en máquinas reales, entre otras cosas, la
 disquetera, la cassette con el tono, otros modelos, CRTC y ampliaciones. Ver
 [docs/VALIDACION.md](docs/VALIDACION.md). Si lo pruebas en tu CPC, cuéntalo.

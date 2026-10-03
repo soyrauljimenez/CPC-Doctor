@@ -41,6 +41,9 @@ El emulador no puede reproducir estas situaciones:
   real con un AY-3-8912A de recambio, pero la comparación entre la lectura
   normal y la lenta solo se ha probado con la avería imitada en el emulador
   (`sloway`). Hace falta un CPC con un AY así para confirmarla.
+- **La versión de la controladora de disco** (orden VERSION). Solo se ha
+  probado en el emulador: hace falta un CPC con disquetera (debería dar 765A)
+  y, si es posible, uno con la controladora cambiada por una más moderna.
 - **La medida del puerto A del AY al arrancar.** Pone el puerto como salida a
   0, lo suelta y mira cuánto tarda en volver a 1. La primera lectura llega a
   unos 42 µs, así que un puerto que tarde entre 6 µs (lo que espera la lectura

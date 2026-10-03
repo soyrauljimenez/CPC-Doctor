@@ -346,6 +346,9 @@ SetUpScreen:
 	ld	hl, TxtDetected
 .FDCskip:
 	call	PrintString
+ IFDEF GUIDED
+	call	PrintFDCVersion
+ ENDIF
 
 	ld	hl, TxtPSG
 	call	PrintInfoLabel

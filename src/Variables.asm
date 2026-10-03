@@ -161,3 +161,5 @@ AutoDiskLeft: db 0
 ;; Puerto A del AY (SoundTest.asm): lecturas a 0 tras soltarlo; 0 = normal
 AYPortReads: db 0
 AYMixerSave: db 0
+;; Respuesta de la controladora a la orden VERSION (FDC.asm): #80 = µPD765A
+FDCVersion: db 0

@@ -6,7 +6,30 @@ VORTEX_FDC_PORT EQU #FBF6
 
 @IsAmstradFDCPresent:
 	ld	bc, AMSTRAD_FDC_PORT
-	jr	DetectFDC		;; Call and ret
+	ld	d, 0			;; orden no válida: debe responder #80
+	call	FDCOneByteCommand
+	ret	c
+	cp	#80
+	ret	z
+	scf
+	ret
+
+ IFDEF GUIDED
+;; Versión de la controladora. La orden VERSION (#10) no existe en el
+;; µPD765A ni en sus clones (Zilog Z0765A, UMC UM8272A...), que responden
+;; "orden no válida" (#80), como los del DDI-1, el 664 y el 6128. El
+;; µPD765B y los posteriores responden #90.
+;; OUT: FDCVersion = byte de respuesta (0 si no ha respondido)
+@DetectFDCVersion:
+	ld	bc, AMSTRAD_FDC_PORT
+	ld	d, #10
+	call	FDCOneByteCommand
+	jr	nc, .store
+	xor	a
+.store:
+	ld	(FDCVersion), a
+	ret
+ ENDIF
 
 
 ;; http://www.cpcwiki.eu/index.php?title=Programming:Detecting_an_Amstrad_or_Vortex_disc_controler
@@ -14,10 +37,11 @@ VORTEX_FDC_PORT EQU #FBF6
 ;;-----------------------------------------------------------------
 ;; Entry conditions:
 ;; BC = I/O address for FDC main status register
+;; D = orden de un solo byte (0, no válida, para detectar la controladora)
 ;;
 ;; Exit conditions:
-;; carry flag set -> not detected
-;; carry flag clear -> detected
+;; carry flag set -> no ha respondido
+;; carry flag clear -> A = primer byte de la fase de resultado
 ;;
 ;; assumes:
 ;; - I/O port for read data = I/O port for write data
@@ -26,7 +50,7 @@ VORTEX_FDC_PORT EQU #FBF6
 ;;
 ;; Attempts to execute a invalid command.
 
-DetectFDC:
+FDCOneByteCommand:
 	;; initialise timeout
 	ld 	e, 0
 
@@ -56,8 +80,7 @@ DetectFDC:
 	inc 	c
 	;; BC = I/O address of FDC data register
 
-	;; code for invalid command
-	xor 	a
+	ld	a, d
 	;; write to FDC data register
 	out 	(c), a
 	dec 	c
@@ -107,16 +130,7 @@ DetectFDC:
 	;; read result phase data
 	in 	a, (c)
 	dec 	c
-	cp 	#80
-	jr 	nz, .df7
-
-	;; ok successful
-	or 	a
-	ret
-
-.df7:
-	;; failed
-	scf
+	or	a			;; carry a 0: ha respondido
 	ret
 
  ENDMODULE

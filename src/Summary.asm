@@ -113,6 +113,7 @@ SUM_VALUE_X	EQU 12
 	ld	hl, TxtDetected
 .fdc:
 	call	PrintString
+	call	PrintFDCVersion
 	call	WrapNewLine
 	;; Pantalla usada en la prueba de imagen
 	ld	hl, TxtDisplayUsed
