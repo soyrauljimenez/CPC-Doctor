@@ -37,6 +37,10 @@ El emulador no puede reproducir estas situaciones:
   estabilidad baja de verdad con el azimut desajustado y que los márgenes (±3 %,
   90 %) son razonables.
 - **El sonido.** El emulador no reproduce audio en las pruebas.
+- **La confirmación del AY lento en hardware real.** El patrón se vio en un 464
+  real con un AY-3-8912A de recambio, pero la comparación entre la lectura
+  normal y la lenta solo se ha probado con la avería imitada en el emulador
+  (`sloway`). Hace falta un CPC con un AY así para confirmarla.
 - **Monitores reales.** Hay que ver si los patrones y las preguntas se entienden
   en un CTM, un GT65 y por modulador.
 - **La prueba de la disquetera.** Viene del fork de issalig, que la probó en
