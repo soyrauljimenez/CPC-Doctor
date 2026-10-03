@@ -55,6 +55,7 @@ El emulador no puede reproducir estas situaciones:
 | 2026-09-23 | CPC 464 | M4 Board, ROM del 6128 (OS y BASIC 1.1) | Disco (DOCTOR.BIN desde la M4), español | Detecta CRTC 0, AY-3-8912, 64 KB. Sin preguntar salía "CPC 6128"; con la pregunta del modelo (0.9, commit posterior) se elige 464 y se muestra bien. | Raul Jimenez |
 | 2026-09-23 | CPC 464 | M4 Board, ROM del 6128 | Disco desde la M4, español | **Primer diagnóstico real.** Sonido: el canal B y la envolvente no se oyen y el ruido (también por el canal B) sí. Confirmado en BASIC: `SOUND 2,239,200,15` no suena y `SOUND 2,0,200,15,0,0,15` sí. Falla el generador de tono B del AY-3-8912. La prueba lo explica desde entonces de forma específica. | Raul Jimenez |
 | 2026-09-26 | CPC 464 | M4 Board, ROM del 6128 | Disco desde la M4, español | Z80 detectado como **NMOS, Zilog** (el emulador daba NEC). Disquetera: "No disponible" (la M4 no tiene FDC), correcto. Ayuda y salida al BASIC con ESC funcionan. | Raul Jimenez |
+| 2026-10-03 | CPC 464 | M4 Board, ROM del 6128, AY-3-8912 sustituido | Disco desde la M4, español | Sonido: con el chip nuevo suenan todos los canales y da **Superado**. **Segundo diagnóstico real:** al pulsar ↓ se encendía también f7 (y las demás parejas de las líneas 0 y 1 de la matriz): líneas unidas. Desde entonces la prueba de teclado lo detecta sola. | Raul Jimenez |
 
 ## Fallos del programa encontrados en máquinas reales
 

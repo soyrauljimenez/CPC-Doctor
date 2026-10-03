@@ -220,7 +220,7 @@ RAMInitialize:
  IFDEF RAMBuild
 ;; En la versión cargada el programa ocupa desde #0400: el bloque va más
 ;; arriba para no pisarlo (fuera de la ventana #4000-#7FFF de la RAM alta)
-RAMProgramAddr EQU #9000
+RAMProgramAddr EQU #A000
  ELSE
 RAMProgramAddr EQU #8000
  ENDIF

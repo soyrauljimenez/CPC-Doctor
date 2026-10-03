@@ -18,6 +18,11 @@
 KB_ROWS		EQU 10
 MAX_LISTED	EQU 16			; más teclas sin respuesta no se listan
 MIN_FOR_ANALYSIS EQU 50			; teclas probadas para analizar la matriz
+PAIR_SLOTS	EQU 4			; parejas de teclas que se encienden a la vez
+PAIR_SIZE	EQU 5			; tipo, a, b, veces, ejemplo
+PAIR_LINES	EQU 1			; misma columna, dos líneas: líneas unidas
+PAIR_COLUMNS	EQU 2			; misma línea, dos columnas: columnas unidas
+PAIR_MIN	EQU 2			; veces para darlo por confirmado
 JOY_ROW		EQU 9
 JOY_MASK	EQU %01111111		; bits de joystick en la fila 9 (el 7 es DEL)
 
@@ -35,6 +40,12 @@ JOY_MASK	EQU %01111111		; bits de joystick en la fila 9 (el 7 es DEL)
 	ldir
 	ld	hl, FlakyMatrixBuffer
 	call	ClearKeyboardBuffer
+	ld	hl, KbPairs
+	ld	b, PAIR_SLOTS * PAIR_SIZE
+.clearPairs:
+	ld	(hl), 0
+	inc	hl
+	djnz	.clearPairs
 	ld	hl, PrevOff1Buffer
 	call	ClearKeyboardBuffer
 	ld	hl, PrevOff2Buffer
@@ -76,6 +87,232 @@ JOY_MASK	EQU %01111111		; bits de joystick en la fila 9 (el 7 es DEL)
 	inc	iy
 	djnz	.loop
 	ret
+
+
+;; Llamar una vez por cuadro. Si en el mismo cuadro se encienden exactamente
+;; dos teclas que comparten columna (o línea), se anota la pareja. Una
+;; persona casi nunca pulsa dos teclas en los mismos 20 ms; con dos líneas
+;; de la matriz unidas (pistas de la membrana que se tocan), una sola
+;; tecla enciende siempre las dos. Visto en un 464 real: líneas 0 y 1.
+@KbTrackPairs:
+	xor	a
+	ld	(KbEdgeCount), a
+	ld	hl, EdgeOnKeyboardMatrixBuffer
+	ld	c, 0				; línea
+.row:
+	ld	e, (hl)
+	ld	a, c
+	cp	JOY_ROW
+	jr	nz, .notJoy
+	ld	a, e
+	and	%10000000			; de la fila 9 solo DEL
+	ld	e, a
+.notJoy:
+	ld	a, e
+	or	a
+	jr	z, .nextRow
+	ld	b, 0				; columna
+.bit:
+	srl	e
+	jr	nc, .nextBit
+	push	hl
+	ld	hl, KbEdgeCount
+	ld	a, (hl)
+	inc	(hl)
+	cp	2
+	jr	nc, .skip
+	add	a, a
+	ld	hl, KbEdges
+	add	a, l
+	ld	l, a
+	jr	nc, $+3
+	inc	h
+	ld	(hl), c
+	inc	hl
+	ld	(hl), b
+.skip:
+	pop	hl
+.nextBit:
+	inc	b
+	ld	a, e
+	or	a
+	jr	nz, .bit
+.nextRow:
+	inc	hl
+	inc	c
+	ld	a, c
+	cp	KB_ROWS
+	jr	nz, .row
+
+	ld	a, (KbEdgeCount)
+	cp	2
+	ret	nz
+	ld	a, (KbEdges)			; línea 1
+	ld	d, a
+	ld	a, (KbEdges + 2)		; línea 2
+	ld	e, a
+	ld	a, (KbEdges + 1)		; columna 1
+	ld	b, a
+	ld	a, (KbEdges + 3)		; columna 2
+	cp	b
+	jr	nz, .diffColumn
+	;; Misma columna: líneas D y E unidas; ejemplo = la columna
+	ld	l, b
+	ld	a, PAIR_LINES
+	jr	.record
+.diffColumn:
+	ld	c, a				; C = columna 2
+	ld	a, d
+	cp	e
+	ret	nz				; ni línea ni columna en común
+	;; Misma línea: columnas B y C unidas; ejemplo = la línea
+	ld	l, d
+	ld	d, b
+	ld	e, c
+	ld	a, PAIR_COLUMNS
+.record:
+	;; A = tipo, D/E = las dos líneas o columnas, L = ejemplo
+	ld	c, a
+	ld	ix, KbPairs
+	ld	b, PAIR_SLOTS
+.find:
+	ld	a, (ix)
+	or	a
+	jr	z, .new
+	cp	c
+	jr	nz, .next
+	ld	a, (ix+1)
+	cp	d
+	jr	nz, .next
+	ld	a, (ix+2)
+	cp	e
+	jr	nz, .next
+	inc	(ix+3)
+	ret
+.next:
+	push	de
+	ld	de, PAIR_SIZE
+	add	ix, de
+	pop	de
+	djnz	.find
+	ret					; tabla llena
+.new:
+	ld	(ix), c
+	ld	(ix+1), d
+	ld	(ix+2), e
+	ld	(ix+3), 1
+	ld	(ix+4), l
+	ret
+
+;; OUT: A = parejas confirmadas, C = tipo de la primera
+KbCountJoined:
+	ld	ix, KbPairs
+	ld	b, PAIR_SLOTS
+	ld	d, 0
+	ld	c, 0
+.loop:
+	ld	a, (ix+3)
+	cp	PAIR_MIN
+	jr	c, .next
+	ld	a, d
+	or	a
+	jr	nz, .counted
+	ld	c, (ix)
+.counted:
+	inc	d
+.next:
+	push	de
+	ld	de, PAIR_SIZE
+	add	ix, de
+	pop	de
+	djnz	.loop
+	ld	a, d
+	ret
+
+;; Lista las parejas confirmadas: "{ABAJO} + f7 (líneas 0 y 1)"
+KbPrintJoined:
+	call	KbCountJoined
+	or	a
+	ret	z
+	ld	hl, TxtKbJoined
+	call	PrintString
+	call	WrapNewLine
+	ld	ix, KbPairs
+	ld	b, PAIR_SLOTS
+.loop:
+	push	bc
+	ld	a, (ix+3)
+	cp	PAIR_MIN
+	jr	c, .next
+	ld	a, '-'
+	call	PrintChar
+	ld	a, ' '
+	call	PrintChar
+	;; Las dos teclas de ejemplo
+	ld	a, (ix)
+	cp	PAIR_LINES
+	jr	nz, .columns
+	ld	a, (ix+1)			; línea 1, columna de ejemplo
+	ld	e, (ix+4)
+	call	.key
+	ld	a, (ix+2)
+	ld	e, (ix+4)
+	call	.keyPlus
+	ld	hl, TxtKbLinesWord
+	jr	.which
+.columns:
+	ld	a, (ix+4)			; línea de ejemplo, columna 1
+	ld	e, (ix+1)
+	call	.key
+	ld	a, (ix+4)
+	ld	e, (ix+2)
+	call	.keyPlus
+	ld	hl, TxtKbColumnsWord
+.which:
+	;; "(líneas 0 y 1)"
+	ld	a, '('
+	call	PrintChar
+	call	PrintString
+	ld	a, ' '
+	call	PrintChar
+	ld	a, (ix+1)
+	add	a, '0'
+	call	PrintChar
+	ld	hl, TxtKbAnd
+	call	PrintString
+	ld	a, (ix+2)
+	add	a, '0'
+	call	PrintChar
+	ld	a, ')'
+	call	PrintChar
+	call	WrapNewLine
+.next:
+	ld	de, PAIR_SIZE
+	add	ix, de
+	pop	bc
+	djnz	.loop
+	ret
+;; IN: A = línea, E = columna. Imprime el nombre de la tecla.
+.key:
+	add	a, a
+	add	a, a
+	add	a, a
+	add	a, e
+	push	ix
+	call	GetKeyName
+	call	KbPrintWord
+	pop	ix
+	ret
+.keyPlus:
+	push	af
+	push	de
+	ld	a, '+'
+	call	PrintChar
+	ld	a, ' '
+	call	PrintChar
+	pop	de
+	pop	af
+	jr	.key
 
 
 ;; Máscara de las teclas atascadas para la salida (ESC / TAB / FUEGO)
@@ -125,6 +362,14 @@ JOY_MASK	EQU %01111111		; bits de joystick en la fila 9 (el 7 es DEL)
 	jr	nz, .kbSet
 	ld	b, TESTRESULT_PASSED
 .kbSet:
+	;; Teclas que se encienden a la vez: avería, aunque todas respondan
+	push	bc
+	call	KbCountJoined
+	pop	bc
+	or	a
+	jr	z, .noJoined
+	ld	b, TESTRESULT_FAILED
+.noJoined:
 	ld	a, b
 	ld	(TestResultTableKeyboard), a
 
@@ -199,6 +444,7 @@ KbResultScreen:
 	ld	c, 0
 	call	PrintKeyList
 .noFlaky:
+	call	KbPrintJoined
 	;; Joystick
 	ld	hl, TxtResultJoystick
 	call	PrintString
@@ -437,6 +683,16 @@ CountKeysInBuffer:
 ;; Solo tiene sentido si otras teclas sí han respondido.
 ;; ---------------------------------------------------------------------------
 KbAnalysis:
+	call	KbCountJoined
+	or	a
+	jr	z, .notJoined
+	ld	hl, TxtKbJoinedLinesAdvice
+	ld	a, c
+	cp	PAIR_LINES
+	jp	z, PrintWrapped
+	ld	hl, TxtKbJoinedColumnsAdvice
+	jp	PrintWrapped
+.notJoined:
 	ld	a, (KbPressedCount)
 	or	a
 	jr	nz, .some

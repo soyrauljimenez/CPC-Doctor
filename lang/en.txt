@@ -139,6 +139,12 @@ KbLineDead = No key responds on line
 KbColumnDead = No key responds on column (bit)
 KbPatternAdvice = When a whole line or column fails, those keys share something: a membrane track, the connector or, for lines, an output of the 74LS145 chip. This is a possible cause, not a certainty: to confirm it, check the membrane with a multimeter or try another membrane.
 KbScatteredAdvice = The failing keys do not make up a whole line or column, so the most likely cause is the membrane itself at those points (broken tracks or dirty contacts). To confirm it, repeat the test and see whether the same keys fail every time.
+KbJoined = Keys that light up together:
+KbLinesWord = lines
+KbColumnsWord = columns
+KbAnd =  and 
+KbJoinedLinesAdvice = Pressing a key also lights up the one in the same column on another line: the tracks of those two keyboard matrix lines are joined. These are not ghost keys, which only appear when three keys are pressed at once. Possible causes: a short in the membrane (moisture, liquid or oxidised tracks touching), dirt or a bridge in its connector or, less likely, the 74LS145 chip. To confirm it, switch the CPC off, unplug the membrane, clean its contacts and the connector with isopropyl alcohol and repeat the test. If nothing changes, look at the membrane against the light.
+KbJoinedColumnsAdvice = Pressing a key also lights up another one on the same line: the tracks of those two keyboard matrix columns are joined. These are not ghost keys, which only appear when three keys are pressed at once. Possible causes: a short in the membrane (moisture, liquid or oxidised tracks touching) or dirt or a bridge in its connector. To confirm it, switch the CPC off, unplug the membrane, clean its contacts and the connector with isopropyl alcohol and repeat the test.
 PressOKToReturn = Press ENTER or FIRE to return to the menu
 KeyNames = {ARRIBA}|{DERECHA}|{ABAJO}|f9|f6|f3|ENTER|f.|{IZQUIERDA}|COPY|f7|f8|f5|f1|f2|f0|CLR|[|RETURN|]|f4|SHIFT|\|CTRL|^|-|@|P|;|:|/|.|0|9|O|I|L|K|M|,|8|7|U|Y|H|J|N|SPACE|6|5|R|T|G|F|B|V|4|3|E|W|S|D|C|X|1|2|ESC|Q|TAB|A|CAPS|Z|J{ARRIBA}|J{ABAJO}|J{IZQUIERDA}|J{DERECHA}|FIRE1|FIRE2|FIRE3|DEL
 PressOKToContinue = Press ENTER or FIRE to continue
@@ -240,7 +246,7 @@ SoundChannelBDead = Channel B makes no sound either with a tone or with noise, w
 SoundEnvelopeDead = The three channels and the noise sound, but the volume does not fade out: the volume envelope, inside the AY chip, fails. Many games use it, so they will sound wrong even though everything else works. To confirm it, repeat the test and listen to a game you know well.
 MenuHintExit =   ESC: exit to BASIC
 ExitTitle = Exit to BASIC
-ExitQuestion = The computer will restart as if switched on and the test results will be lost.|| If you need them, take a photo of the final summary first (option 9).|| Exit to BASIC?
+ExitQuestion = The computer will restart as if switched on and the test results will be lost.|| If you need them, take a photo of the final summary first (option 0).|| Exit to BASIC?
 
 # ---------------------------------------------------------------- disc drive and Z80 (from issalig)
 Z80 = Z80

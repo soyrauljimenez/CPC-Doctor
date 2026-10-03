@@ -139,6 +139,12 @@ KbLineDead = No responde ninguna tecla de la línea
 KbColumnDead = No responde ninguna tecla de la columna (bit)
 KbPatternAdvice = Cuando falla una línea o una columna entera, las teclas comparten algo: una pista de la membrana, el conector o, para las líneas, una salida del chip 74LS145. Es una posible causa, no una certeza: para confirmarla, revisa la membrana con un polímetro o prueba con otra membrana.
 KbScatteredAdvice = Las teclas que fallan no forman una línea ni una columna completa, así que lo más probable es la propia membrana en esos puntos (pistas cortadas o contactos sucios). Para confirmarlo, repite la prueba y fíjate en si fallan siempre las mismas teclas.
+KbJoined = Teclas que se encienden a la vez:
+KbLinesWord = líneas
+KbColumnsWord = columnas
+KbAnd =  y 
+KbJoinedLinesAdvice = Al pulsar una tecla se enciende también la de la misma columna en otra línea: las pistas de esas dos líneas de la matriz están unidas. No son teclas fantasma, que solo aparecen al pulsar tres teclas a la vez. Posibles causas: un cruce en la membrana (humedad, líquido o pistas oxidadas que se tocan), suciedad o un puente en su conector o, con menos probabilidad, el chip 74LS145. Para confirmarlo, apaga el CPC, desconecta la membrana, limpia sus contactos y los del conector con alcohol isopropílico y repite la prueba. Si sigue igual, revisa la membrana a contraluz.
+KbJoinedColumnsAdvice = Al pulsar una tecla se enciende también otra de la misma línea: las pistas de esas dos columnas de la matriz están unidas. No son teclas fantasma, que solo aparecen al pulsar tres teclas a la vez. Posibles causas: un cruce en la membrana (humedad, líquido o pistas oxidadas que se tocan) o suciedad o un puente en su conector. Para confirmarlo, apaga el CPC, desconecta la membrana, limpia sus contactos y los del conector con alcohol isopropílico y repite la prueba.
 PressOKToReturn = Pulsa ENTER o FUEGO para volver al menú
 KeyNames = {ARRIBA}|{DERECHA}|{ABAJO}|f9|f6|f3|ENTER|f.|{IZQUIERDA}|COPY|f7|f8|f5|f1|f2|f0|CLR|[|RETURN|]|f4|SHIFT|\|CTRL|^|-|@|P|;|:/Ñ|/|.|0|9|O|I|L|K|M|,|8|7|U|Y|H|J|N|ESPACIO|6|5|R|T|G|F|B|V|4|3|E|W|S|D|C|X|1|2|ESC|Q|TAB|A|CAPS|Z|J{ARRIBA}|J{ABAJO}|J{IZQUIERDA}|J{DERECHA}|FUEGO1|FUEGO2|FUEGO3|DEL
 PressOKToContinue = Pulsa ENTER o FUEGO para continuar
@@ -240,7 +246,7 @@ SoundChannelBDead = El canal B no suena ni con tono ni con ruido, y otros canale
 SoundEnvelopeDead = Los tres canales y el ruido suenan, pero el volumen no baja poco a poco: falla la envolvente de volumen, que está dentro del chip AY. Muchos juegos la usan, así que sonarán mal aunque el resto funcione. Para confirmarlo, repite la prueba y escucha un juego que conozcas bien.
 MenuHintExit =   ESC: salir al BASIC
 ExitTitle = Salir al BASIC
-ExitQuestion = El ordenador se reiniciará como al encenderlo y se perderán los resultados de las pruebas.|| Si los necesitas, haz antes una foto del resumen final (opción 9).|| ¿Salir al BASIC?
+ExitQuestion = El ordenador se reiniciará como al encenderlo y se perderán los resultados de las pruebas.|| Si los necesitas, haz antes una foto del resumen final (opción 0).|| ¿Salir al BASIC?
 
 # ---------------------------------------------------------------- disquetera y Z80 (de issalig)
 Z80 = Z80

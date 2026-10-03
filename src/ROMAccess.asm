@@ -176,6 +176,21 @@ Crc16:
 	ret
 
 
+ IFDEF GUIDED
+;; Reinicia el ordenador como al encenderlo. Tiene que ejecutarse fuera de
+;; #0000-#3FFF: al conectar la ROM baja, esa zona deja de ser RAM y el
+;; código que estuviera allí desaparecería (por eso vive en este bloque).
+@ColdBootToBASIC:
+	di
+	ld	bc, #7F89			; Mode 1, ROM baja conectada, ROM alta no
+	out	(c), c
+	ld	bc, #DF00			; ROM alta 0 (BASIC)
+	out	(c), c
+	ld	bc, #F782			; PPI en su estado inicial
+	out	(c), c
+	jp	#0000
+ ENDIF
+
 @RestoreROMState:
 	ld 	bc, RESTORE_ROM_CONFIG
 	out 	(c),c

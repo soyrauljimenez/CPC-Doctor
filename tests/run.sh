@@ -51,8 +51,8 @@ check upperram "RAM alta encontrada: 64KB" "Prueba de la RAM alta superada" "Con
 $EMU $DISK_ES $BOOT key 6:0 wait 80 key 2:2 wait 600 vram $OUT/lowerram.vram shot $OUT/lowerram.png
 check lowerram "KB de 64 KB." "Resultado: Superado"
 
-# Chip de RAM dañado: el bit 3 se lee siempre a 0 en #A000-#A3FF
-$EMU $DISK_ES $BOOT fault A000 400 08 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/lowerramfault.vram shot $OUT/lowerramfault.png
+# Chip de RAM dañado: el bit 3 se lee siempre a 0 en #B000-#B3FF
+$EMU $DISK_ES $BOOT fault B000 400 08 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/lowerramfault.vram shot $OUT/lowerramfault.png
 check lowerramfault "Resultado: Error bits 03" " X "
 
 # ---------------------------------------------------------------- disquetera
@@ -69,6 +69,12 @@ check roms "OS 6128 EN (B360)" "6128 BASIC EN (CAA0)" "AMSDOS (0F91)"
 # La tecla C atascada desde el principio; se pulsa Q y se sale con ESC
 $EMU $DISK_ES $BOOT key 8:0 wait 100 hold 7:6 wait 20 key 2:2 wait 250 key 8:3 wait 20 hold 8:2 wait 80 release 8:2 wait 60 vram $OUT/keyboard.vram shot $OUT/keyboard.png
 check keyboard "Teclas que han respondido: 2/73" "Pulsadas desde el principio (atascadas): C" "Resultado: Inconcluso"
+
+# Líneas 0 y 1 de la matriz unidas (visto en un 464 real): una tecla enciende
+# también la de la misma columna en la otra línea. Se imita pulsando las dos
+# en el mismo cuadro, dos veces.
+$EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 250 hold 0:2 hold 1:2 wait 4 release 0:2 release 1:2 wait 20 hold 0:2 hold 1:2 wait 4 release 0:2 release 1:2 wait 20 hold 8:2 wait 80 release 8:2 wait 80 vram $OUT/keyjoined.vram shot $OUT/keyjoined.png
+check keyjoined "(líneas 0 y 1)" "Resultado: Error" "líneas de la matriz están unidas"
 
 # ---------------------------------------------------------------- sonido
 # Las respuestas del 464 real con el tono B averiado: A sí, B no, C sí,
@@ -102,7 +108,7 @@ $EMU -m 464 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7
 if [ $((0x$(awk '{print $2}' $OUT/soak464.peek))) -ge 3 ]; then PASS=$((PASS + 1)); echo "ok     soak464 ($(cat $OUT/soak464.peek))"; else FAIL=$((FAIL + 1)); echo "FALLO  soak464: menos de 3 vueltas ($(cat $OUT/soak464.peek))"; fi
 
 # Prueba continua con un chip de RAM dañado: debe pararse y decirlo
-$EMU $DISK_ES $BOOT fault A000 400 08 key 4:1 wait 700 vram $OUT/soakfault.vram shot $OUT/soakfault.png
+$EMU $DISK_ES $BOOT fault B000 400 08 key 4:1 wait 700 vram $OUT/soakfault.vram shot $OUT/soakfault.png
 check soakfault "Prueba detenida por un error en la vuelta 1"
 
 # 464 con las ROM del 6128 (ampliación habitual): debe preguntar el modelo

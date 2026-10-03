@@ -142,3 +142,8 @@ DiskMeasured: db 0
 DiskGoodCount: db 0
 DiskFailCount: db 0
 DivCounter: db 0
+
+;; Teclas que se encienden a la vez (KeyboardGuide.asm)
+KbEdgeCount: db 0
+KbEdges: ds 4
+KbPairs: ds 4 * 5

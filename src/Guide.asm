@@ -185,14 +185,7 @@ ModelCodes:
 	or	a
 	jp	nz, MainMenuRepeat		; No o ESC
 	call	Silence
-	di
-	ld	bc, #7F89			; Mode 1, ROM baja conectada, ROM alta no
-	out	(c), c
-	ld	bc, #DF00			; ROM alta 0 (BASIC)
-	out	(c), c
-	ld	bc, #F782			; PPI en su estado inicial
-	out	(c), c
-	jp	#0000
+	jp	ColdBootToBASIC			; está en el bloque de #A000 (ROMAccess.asm)
 
 ExitChoices:
 	dw TxtAnswerYes, TxtAnswerNo, 0

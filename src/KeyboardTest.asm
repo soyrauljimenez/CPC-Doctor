@@ -24,6 +24,7 @@
 	call 	UpdateKeyBuffers
  IFDEF GUIDED
 	call	KbTrackFlaky
+	call	KbTrackPairs
  ENDIF
 
 	call	CheckESCPressedLongEnough
