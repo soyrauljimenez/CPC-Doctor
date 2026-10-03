@@ -6,6 +6,10 @@
 - Identificación: versión de la controladora de disco. Los µPD765A y sus
   clones no conocen la orden VERSION; el µPD765B y posteriores sí. Se
   muestra como "Sí (765A)" o "Sí (765B)".
+- Identificación: con un CRTC de tipo 4 se indica el Gate Array 40226 (464
+  y 6128 abaratados), y con el 3 el ASIC 40489 de los Plus, que llevan el
+  CRTC dentro. El 40007, el 40008 y el 40010 no se pueden distinguir por
+  software: sus diferencias solo se ven en pantalla.
 - Emulador de pruebas: opción `fdcb` para imitar un µPD765B.
 
 ## 0.9.1

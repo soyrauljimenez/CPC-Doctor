@@ -137,6 +137,12 @@ check summary "CPC 6128, 128KB, CRTC 1, AY-3-8912" "PENDIENTE:" "Código: 09A-3-
 # Un AY sano no da el aviso del puerto A
 if grep -qF "AVISO" $OUT/summary.txt; then FAIL=$((FAIL + 1)); echo "FALLO  summary: aviso del puerto con un AY sano"; else PASS=$((PASS + 1)); fi
 
+# Con un CRTC de tipo 4 el Gate Array es el 40226. El emulador solo tiene el
+# tipo 1: se cambia la variable a mano (1 xor 5 = 4) antes del resumen.
+CRTCVAR=$(grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*CRTCType:" build/es/RAMBuild.lst | awk '{print $2}' | grep -E "^A" | head -1)
+$EMU $DISK_ES $BOOT corrupt $CRTCVAR 05 key 4:0 wait 80 vram $OUT/crtc4.vram
+check crtc4 "CRTC 4 (40226)"
+
 # ---------------------------------------------------------------- inglés, 464 y cinta
 $EMU -m 464 -t build/dist/cpcdoctor-en.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT vram $OUT/tape464.vram shot $OUT/tape464.png
 check tape464 "CPC 464" "64KB" "Upper RAM : Not available" "4. Cassette"

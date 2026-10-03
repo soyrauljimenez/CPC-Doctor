@@ -66,6 +66,7 @@ SUM_VALUE_X	EQU 12
 	ld	a, (CRTCType)
 	add	a, '0'
 	call	PrintChar
+	call	PrintGateArray
 	call	Separator
 	ld	a, (PSGType)
 	or	a

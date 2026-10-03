@@ -30,6 +30,25 @@ MOTOR_PORT	EQU #FA7E
 RPM_OK		EQU 45			; ±4,5 rpm (1,5 %) en décimas
 RPM_WARN	EQU 90			; ±9 rpm (3 %)
 
+;; Gate Array, cuando se puede saber: en el 40226 (464 y 6128 abaratados) y
+;; en el ASIC 40489 de los Plus el CRTC va dentro, y es de tipo 4 y 3. Con
+;; un CRTC 0, 1 o 2 el Gate Array es un 40007, 40008 o 40010: sus
+;; diferencias solo se ven en pantalla, así que no se indica.
+;; (Fuente: Longshot, "The Amstrad CPC CRTC Compendium", cap. 3 y 29.)
+@PrintGateArray:
+	ld	a, (CRTCType)
+	ld	hl, TxtGA40489
+	cp	3
+	jr	z, .print
+	ld	hl, TxtGA40226
+	cp	4
+	ret	nz
+.print:
+	jp	PrintString
+
+TxtGA40489: db ' (40489)', 0
+TxtGA40226: db ' (40226)', 0
+
 ;; " (765A)" o " (765B)" detrás de "Sí", si hay controladora y se sabe
 @PrintFDCVersion:
 	ld	a, (FDCPresent)

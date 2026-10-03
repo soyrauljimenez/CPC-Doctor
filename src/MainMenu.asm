@@ -336,6 +336,9 @@ SetUpScreen:
 	ld	a, (CRTCType)
 	add	a, '0'
 	call	PrintChar
+ IFDEF GUIDED
+	call	PrintGateArray
+ ENDIF
 
 	ld	hl, TxtFDC
 	call	PrintInfoLabel

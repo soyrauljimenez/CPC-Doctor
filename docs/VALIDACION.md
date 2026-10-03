@@ -41,6 +41,9 @@ El emulador no puede reproducir estas situaciones:
   real con un AY-3-8912A de recambio, pero la comparación entre la lectura
   normal y la lenta solo se ha probado con la avería imitada en el emulador
   (`sloway`). Hace falta un CPC con un AY así para confirmarla.
+- **El Gate Array 40226 y el ASIC 40489** se deducen del CRTC de tipo 4 y 3
+  (Longshot, *The Amstrad CPC CRTC Compendium*). Depende de que esos tipos
+  de CRTC se detecten bien, que también está pendiente.
 - **La versión de la controladora de disco** (orden VERSION). Solo se ha
   probado en el emulador: hace falta un CPC con disquetera (debería dar 765A)
   y, si es posible, uno con la controladora cambiada por una más moderna.
