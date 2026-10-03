@@ -339,6 +339,8 @@ bool cpcdoc_50hz = true;
 bool (*cpcdoc_tape_bit)(void);
 uint16_t cpcdoc_fault_start, cpcdoc_fault_len;   // avería simulada: estos bits se leen a 0
 uint8_t cpcdoc_fault_mask;
+// avería en una página física de 16 KB de RAM (0-3 base, 4-7 los 64 KB del 6128)
+uint8_t cpcdoc_faultbank_page, cpcdoc_faultbank_mask;
 // AY lento (visto con un AY-3-8912A de recambio): durante estos ciclos tras
 // cambiar de línea del teclado, el puerto A sigue viendo la línea anterior
 uint32_t cpcdoc_slow_ay;
@@ -360,6 +362,11 @@ static uint64_t _cpc_tick(cpc_t* sys, uint64_t cpu_pins) {
         if (cpu_pins & Z80_RD) {
             uint8_t data = mem_rd(&sys->mem, addr);
             if ((uint16_t)(addr - cpcdoc_fault_start) < cpcdoc_fault_len) { data &= ~cpcdoc_fault_mask; }
+            if (cpcdoc_faultbank_mask) {
+                const uint8_t* p = mem_readptr(&sys->mem, addr);
+                const uint8_t* page = sys->ram[cpcdoc_faultbank_page];
+                if (p >= page && p < page + 0x4000) { data &= ~cpcdoc_faultbank_mask; }
+            }
             Z80_SET_DATA(cpu_pins, data);
         } else if (cpu_pins & Z80_WR) {
             mem_wr(&sys->mem, addr, Z80_GET_DATA(cpu_pins));

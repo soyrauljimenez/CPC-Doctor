@@ -60,7 +60,22 @@ check lowerram "KB de 64 KB." "Resultado: Superado"
 
 # Chip de RAM dañado: el bit 3 se lee siempre a 0 en #B000-#B3FF
 $EMU $DISK_ES $BOOT fault B000 400 08 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/lowerramfault.vram shot $OUT/lowerramfault.png
-check lowerramfault "Resultado: Error bits 03" " X "
+check lowerramfault "Resultado: Error bits 03" " X " "Chips a revisar (6128, placa original): IC130"
+
+# Qué chip es cada bit según la placa (esquemas de Amstrad). Se cambian a mano
+# el modelo (6128 -> 464: 3 xor 2) y el CRTC (1 -> 4: 1 xor 5; 1 -> 3: 1 xor 2)
+VAR() { grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*\b$1:" build/es/RAMBuild.lst | awk '{print $2}' | grep -E "^A" | head -1; }
+$EMU $DISK_ES $BOOT corrupt $(VAR ModelType) 02 fault B000 400 81 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/chips464.vram
+check chips464 "Error bits 00 07" "Chips a revisar (464/664): IC120 IC124"
+$EMU $DISK_ES $BOOT corrupt $(VAR CRTCType) 05 fault B000 400 FF key 6:0 wait 80 key 2:2 wait 600 vram $OUT/chips40226.vram
+check chips40226 "(6128 con 40226, probable): IC109" "IC110 IC111 IC112 IC113 IC114 IC115 IC116"
+$EMU $DISK_ES $BOOT corrupt $(VAR CRTCType) 02 fault B000 400 81 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/chipsplus.vram
+check chipsplus "Chips a revisar (Plus): IC110 IC111"
+
+# RAM alta del 6128 con los bits 0 y 7 rotos en su segunda página: se ven
+# los dos (antes la prueba se paraba en el primero) y sus chips
+$EMU $DISK_ES $BOOT faultbank 5 81 key 5:1 wait 1500 vram $OUT/upperramfault.vram shot $OUT/upperramfault.png
+check upperramfault "Error en la RAM alta. Bits: 00 07" "Chips a revisar (6128, placa original): IC119 IC126"
 
 # ---------------------------------------------------------------- disquetera
 # El emulador no reproduce el giro del disco: solo se comprueba que la prueba

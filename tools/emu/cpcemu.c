@@ -42,6 +42,8 @@
         fdcb       la controladora de disco responde como un µPD765B (VERSION = #90)
         slowport N al pasar el puerto A del AY de salida a entrada, se lee 0
                    durante N ciclos (pull-ups débiles)
+        faultbank P MASK   esos bits se leen a 0 en la página física P de 16 KB
+                   de RAM (0-3 la base, 4-7 los 64 KB extra del 6128)
         fault DIR LEN MASK a partir de aquí, las lecturas de DIR..DIR+LEN-1
                            devuelven los bits MASK a 0 (chip de RAM dañado)
 */
@@ -80,6 +82,7 @@ extern bool cpcdoc_50hz;
 extern bool (*cpcdoc_tape_bit)(void);
 extern uint16_t cpcdoc_fault_start, cpcdoc_fault_len;
 extern uint8_t cpcdoc_fault_mask;
+extern uint8_t cpcdoc_faultbank_page, cpcdoc_faultbank_mask;
 extern uint32_t cpcdoc_slow_ay, cpcdoc_slow_port;
 bool cpcdoc_fdc_b;      // la controladora responde como un µPD765B
 
@@ -383,6 +386,11 @@ int main(int argc, char** argv) {
             memset(matrix_hold, 0, sizeof(matrix_hold));
         }
         else if (!strcmp(cmd, "joy") && arg) { cpc_joystick(&cpc, (uint8_t)strtol(arg, NULL, 0)); i++; }
+        else if (!strcmp(cmd, "faultbank") && i + 2 < argc) {
+            cpcdoc_faultbank_page = (uint8_t)atoi(argv[i + 1]);
+            cpcdoc_faultbank_mask = (uint8_t)strtol(argv[i + 2], NULL, 16);
+            i += 2;
+        }
         else if (!strcmp(cmd, "fault") && i + 3 < argc) {
             cpcdoc_fault_start = (uint16_t)strtol(argv[i + 1], NULL, 16);
             cpcdoc_fault_len = (uint16_t)strtol(argv[i + 2], NULL, 16);

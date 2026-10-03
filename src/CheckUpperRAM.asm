@@ -202,6 +202,15 @@ PrintResult:
 	ld 	d,a
 	call 	PrintFailingBits
 	call 	SetDefaultColors
+ IFDEF GUIDED
+	;; Solo se nombran chips con los 64 KB del 6128 (un banco): el mapa
+	;; ocupa poco y caben encima de la línea de la configuración C3
+	ld	hl, RESULT_Y - 3
+	ld	(TxtCoords), hl
+	ld	a, (FailingBits)
+	ld	c, 1
+	call	PrintRAMChips
+ ENDIF
 
 	;; Remember failure
 	ld	a, TESTRESULT_FAILED
@@ -586,25 +595,27 @@ CheckESC:
 
 ; IN HL = Start, DE = length
 ; OUT A = 0 if good, otherwise failing bits
+;; Prueba los 8 bits de cada byte antes de parar: antes se paraba en el
+;; primero que fallaba y, con dos chips averiados, solo se veía uno.
 TestRAM:
-	ld 	a, 1
-	ld 	b, 8     ; test 8 bits
-	or 	a        ; ensure carry is cleared
-
+	ld	b, 1		; bit que se prueba
+	ld	c, 0		; bits erróneos de este byte
 .bits:
-	ld 	(hl), a
-	ld 	c, a     ; for compare
-	ld 	a, (hl)
-	cp 	c
-	jr 	nz,.bad
-	rla
-	djnz 	.bits
+	ld	(hl), b
+	ld	a, (hl)
+	xor	b		; los que no se leen como se escribieron
+	or	c
+	ld	c, a
+	sla	b
+	jr	nz, .bits
+	ld	a, c
+	or	a
+	ret	nz		; A = bits erróneos
 	inc 	hl
 	dec 	de
 	ld 	a, d     ; does de=0?
 	or 	e
-	jp 	z, .done
-	jr 	TestRAM
+	jr 	nz, TestRAM
 
 .done:
 	ld 	a, 0
@@ -612,10 +623,6 @@ TestRAM:
 		DISPLAY "Simulating upper RAM failure."
 		ld a, UpperRAMFailure
 	ENDIF
-	ret
-
-.bad:
-	xor 	c	; a contains failing bits
 	ret
 
 

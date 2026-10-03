@@ -35,8 +35,8 @@ un diagnóstico seguro.
 | **3. Sonido** | Respuestas del usuario. Canales A, B y C por separado, ruido y envolvente de volumen. Cruzando las respuestas distingue, por ejemplo, un generador de tono averiado de una salida de audio averiada. |
 | **4. Cassette** | Medido. Velocidad del motor y estabilidad de la señal con un [tono de calibración](audio/). Se repite cada segundo para ajustar el azimut o la velocidad, con instrucciones (tecla I). |
 | **5. Disquetera** | Medido. Velocidad de giro en rpm. |
-| **6. RAM baja** | Medido. En la versión de cinta y disco comprueba la memoria que no ocupa el programa y muestra un **mapa**. La ROM baja comprueba de #4000 a #FFFF y la ROM alta de #0000 a #BFFF. |
-| **7. RAM alta** | Medido. Bancos de 64 KB hasta 4 MB y configuración C3. |
+| **6. RAM baja** | Medido. En la versión de cinta y disco comprueba la memoria que no ocupa el programa y muestra un **mapa**. Si falla algún bit, dice **qué chip de la placa revisar** (IC…), según el modelo y los esquemas de Amstrad. La ROM baja comprueba de #4000 a #FFFF y la ROM alta de #0000 a #BFFF. |
+| **7. RAM alta** | Medido. Bancos de 64 KB hasta 4 MB y configuración C3. En un 6128 sin ampliaciones, también el chip que falla. |
 | **8. ROMs** | Medido. Identifica la ROM baja y las altas por su CRC. |
 | **9. Prueba continua** | Medido. Repite las pruebas de memoria y ROM sin parar, para fallos que aparecen en caliente. |
 | **0. Resumen final** | Una pantalla para fotografiar: equipo, resultados, lo pendiente y un código con todos los resultados. |
@@ -116,7 +116,7 @@ del 6128): la carga, la identificación, la pregunta del modelo, el teclado y el
 joystick, el sonido (que encontró una avería real en el chip AY), la RAM baja,
 la prueba continua, la ayuda y la salida al BASIC.
 
-Todo lo demás está comprobado solo en el emulador de pruebas (79 comprobaciones
+Todo lo demás está comprobado solo en el emulador de pruebas (87 comprobaciones
 automáticas). Falta probar en máquinas reales, entre otras cosas, la
 disquetera, la cassette con el tono, otros modelos, CRTC y ampliaciones. Ver
 [docs/VALIDACION.md](docs/VALIDACION.md). Si lo pruebas en tu CPC, cuéntalo.

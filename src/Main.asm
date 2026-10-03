@@ -220,6 +220,7 @@ RAMInitialize:
  INCLUDE "Z80Detect.asm"		; de issalig (Ismael Salvador)
  INCLUDE "VideoTest.asm"
  INCLUDE "Summary.asm"
+ INCLUDE "RAMChips.asm"
  ENDIF
 
  INCLUDE "texts.asm"

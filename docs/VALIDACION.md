@@ -41,6 +41,12 @@ El emulador no puede reproducir estas situaciones:
   real con un AY-3-8912A de recambio, pero la comparación entre la lectura
   normal y la lenta solo se ha probado con la avería imitada en el emulador
   (`sloway`). Hace falta un CPC con un AY así para confirmarla.
+- **Qué chip de RAM revisar.** Las posiciones salen de los manuales de
+  servicio de Amstrad (464 de 1985 y "Amendment", 664, 6128 y Plus) y del
+  trazado de la placa MC0020x de pelrun/cpc-schematics. Que en el 6128
+  abaratado y en los Plus el grupo NCAS0 sea la RAM base se deduce, no está
+  escrito; la placa Schneider se supone igual que la Amstrad. Falta
+  confirmarlo con una avería real en cada placa.
 - **El Gate Array 40226 y el ASIC 40489** se deducen del CRTC de tipo 4 y 3
   (Longshot, *The Amstrad CPC CRTC Compendium*). Depende de que esos tipos
   de CRTC se detecten bien, que también está pendiente.

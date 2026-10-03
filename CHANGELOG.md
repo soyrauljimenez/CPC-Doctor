@@ -10,7 +10,17 @@
   y 6128 abaratados), y con el 3 el ASIC 40489 de los Plus, que llevan el
   CRTC dentro. El 40007, el 40008 y el 40010 no se pueden distinguir por
   software: sus diferencias solo se ven en pantalla.
-- Emulador de pruebas: opción `fdcb` para imitar un µPD765B.
+- RAM: cuando falla un bit, se dice qué chip de la placa revisar: 464 y
+  664 (IC117-IC124, que no van en orden de bit), 6128 con placa original
+  (IC127-IC134 la RAM base, IC119-IC126 la alta), 6128 abaratado con 40226
+  (IC109-IC124, "probable") y Plus (IC110-IC113). Sale de los manuales de
+  servicio de Amstrad. Del 464 abaratado no hay esquema: solo se da el bit.
+- Emulador de pruebas: opción `fdcb` para imitar un µPD765B, y `faultbank`
+  para estropear una página física de RAM.
+
+### Corregido
+- RAM alta: la prueba se paraba en el primer bit erróneo de cada bloque, y
+  con dos chips averiados solo se veía uno. Ahora comprueba los 8 bits.
 
 ## 0.9.1
 

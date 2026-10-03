@@ -219,7 +219,12 @@ LowerRAMLegendBusy =  used by CPC Doctor
 LowerRAMTested = Checked:
 LowerRAMOf64 =  KB out of 64 KB.
 LowerRAMOkAdvice = No fault was found in the memory checked. The area used by the program also worked when loading and running it, although it was not tested thoroughly.
-LowerRAMFailAdvice = Faults were found. On the 464, 664 and 6128 each main RAM chip stores one bit of every byte: if the same bit fails in several blocks, the chip for that bit is the suspect. If several bits fail in a single block, it may be an addressing problem. To confirm it, repeat the test with the machine cold and warm, and use the lower ROM version, which also checks the area used by this program.
+RAMChips = Chips to check
+Board464 = (464/664)
+Board6128 = (6128, original board)
+Board6128CD = (6128 with 40226, probable)
+BoardPlus = (Plus)
+LowerRAMFailAdvice = Each RAM chip stores one bit of every byte (four on the Plus). If the same bit fails in several blocks, its chip is the suspect; if several bits fail in a single block, it may be an addressing problem. The chip comes from the model and Amstrad's schematics: check the board silkscreen before desoldering. Confirm it by repeating the test cold and warm, and with the lower ROM version.
 
 # ---------------------------------------------------------------- cassette
 MenuTape = Cassette

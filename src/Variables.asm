@@ -163,3 +163,7 @@ AYPortReads: db 0
 AYMixerSave: db 0
 ;; Respuesta de la controladora a la orden VERSION (FDC.asm): #80 = µPD765A
 FDCVersion: db 0
+;; Chips de RAM (RAMChips.asm)
+ChipBits: db 0
+ChipBank: db 0
+ChipBoard: db 0

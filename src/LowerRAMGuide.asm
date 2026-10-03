@@ -100,7 +100,7 @@ MAP_Y		EQU 4
 	ret
 
 LowerRAMResultText:
-	ld	hl, #000C
+	ld	hl, #000B
 	call	LocateWrap
 	ld	hl, TxtLowerRAMTested
 	call	PrintString
@@ -123,6 +123,9 @@ LowerRAMResultText:
 	ld	a, (LowRAMFailBits)
 	ld	d, a
 	call	UPPERRAMTEST.PrintFailingBits
+	ld	a, (LowRAMFailBits)
+	ld	c, 0
+	call	PrintRAMChips
 	call	WrapNewLine
 	call	WrapNewLine
 	ld	hl, TxtLowerRAMFailAdvice
