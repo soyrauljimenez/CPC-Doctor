@@ -45,8 +45,8 @@ El emulador no puede reproducir estas situaciones:
   0, lo suelta y mira cuánto tarda en volver a 1. La primera lectura llega a
   unos 42 µs, así que un puerto que tarde entre 6 µs (lo que espera la lectura
   normal del teclado) y 42 µs hace fallar el teclado pero no se detecta. Solo
-  se ha probado en el emulador (`slowport`). Falta comprobar en un CPC real
-  que un AY sano no da el aviso y, si se puede, que uno lento sí.
+  se ha probado en el emulador (`slowport`) y en un 464 real con un AY sano
+  (no da el aviso). Falta un CPC real con un AY lento para ver que sí lo da.
 - **Monitores reales.** Hay que ver si los patrones y las preguntas se entienden
   en un CTM, un GT65 y por modulador.
 - **La prueba de la disquetera.** Viene del fork de issalig, que la probó en
