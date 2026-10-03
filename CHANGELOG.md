@@ -13,9 +13,16 @@
   solas las pruebas que no necesitan respuestas (teclado y joystick,
   disquetera, RAM baja, RAM alta y ROMs) y se termina en el resumen. Sirve
   cuando el teclado no funciona.
+- En el modo automático también se muestran los patrones de imagen y suenan
+  los sonidos, sin preguntar. Quedan sin probar.
+- Al arrancar se mide si el puerto A del AY tarda en volver a reposo, sin
+  pulsar teclas. Si es lento se avisa en la prueba de teclado y en el resumen.
 - Teclado y joystick: la prueba termina sola tras 10 segundos sin
   pulsaciones.
-- Emulador de pruebas: avería `sloway` para imitar ese AY.
+- Emulador de pruebas: averías `sloway` y `slowport` para imitar ese AY.
+- La versión cargada pone su bloque de trabajo en #A800 (antes #A000) para
+  tener sitio; el compresor comprueba que el programa no pise el
+  descompresor.
 
 ### Cambiado
 - Teclado: una tecla atascada da Error aunque se hayan probado pocas teclas

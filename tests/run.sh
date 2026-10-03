@@ -98,9 +98,16 @@ check joinednotay "Líneas unidas: 0-1 1-2" "líneas de la matriz están unidas"
 # ---------------------------------------------------------------- modo automático
 # Sin tocar nada 30 s: hace las pruebas que no necesitan respuestas y acaba en
 # el resumen. La C atascada desde el arranque no debe impedirlo.
-$EMU $DISK_ES wait 150 type 'run"doctor~' wait 100 hold 7:6 wait 3400 vram $OUT/autokb.vram shot $OUT/autokb.png wait 4000 vram $OUT/auto.vram shot $OUT/auto.png
+$EMU $DISK_ES wait 150 type 'run"doctor~' wait 100 hold 7:6 wait 3400 vram $OUT/autokb.vram shot $OUT/autokb.png wait 350 vram $OUT/autovideo.vram wait 12250 vram $OUT/auto.vram shot $OUT/auto.png
 check autokb "Pulsadas desde el principio (atascadas): C" "Resultado: Error" "sigue solo en 5 s"
-check auto "Resumen final" "Teclado  : Error" "RAM baja : Superado" "RAM alta : Superado" "ROM baja : Superado" "Disco    : Inconcluso"
+check autovideo "Imagen" "mira la pantalla (no se pregunta)"
+check auto "Resumen final" "Imagen   : Sin probar" "Sonido   : Sin probar" "Teclado  : Error" "RAM baja : Superado" "RAM alta : Superado" "ROM baja : Superado" "Disco    : Inconcluso"
+
+# AY con el puerto A lento (pull-ups débiles): se mide al arrancar, sin
+# pulsar teclas. La primera lectura llega a unos 170 ciclos de soltarlo.
+$EMU $DISK_ES slowport 400 wait 150 type 'run"doctor~' wait 400 key 8:0 wait 150 key 2:2 wait 250 hold 8:2 wait 80 release 8:2 wait 30 vram $OUT/slowport.vram shot $OUT/slowport.png wait 60 key 2:2 wait 80 key 4:0 wait 100 vram $OUT/slowportsum.vram
+check slowport "Puerto A del AY: lento" "Resultado: Error" "resistencias pull-up"
+check slowportsum "AVISO: el puerto A del AY es lento"
 
 # Prueba de teclado sin pulsar nada: termina sola a los 10 s
 $EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 650 vram $OUT/kbidle.vram shot $OUT/kbidle.png
@@ -123,6 +130,8 @@ PY
 # ---------------------------------------------------------------- resumen
 $EMU $DISK_ES $BOOT key 4:0 wait 80 vram $OUT/summary.vram shot $OUT/summary.png
 check summary "CPC 6128, 128KB, CRTC 1, AY-3-8912" "PENDIENTE:" "Código: 09A-3-01-"
+# Un AY sano no da el aviso del puerto A
+if grep -qF "AVISO" $OUT/summary.txt; then FAIL=$((FAIL + 1)); echo "FALLO  summary: aviso del puerto con un AY sano"; else PASS=$((PASS + 1)); fi
 
 # ---------------------------------------------------------------- inglés, 464 y cinta
 $EMU -m 464 -t build/dist/cpcdoctor-en.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT vram $OUT/tape464.vram shot $OUT/tape464.png

@@ -30,7 +30,7 @@ un diagnóstico seguro.
 | Prueba | Cómo se obtiene el resultado |
 |---|---|
 | **Identificación** | Modelo (según la ROM; si hay dudas, lo pregunta), marca, 50/60 Hz, RAM, tipo de CRTC (0 a 5), chip de sonido (AY o YM), disquetera y tipo de Z80. |
-| **1. Teclado y joystick** | Medido. Teclas sin respuesta, **atascadas** desde el principio y con **rebotes** (contacto intermitente). Si falla una línea o columna entera de la matriz, lo señala. Explica las teclas fantasma para que no se tomen por averías. |
+| **1. Teclado y joystick** | Medido. Teclas sin respuesta, **atascadas** desde el principio y con **rebotes** (contacto intermitente). Si falla una línea o columna entera de la matriz, o si hay teclas que se encienden juntas, lo señala. Explica las teclas fantasma para que no se tomen por averías. Al arrancar mide además si el puerto del chip AY que lee el teclado es lento, algo que pasa con algunos AY de recambio. |
 | **2. Imagen** | Respuestas del usuario a patrones: niveles de cada color, escala de brillo para el monitor verde, rejilla de geometría, líneas finas en Mode 2 e imagen en movimiento. Los consejos dependen de la pantalla usada (CTM, GT65, modulador, RGB o conversor HDMI). |
 | **3. Sonido** | Respuestas del usuario. Canales A, B y C por separado, ruido y envolvente de volumen. Cruzando las respuestas distingue, por ejemplo, un generador de tono averiado de una salida de audio averiada. |
 | **4. Cassette** | Medido. Velocidad del motor y estabilidad de la señal con un [tono de calibración](audio/). Se repite cada segundo para ajustar el azimut o la velocidad, con instrucciones (tecla I). |
@@ -46,9 +46,10 @@ las puede medir y no las presenta como mediciones. **ESC** en el menú vuelve al
 BASIC.
 
 **Modo automático.** Si al arrancar no se pulsa nada en 30 segundos (por
-ejemplo, porque el teclado no funciona), CPC Doctor hace solo las pruebas que no
-necesitan respuestas: teclado y joystick, disquetera, RAM baja, RAM alta y ROMs.
-Termina en el resumen. El modelo se toma de la ROM sin confirmar. La prueba de
+ejemplo, porque el teclado no funciona), CPC Doctor sigue solo: prueba teclado y joystick,
+muestra los patrones de imagen y toca los sonidos sin preguntar (quedan sin
+probar, porque el programa no sabe qué has visto y oído), y mide disquetera,
+RAM baja, RAM alta y ROMs. Termina en el resumen. El modelo se toma de la ROM sin confirmar. La prueba de
 teclado y joystick termina sola tras 10 segundos sin pulsaciones, también fuera
 de este modo.
 
@@ -115,7 +116,7 @@ del 6128): la carga, la identificación, la pregunta del modelo, el teclado y el
 joystick, el sonido (que encontró una avería real en el chip AY), la RAM baja,
 la prueba continua, la ayuda y la salida al BASIC.
 
-Todo lo demás está comprobado solo en el emulador de pruebas (67 comprobaciones
+Todo lo demás está comprobado solo en el emulador de pruebas (76 comprobaciones
 automáticas). Falta probar en máquinas reales, entre otras cosas, la
 disquetera, la cassette con el tono, otros modelos, CRTC y ampliaciones. Ver
 [docs/VALIDACION.md](docs/VALIDACION.md). Si lo pruebas en tu CPC, cuéntalo.

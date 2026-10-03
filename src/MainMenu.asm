@@ -196,6 +196,8 @@ AutoNext:
 AUTO_SUMMARY	EQU 9
 AutoSequence:
 	db 0				; teclado y joystick (termina a los 10 s)
+	db 1				; imagen: los patrones, sin preguntar
+	db 2				; sonido: los sonidos, sin preguntar
 	db 4				; disquetera
 	db 5				; RAM baja
 	db 6				; RAM alta

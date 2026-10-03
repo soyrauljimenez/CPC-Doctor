@@ -158,6 +158,8 @@ def main():
         stub_addr = load + len(packed)
         stub = assemble(load, stub_addr)
     check_in_place(packed, dest, load)
+    if dest + len(data) > stub_addr:
+        raise SystemExit('el programa descomprimido pisaría el descompresor')
     if load <= dest:
         raise SystemExit('el programa comprimido no cabe')
     body = packed + stub

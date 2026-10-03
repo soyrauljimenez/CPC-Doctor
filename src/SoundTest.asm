@@ -233,6 +233,91 @@ SOUND_VOLUME EQU 15
 
  IFDEF GUIDED
 ;; ---------------------------------------------------------------------------
+;; AYPortProbe: ¿vuelve a tiempo a reposo el puerto A del AY?
+;;
+;; El AY lee las columnas del teclado por su puerto A, que se queda a 1
+;; gracias a unas resistencias pull-up internas. Si son débiles, al cambiar
+;; de línea el puerto tarda en volver a 1 y cada tecla aparece también en la
+;; línea siguiente (visto en un 464 real con un AY-3-8912A de recambio).
+;;
+;; Para medirlo sin pulsar teclas: se pone el puerto A como salida a 0, se
+;; vuelve a poner como entrada y se lee hasta que vuelve a 1, sin ninguna
+;; línea del teclado elegida (la 15 no existe). La primera lectura llega a
+;; unos 40 µs y las siguientes cada 9 µs; un AY sano vuelve en menos de 6 µs
+;; (es lo que tarda la lectura normal del teclado), así que si la primera
+;; aún da 0 el puerto es lento. Si da 1 no se puede asegurar nada: un puerto
+;; que tarde entre 6 y 40 µs también hace fallar el teclado.
+;;
+;; Escribir 0 por el puerto no enfrenta salidas: el 74LS145 que elige las
+;; líneas tiene salidas en colector abierto, que solo tiran a 0.
+;;
+;; OUT: AYPortReads = lecturas a 0 antes de volver a 1 (0 = no se nota,
+;;      255 = no vuelve)
+;; ---------------------------------------------------------------------------
+@AYPortProbe:
+	ld	a, AY_MIXER
+	call	AYRegReadByte
+	ld	(AYMixerSave), a
+	ld	a, AY_PORTA
+	ld	l, 0
+	call	AYRegWriteByte			; dato de salida: 0
+	ld	a, (AYMixerSave)
+	or	%01000000
+	ld	l, a
+	ld	a, AY_MIXER
+	call	AYRegWriteByte			; puerto A como salida: patillas a 0
+	ld	b, 10
+	djnz	$
+
+	ld	a, (AYMixerSave)
+	and	%10111111
+	ld	e, a				; puerto A como entrada
+	ld	d, 0				; lecturas a 0
+	ld	bc, #F400 + AY_MIXER
+	out	(c), c
+	ld	bc, #F6CF			; elegir registro, sin línea de teclado
+	out	(c), c
+	ld	bc, #F60F
+	out	(c), c
+	ld	b, #F4
+	out	(c), e
+	ld	bc, #F68F			; escribir: desde aquí el puerto se suelta
+	out	(c), c
+	ld	bc, #F60F
+	out	(c), c
+	ld	bc, #F400 + AY_PORTA
+	out	(c), c
+	ld	bc, #F6CF
+	out	(c), c
+	ld	bc, #F792			; puerto A del PPI en entrada
+	out	(c), c
+	ld	bc, #F64F			; leer, sin línea de teclado
+	out	(c), c
+	ld	b, #F4
+.read:
+	in	a, (c)
+	inc	a
+	jr	z, .high
+	inc	d
+	jr	nz, .read
+	dec	d				; 255: no vuelve
+.high:
+	ld	a, d
+	ld	(AYPortReads), a
+	ld	bc, #F782
+	out	(c), c
+	ld	bc, #F600
+	out	(c), c
+	ld	a, (AYMixerSave)
+	ld	l, a
+	ld	a, AY_MIXER
+	jp	AYRegWriteByte
+
+AY_MIXER	EQU 7
+AY_PORTA	EQU 14
+
+
+;; ---------------------------------------------------------------------------
 ;; Versión guiada
 ;; ---------------------------------------------------------------------------
 GuidedSoundTest:
@@ -244,6 +329,9 @@ GuidedSoundTest:
 	call	PrintHint
 	call	WaitOK
 	ret	z				; ESC: volver sin resultado
+	ld	a, (AutoStep)
+	or	a
+	jr	nz, AutoSoundDemo
 
 	xor	a
 	ld	(SoundStep), a
@@ -289,6 +377,28 @@ GuidedSoundTest:
 	ret
 
 
+;; Modo automático: los cinco sonidos seguidos, sin preguntar. El resultado
+;; sigue "sin probar".
+AutoSoundDemo:
+	xor	a
+	ld	(SoundStep), a
+.step:
+	call	SoundStepScreen
+	ld	hl, TxtAutoListenHint
+	call	PrintHint
+	ld	b, 25
+	call	WaitFrames
+	ld	a, (SoundStep)
+	call	PlayStep
+	ld	b, 50
+	call	WaitFrames
+	ld	a, (SoundStep)
+	inc	a
+	ld	(SoundStep), a
+	cp	SOUND_STEPS
+	jr	nz, .step
+	ret
+
 ANSWER_Y EQU 14
 
 SoundStepScreen:
@@ -312,6 +422,9 @@ SoundStepScreen:
 	ld	h, (hl)
 	ld	l, a
 	call	PrintWrapped
+	ld	a, (AutoStep)			; en el modo automático no se pregunta
+	or	a
+	ret	nz
 	ld	hl, #0000 + ANSWER_Y - 2
 	ld	(TxtCoords), hl
 	ld	hl, TxtSoundQuestion

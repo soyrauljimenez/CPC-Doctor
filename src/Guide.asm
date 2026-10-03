@@ -42,7 +42,12 @@ HINT_ROW EQU 24
 	jr	z, .auto
 	ld	de, TxtPressOKToReturn
 	call	.same
+	jr	z, .auto
+	ld	de, TxtDiskStop
+	call	.same
 	ret	nz
+	ld	hl, TxtAutoDiskHint
+	ret
 .auto:
 	ld	hl, TxtAutoNextHint
 	ret
@@ -211,7 +216,7 @@ ModelCodes:
 	or	a
 	jp	nz, MainMenuRepeat		; No o ESC
 	call	Silence
-	jp	ColdBootToBASIC			; está en el bloque de #A000 (ROMAccess.asm)
+	jp	ColdBootToBASIC			; está en el bloque de RAMProgramAddr (ROMAccess.asm)
 
 ExitChoices:
 	dw TxtAnswerYes, TxtAnswerNo, 0

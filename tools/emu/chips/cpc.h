@@ -344,6 +344,11 @@ uint8_t cpcdoc_fault_mask;
 uint32_t cpcdoc_slow_ay;
 uint16_t cpcdoc_prev_columns;
 uint64_t cpcdoc_columns_tick;
+// Puerto A lento al soltarlo: cuando pasa de salida a entrada, las patillas
+// tardan estos ciclos en volver a 1 (sin resistencias pull-up que las suban)
+uint32_t cpcdoc_slow_port;
+uint64_t cpcdoc_porta_tick;
+bool cpcdoc_porta_out;
 
 static uint64_t _cpc_tick(cpc_t* sys, uint64_t cpu_pins) {
     cpu_pins = z80_tick(&sys->cpu, cpu_pins);
@@ -434,6 +439,11 @@ static uint64_t _cpc_tick(cpc_t* sys, uint64_t cpu_pins) {
                 const uint8_t ay_data = I8255_GET_PA(ppi_pins);
                 AY38910_SET_DATA(ay_pins, ay_data);
                 ay38910_iorq(&sys->psg, ay_pins);
+            }
+            {
+                const bool out = 0 != (sys->psg.enable & (1<<6));
+                if (cpcdoc_porta_out && !out) { cpcdoc_porta_tick = cpcdoc_ticks; }
+                cpcdoc_porta_out = out;
             }
             // PC0..PC3: select keyboard matrix line
             uint16_t col_mask = 1<<(I8255_GET_PC(ppi_pins) & 0x0F);
@@ -535,6 +545,9 @@ static uint8_t _cpc_psg_in(int port_id, void* user_data) {
             kbd_set_active_columns(&sys->kbd, cpcdoc_prev_columns);
             data |= (uint8_t) kbd_scan_lines(&sys->kbd);
             kbd_set_active_columns(&sys->kbd, cur);
+        }
+        if (cpcdoc_slow_port && (cpcdoc_ticks - cpcdoc_porta_tick) < cpcdoc_slow_port) {
+            data = 0xFF;                // aquí 1 = a 0 en el puerto (como tecla pulsada)
         }
         if (sys->kbd.active_columns & (1<<9)) {
             /*

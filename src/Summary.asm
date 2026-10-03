@@ -234,8 +234,19 @@ SUM_VALUE_X	EQU 12
 	ld	hl, TxtSummaryNothingPending
 	call	PrintString
 
-	;; ---- Código de resultados
+	;; ---- Aviso del puerto del AY (medido al arrancar)
 .code:
+	ld	a, (AYPortReads)
+	or	a
+	jr	z, .noPortWarning
+	ld	hl, #0015
+	ld	(TxtCoords), hl
+	call	SetErrorColors
+	ld	hl, TxtSummaryPortSlow
+	call	PrintString
+	call	SetDefaultColors
+.noPortWarning:
+	;; ---- Código de resultados
 	ld	hl, #0016
 	ld	(TxtCoords), hl
 	ld	hl, TxtSummaryCode

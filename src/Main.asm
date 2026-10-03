@@ -146,6 +146,7 @@ RAMTestPassed:
 	ld	(AutoCountdown), hl
 	xor	a
 	ld	(AutoStep), a
+	call	AYPortProbe			; ¿el AY puede leer bien el teclado?
  ENDIF
 	jp 	MainMenu
 
@@ -227,8 +228,10 @@ RAMInitialize:
 ;; This is the code that needs to be in RAM to function
  IFDEF RAMBuild
 ;; En la versión cargada el programa ocupa desde #0400: el bloque va más
-;; arriba para no pisarlo (fuera de la ventana #4000-#7FFF de la RAM alta)
-RAMProgramAddr EQU #A000
+;; arriba para no pisarlo (fuera de la ventana #4000-#7FFF de la RAM alta).
+;; Por encima de #A67B está el espacio del firmware y AMSDOS, pero el
+;; programa no los usa una vez cargado (salir al BASIC reinicia en frío).
+RAMProgramAddr EQU #A800
  ELSE
 RAMProgramAddr EQU #8000
  ENDIF

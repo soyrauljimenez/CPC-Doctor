@@ -30,6 +30,9 @@ DISPLAY_HDMI	EQU 4
 GA_MODE_BASE	EQU %10001100		; ROMs desconectadas (versión RAM)
 
 @VideoTestSelected:
+	ld	a, (AutoStep)
+	or	a
+	jr	nz, AutoVideoDemo
 	ld	hl, TxtVideoTitle
 	ld	de, TxtVideoIntro
 	call	ExplainScreen
@@ -91,6 +94,28 @@ GA_MODE_BASE	EQU %10001100		; ROMs desconectadas (versión RAM)
 	call	RestoreVideo
 	ld	a, TESTRESULT_ABORTED
 	ld	(TestResultTableVideo), a
+	jp	MainMenuRepeat
+
+
+;; Modo automático: todos los patrones seguidos, cada uno con lo que hay que
+;; mirar, sin preguntar. El resultado sigue "sin probar": el programa no sabe
+;; qué se ha visto.
+AutoVideoDemo:
+	xor	a
+	ld	(VideoStep), a
+.step:
+	call	VideoStepHeader
+	ld	hl, TxtAutoWatchHint
+	call	PrintHint
+	ld	b, 150
+	call	WaitFrames
+	call	ShowPattern
+	call	RestoreVideo
+	ld	a, (VideoStep)
+	inc	a
+	ld	(VideoStep), a
+	cp	VIDEO_STEPS
+	jr	nz, .step
 	jp	MainMenuRepeat
 
 
@@ -396,10 +421,25 @@ PatternSharp:
 PatternScroll:
 	call	DrawGrid
 	call	WaitNoKeys
+	ld	hl, AUTO_WAIT_FRAMES
+	ld	(WaitOKFrames), hl
 	ld	hl, #3000			; R12/R13 al empezar (#C000)
 .frame:
 	push	hl
 	call	ReadInput
+	ld	a, (AutoStep)			; modo automático: 5 s
+	or	a
+	jr	z, .manual
+	ld	hl, (WaitOKFrames)
+	dec	hl
+	ld	(WaitOKFrames), hl
+	ld	a, h
+	or	l
+	jr	nz, .manual
+	pop	hl
+	ret
+.manual:
+	ld	a, (InputFlags)
 	pop	hl
 	and	(1 << UI.INPUT_OK) | (1 << UI.INPUT_BACK)
 	ret	nz
@@ -511,6 +551,14 @@ FillRect:
 
 ;; OUT: A = respuesta (0 sí, 1 no, 2 no lo sé, 3 repetir) o #FF
 AskAboutPattern:
+	call	VideoStepHeader
+	ld	ix, AnswersWithRepeat
+	ld	hl, #0214
+	xor	a
+	jp	Choose
+
+;; Título, nombre del paso y lo que hay que mirar
+VideoStepHeader:
 	ld	hl, TxtVideoTitle
 	call	PrintScreenTitle
 	ld	a, (VideoStep)
@@ -530,11 +578,7 @@ AskAboutPattern:
 	ld	hl, #0004
 	call	LocateWrap
 	pop	hl
-	call	PrintWrapped
-	ld	ix, AnswersWithRepeat
-	ld	hl, #0214
-	xor	a
-	jp	Choose
+	jp	PrintWrapped
 
 ;; IN: A = paso  OUT: HL = pregunta del paso
 GetVideoStepText:

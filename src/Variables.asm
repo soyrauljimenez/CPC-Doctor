@@ -158,3 +158,6 @@ WaitOKFrames: dw 0
 KbIdleFrames: dw 0			; cuadros sin pulsar nada en la prueba de teclado
 KbTimedOut: db 0
 AutoDiskLeft: db 0
+;; Puerto A del AY (SoundTest.asm): lecturas a 0 tras soltarlo; 0 = normal
+AYPortReads: db 0
+AYMixerSave: db 0

@@ -568,6 +568,12 @@ KbSlowScanCheck:
 	jr	z, .noJoined
 	ld	b, TESTRESULT_FAILED
 .noJoined:
+	;; Con el puerto del AY lento el teclado no se puede leer bien
+	ld	a, (AYPortReads)
+	or	a
+	jr	z, .portOk
+	ld	b, TESTRESULT_FAILED
+.portOk:
 	ld	a, b
 	ld	(TestResultTableKeyboard), a
 
@@ -699,6 +705,16 @@ KbResultScreen:
 	jr	nz, .joyBit
 .joyDone:
 	call	WrapNewLine
+	;; Medido al arrancar: el puerto A del AY tarda en volver a reposo
+	ld	a, (AYPortReads)
+	or	a
+	jr	z, .portOk
+	call	SetErrorColors
+	ld	hl, TxtKbPortSlow
+	call	PrintString
+	call	SetDefaultColors
+	call	WrapNewLine
+.portOk:
 
 	;; Resultado del teclado y posibles causas
 	call	WrapNewLine
@@ -891,6 +907,14 @@ CountKeysInBuffer:
 ;; Solo tiene sentido si otras teclas sí han respondido.
 ;; ---------------------------------------------------------------------------
 KbAnalysis:
+	ld	a, (KbSlowResult)		; confirmado con una tecla: ese consejo
+	cp	1
+	jr	z, .joinedFirst
+	ld	a, (AYPortReads)
+	or	a
+	ld	hl, TxtKbPortSlowAdvice
+	jp	nz, PrintWrapped
+.joinedFirst:
 	call	KbCountJoined
 	or	a
 	jr	z, .notJoined
