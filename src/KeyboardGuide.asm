@@ -18,7 +18,7 @@
 KB_ROWS		EQU 10
 MAX_LISTED	EQU 16			; más teclas sin respuesta no se listan
 MIN_FOR_ANALYSIS EQU 50			; teclas probadas para analizar la matriz
-PAIR_SLOTS	EQU 4			; parejas de teclas que se encienden a la vez
+PAIR_SLOTS	EQU 12			; parejas de líneas o columnas unidas
 PAIR_SIZE	EQU 5			; tipo, a, b, veces, ejemplo
 PAIR_LINES	EQU 1			; misma columna, dos líneas: líneas unidas
 PAIR_COLUMNS	EQU 2			; misma línea, dos columnas: columnas unidas
@@ -229,90 +229,67 @@ KbCountJoined:
 	ld	a, d
 	ret
 
-;; Lista las parejas confirmadas: "{ABAJO} + f7 (líneas 0 y 1)"
+;; Lista las parejas confirmadas, en una línea por tipo:
+;;   Líneas unidas: 0-1 5-6
+;;   Columnas unidas: 2-3
 KbPrintJoined:
 	call	KbCountJoined
 	or	a
 	ret	z
-	ld	hl, TxtKbJoined
-	call	PrintString
-	call	WrapNewLine
+	ld	hl, TxtKbJoinedLines
+	ld	c, PAIR_LINES
+	call	.list
+	ld	hl, TxtKbJoinedColumns
+	ld	c, PAIR_COLUMNS
+	;; sigue
+;; IN: HL = título, C = tipo. Solo imprime si hay alguna pareja de ese tipo.
+.list:
+	push	hl
 	ld	ix, KbPairs
 	ld	b, PAIR_SLOTS
+	ld	e, 0				; ¿ya se ha escrito el título?
 .loop:
-	push	bc
 	ld	a, (ix+3)
 	cp	PAIR_MIN
 	jr	c, .next
-	ld	a, '-'
-	call	PrintChar
-	ld	a, ' '
-	call	PrintChar
-	;; Las dos teclas de ejemplo
 	ld	a, (ix)
-	cp	PAIR_LINES
-	jr	nz, .columns
-	ld	a, (ix+1)			; línea 1, columna de ejemplo
-	ld	e, (ix+4)
-	call	.key
-	ld	a, (ix+2)
-	ld	e, (ix+4)
-	call	.keyPlus
-	ld	hl, TxtKbLinesWord
-	jr	.which
-.columns:
-	ld	a, (ix+4)			; línea de ejemplo, columna 1
-	ld	e, (ix+1)
-	call	.key
-	ld	a, (ix+4)
-	ld	e, (ix+2)
-	call	.keyPlus
-	ld	hl, TxtKbColumnsWord
-.which:
-	;; "(líneas 0 y 1)"
-	ld	a, '('
-	call	PrintChar
+	cp	c
+	jr	nz, .next
+	ld	a, e
+	or	a
+	jr	nz, .item
+	pop	hl
+	push	hl
+	push	bc
 	call	PrintString
+	pop	bc
+	ld	e, 1
+.item:
+	push	bc
+	push	de
 	ld	a, ' '
 	call	PrintChar
 	ld	a, (ix+1)
 	add	a, '0'
 	call	PrintChar
-	ld	hl, TxtKbAnd
-	call	PrintString
+	ld	a, '-'
+	call	PrintChar
 	ld	a, (ix+2)
 	add	a, '0'
 	call	PrintChar
-	ld	a, ')'
-	call	PrintChar
-	call	WrapNewLine
+	pop	de
+	pop	bc
 .next:
+	push	de
 	ld	de, PAIR_SIZE
 	add	ix, de
-	pop	bc
-	djnz	.loop
-	ret
-;; IN: A = línea, E = columna. Imprime el nombre de la tecla.
-.key:
-	add	a, a
-	add	a, a
-	add	a, a
-	add	a, e
-	push	ix
-	call	GetKeyName
-	call	KbPrintWord
-	pop	ix
-	ret
-.keyPlus:
-	push	af
-	push	de
-	ld	a, '+'
-	call	PrintChar
-	ld	a, ' '
-	call	PrintChar
 	pop	de
-	pop	af
-	jr	.key
+	djnz	.loop
+	pop	hl
+	ld	a, e
+	or	a
+	ret	z
+	jp	WrapNewLine
 
 
 ;; Máscara de las teclas atascadas para la salida (ESC / TAB / FUEGO)

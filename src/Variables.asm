@@ -146,4 +146,4 @@ DivCounter: db 0
 ;; Teclas que se encienden a la vez (KeyboardGuide.asm)
 KbEdgeCount: db 0
 KbEdges: ds 4
-KbPairs: ds 4 * 5
+KbPairs: ds 12 * 5

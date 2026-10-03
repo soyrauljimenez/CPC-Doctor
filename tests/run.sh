@@ -74,7 +74,7 @@ check keyboard "Teclas que han respondido: 2/73" "Pulsadas desde el principio (a
 # también la de la misma columna en la otra línea. Se imita pulsando las dos
 # en el mismo cuadro, dos veces.
 $EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 250 hold 0:2 hold 1:2 wait 4 release 0:2 release 1:2 wait 20 hold 0:2 hold 1:2 wait 4 release 0:2 release 1:2 wait 20 hold 8:2 wait 80 release 8:2 wait 80 vram $OUT/keyjoined.vram shot $OUT/keyjoined.png
-check keyjoined "(líneas 0 y 1)" "Resultado: Error" "líneas de la matriz están unidas"
+check keyjoined "Líneas unidas (una tecla enciende otra): 0-1" "Resultado: Error" "líneas de la matriz están unidas"
 
 # ---------------------------------------------------------------- sonido
 # Las respuestas del 464 real con el tono B averiado: A sí, B no, C sí,
