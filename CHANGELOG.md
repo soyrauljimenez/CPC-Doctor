@@ -9,7 +9,17 @@
   es el chip AY, que lee el teclado y tarda en reaccionar al cambiar de
   línea. Pide mantener una tecla y compara la lectura normal con otra más
   lenta. Pasa con algunos AY de recambio, aunque suenen bien.
+- Modo automático: si al arrancar no se pulsa nada en 30 segundos, se hacen
+  solas las pruebas que no necesitan respuestas (teclado y joystick,
+  disquetera, RAM baja, RAM alta y ROMs) y se termina en el resumen. Sirve
+  cuando el teclado no funciona.
+- Teclado y joystick: la prueba termina sola tras 10 segundos sin
+  pulsaciones.
 - Emulador de pruebas: avería `sloway` para imitar ese AY.
+
+### Cambiado
+- Teclado: una tecla atascada da Error aunque se hayan probado pocas teclas
+  (antes, Inconcluso).
 
 ### Corregido
 - La lista de líneas unidas se salía de la pantalla.

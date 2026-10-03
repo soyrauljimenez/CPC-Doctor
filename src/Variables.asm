@@ -151,3 +151,10 @@ SlowMatrixBuffer: ds 10
 KbSlowYes: db 0
 KbSlowNo: db 0
 KbSlowResult: db 0
+;; Modo automático (MainMenu.asm): sin tocar nada 30 s al arrancar
+AutoCountdown: dw 0			; cuadros hasta lanzarlo (0 = desactivado)
+AutoStep: db 0				; 0 = apagado; si no, siguiente paso + 1
+WaitOKFrames: dw 0
+KbIdleFrames: dw 0			; cuadros sin pulsar nada en la prueba de teclado
+KbTimedOut: db 0
+AutoDiskLeft: db 0

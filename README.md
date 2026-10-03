@@ -45,6 +45,13 @@ Las pruebas de **imagen y sonido** dependen de lo que ves y oyes: el programa no
 las puede medir y no las presenta como mediciones. **ESC** en el menú vuelve al
 BASIC.
 
+**Modo automático.** Si al arrancar no se pulsa nada en 30 segundos (por
+ejemplo, porque el teclado no funciona), CPC Doctor hace solo las pruebas que no
+necesitan respuestas: teclado y joystick, disquetera, RAM baja, RAM alta y ROMs.
+Termina en el resumen. El modelo se toma de la ROM sin confirmar. La prueba de
+teclado y joystick termina sola tras 10 segundos sin pulsaciones, también fuera
+de este modo.
+
 <p>
 <img src="docs/img/teclado.png" width="32%" alt="Prueba de teclado">
 <img src="docs/img/imagen-rejilla.png" width="32%" alt="Patrón de geometría">
@@ -108,7 +115,7 @@ del 6128): la carga, la identificación, la pregunta del modelo, el teclado y el
 joystick, el sonido (que encontró una avería real en el chip AY), la RAM baja,
 la prueba continua, la ayuda y la salida al BASIC.
 
-Todo lo demás está comprobado solo en el emulador de pruebas (47 comprobaciones
+Todo lo demás está comprobado solo en el emulador de pruebas (67 comprobaciones
 automáticas). Falta probar en máquinas reales, entre otras cosas, la
 disquetera, la cassette con el tono, otros modelos, CRTC y ampliaciones. Ver
 [docs/VALIDACION.md](docs/VALIDACION.md). Si lo pruebas en tu CPC, cuéntalo.
@@ -167,7 +174,9 @@ Every test explains what is being checked, what you need to do, what was found
 and what to check next. Possible causes are always presented as things to
 confirm, not as a certain diagnosis. Picture and sound tests rely on what the
 user sees and hears and are reported as such. Keyboard, cassette, disc drive,
-memory and ROM tests are measurements.
+memory and ROM tests are measurements. If nothing is pressed for 30 seconds
+after loading (for example, because the keyboard is dead), the tests that need
+no answers run by themselves and end on the summary.
 
 Build with `./build.sh` (sjasmplus ≥ 1.21, Python 3) and run the automated tests
 with `tests/run.sh`. Version 0.9 has been partly tested on a real CPC 464; see

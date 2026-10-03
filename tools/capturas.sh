@@ -18,6 +18,8 @@ BOOT='wait 150 type run"doctor~ wait 450'
 OK='key 2:2'
 SI='key 8:0'
 NO='key 8:1'
+# Mientras carga la cinta, el cursor derecha evita el modo automático de 30 s
+TAPEWAIT=$(for i in $(seq 17); do printf ' wait 1000 key 0:1'; done)
 
 # Menú principal
 $EMU $DISK $BOOT shot $IMG/menu.png
@@ -39,12 +41,12 @@ $EMU $DISK $BOOT fault A000 400 08 key 6:0 wait 150 $OK wait 600 shot $IMG/ram-b
 $EMU $DISK $BOOT key 4:0 wait 100 shot $IMG/resumen.png
 
 # Cassette: medida con el motor un 3 % lento (464 desde cinta)
-$EMU -m 464 -v 103 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7 wait 15500 key 7:0 wait 150 $OK wait 300 shot $IMG/cassette.png
+$EMU -m 464 -v 103 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT wait 500 key 7:0 wait 150 $OK wait 300 shot $IMG/cassette.png
 
 # 464 con las ROM del 6128: pregunta del modelo
 head -c 16384 tools/emu/roms/cpc6128.rom > /tmp/cpcdoctor-os6128.rom
 tail -c 16384 tools/emu/roms/cpc6128.rom > /tmp/cpcdoctor-basic11.rom
-$EMU -m 464 -o /tmp/cpcdoctor-os6128.rom -b /tmp/cpcdoctor-basic11.rom -t build/dist/cpcdoctor-es.cdt wait 200 type 'run"~' wait 20 key 5:7 wait 15000 shot $IMG/modelo.png
+$EMU -m 464 -o /tmp/cpcdoctor-os6128.rom -b /tmp/cpcdoctor-basic11.rom -t build/dist/cpcdoctor-es.cdt wait 200 type 'run"~' wait 20 key 5:7 $TAPEWAIT shot $IMG/modelo.png
 
 # Versión en ROM baja
 $EMU -m 464 -o build/dist/cpcdoctor-es-lower.rom wait 700 shot $IMG/rom-baja.png

@@ -37,6 +37,9 @@ check() {
 }
 
 DISK_ES="-m 6128 -d build/dist/cpcdoctor-es.dsk"
+# Mientras carga la cinta se pulsa de vez en cuando el cursor derecha (no hace
+# nada en el menú) para que no salte el modo automático de los 30 s
+TAPEWAIT=$(for i in $(seq 17); do printf ' wait 1000 key 0:1'; done)
 BOOT='wait 150 type run"doctor~ wait 400'
 
 # ---------------------------------------------------------------- arranque
@@ -68,7 +71,7 @@ check roms "OS 6128 EN (B360)" "6128 BASIC EN (CAA0)" "AMSDOS (0F91)"
 # ---------------------------------------------------------------- teclado
 # La tecla C atascada desde el principio; se pulsa Q y se sale con ESC
 $EMU $DISK_ES $BOOT key 8:0 wait 100 hold 7:6 wait 20 key 2:2 wait 250 key 8:3 wait 20 hold 8:2 wait 80 release 8:2 wait 60 vram $OUT/keyboard.vram shot $OUT/keyboard.png
-check keyboard "Teclas que han respondido: 2/73" "Pulsadas desde el principio (atascadas): C" "Resultado: Inconcluso"
+check keyboard "Teclas que han respondido: 2/73" "Pulsadas desde el principio (atascadas): C" "Resultado: Error"
 
 # Líneas 0 y 1 de la matriz unidas (visto en un 464 real): una tecla enciende
 # también la de la misma columna en la otra línea. Se imita pulsando las dos
@@ -92,6 +95,17 @@ for p in "0:2 1:2" "1:3 2:3"; do set -- $p; J="$J hold $1 hold $2 wait 4 release
 $EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 250 $J hold 8:2 wait 80 release 8:2 wait 30 hold 5:4 wait 170 release 5:4 wait 60 vram $OUT/joinednotay.vram shot $OUT/joinednotay.png
 check joinednotay "Líneas unidas: 0-1 1-2" "líneas de la matriz están unidas"
 
+# ---------------------------------------------------------------- modo automático
+# Sin tocar nada 30 s: hace las pruebas que no necesitan respuestas y acaba en
+# el resumen. La C atascada desde el arranque no debe impedirlo.
+$EMU $DISK_ES wait 150 type 'run"doctor~' wait 100 hold 7:6 wait 3400 vram $OUT/autokb.vram shot $OUT/autokb.png wait 4000 vram $OUT/auto.vram shot $OUT/auto.png
+check autokb "Pulsadas desde el principio (atascadas): C" "Resultado: Error" "sigue solo en 5 s"
+check auto "Resumen final" "Teclado  : Error" "RAM baja : Superado" "RAM alta : Superado" "ROM baja : Superado" "Disco    : Inconcluso"
+
+# Prueba de teclado sin pulsar nada: termina sola a los 10 s
+$EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 650 vram $OUT/kbidle.vram shot $OUT/kbidle.png
+check kbidle "Nadie ha pulsado ninguna tecla en 10 segundos" "volver al menú"
+
 # ---------------------------------------------------------------- sonido
 # Las respuestas del 464 real con el tono B averiado: A sí, B no, C sí,
 # ruido sí, volumen no
@@ -111,16 +125,16 @@ $EMU $DISK_ES $BOOT key 4:0 wait 80 vram $OUT/summary.vram shot $OUT/summary.png
 check summary "CPC 6128, 128KB, CRTC 1, AY-3-8912" "PENDIENTE:" "Código: 09A-3-01-"
 
 # ---------------------------------------------------------------- inglés, 464 y cinta
-$EMU -m 464 -t build/dist/cpcdoctor-en.cdt wait 150 type 'run"~' wait 20 key 5:7 wait 15000 vram $OUT/tape464.vram shot $OUT/tape464.png
+$EMU -m 464 -t build/dist/cpcdoctor-en.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT vram $OUT/tape464.vram shot $OUT/tape464.png
 check tape464 "CPC 464" "64KB" "Upper RAM : Not available" "4. Cassette"
 
 # Prueba de cassette con el motor un 5 % lento (la cinta sigue tras el programa)
-$EMU -m 464 -v 105 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7 wait 15500 key 7:0 wait 80 key 2:2 wait 300 vram $OUT/cassette.vram shot $OUT/cassette.png
+$EMU -m 464 -v 105 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT wait 500 key 7:0 wait 80 key 2:2 wait 300 vram $OUT/cassette.vram shot $OUT/cassette.png
 check cassette "Velocidad: -4," "Estabilidad: 100%"
 
 # Prueba continua en un 464 sin RAM alta: debe dar vueltas (antes se colgaba)
 SOAKCOUNT=$(grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*SoakTestCount:" build/es/RAMBuild.lst | awk '{print $2}')
-$EMU -m 464 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7 wait 15000 key 4:1 wait 2500 peek $SOAKCOUNT vram $OUT/soak464.vram shot $OUT/soak464.png > $OUT/soak464.peek
+$EMU -m 464 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT key 4:1 wait 2500 peek $SOAKCOUNT vram $OUT/soak464.vram shot $OUT/soak464.png > $OUT/soak464.peek
 if [ $((0x$(awk '{print $2}' $OUT/soak464.peek))) -ge 3 ]; then PASS=$((PASS + 1)); echo "ok     soak464 ($(cat $OUT/soak464.peek))"; else FAIL=$((FAIL + 1)); echo "FALLO  soak464: menos de 3 vueltas ($(cat $OUT/soak464.peek))"; fi
 
 # Prueba continua con un chip de RAM dañado: debe pararse y decirlo
@@ -130,12 +144,12 @@ check soakfault "Prueba detenida por un error en la vuelta 1"
 # 464 con las ROM del 6128 (ampliación habitual): debe preguntar el modelo
 head -c 16384 tools/emu/roms/cpc6128.rom > $OUT/os6128.rom
 tail -c 16384 tools/emu/roms/cpc6128.rom > $OUT/basic11.rom
-$EMU -m 464 -o $OUT/os6128.rom -b $OUT/basic11.rom -t build/dist/cpcdoctor-es.cdt wait 200 type 'run"~' wait 20 key 5:7 wait 15000 vram $OUT/modeldoubt.vram key 8:0 wait 100 vram $OUT/modelconfirmed.vram shot $OUT/modelconfirmed.png
+$EMU -m 464 -o $OUT/os6128.rom -b $OUT/basic11.rom -t build/dist/cpcdoctor-es.cdt wait 200 type 'run"~' wait 20 key 5:7 $TAPEWAIT vram $OUT/modeldoubt.vram key 8:0 wait 100 vram $OUT/modelconfirmed.vram shot $OUT/modelconfirmed.png
 check modeldoubt "La ROM de este ordenador es la de un CPC 6128" "1. CPC 464"
 check modelconfirmed "Modelo    : CPC 464" "RAM alta  : No disponible"
 
 # Tras una vuelta de prueba continua se conservan el modelo y los resultados
-$EMU -m 464 -o $OUT/os6128.rom -b $OUT/basic11.rom -t build/dist/cpcdoctor-es.cdt wait 200 type 'run"~' wait 20 key 5:7 wait 15000 key 8:0 wait 100 key 4:1 wait 1200 hold 8:2 wait 400 release 8:2 wait 150 key 4:0 wait 100 vram $OUT/aftersoak.vram shot $OUT/aftersoak.png
+$EMU -m 464 -o $OUT/os6128.rom -b $OUT/basic11.rom -t build/dist/cpcdoctor-es.cdt wait 200 type 'run"~' wait 20 key 5:7 $TAPEWAIT key 8:0 wait 100 key 4:1 wait 1200 hold 8:2 wait 400 release 8:2 wait 150 key 4:0 wait 100 vram $OUT/aftersoak.vram shot $OUT/aftersoak.png
 check aftersoak "CPC 464, 64KB" "RAM alta : No disponible" "Sonido," "Cassette" 
 
 # ---------------------------------------------------------------- ROM baja

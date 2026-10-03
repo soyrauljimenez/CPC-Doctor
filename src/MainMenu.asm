@@ -22,12 +22,21 @@ MainMenu:
  ENDIF
 
 MainMenuRepeat:
+ IFDEF GUIDED
+	ld	a, (AutoStep)
+	or	a
+	jp	nz, AutoNext
+ ENDIF
 	call 	SetUpScreen
 	ld	ix, MenuTexts
 	ld	h, MENU_X
 	ld	l, MENU_Y
 	ld	a, (SelectedMenuItem)
 	call	Choose
+ IFDEF GUIDED
+	cp	#FE
+	jp	z, AutoNext			; 30 s sin tocar nada
+ ENDIF
 	cp	#FF
  IFDEF GUIDED
 	jp	z, ExitToBASIC			; ESC: salir al BASIC
@@ -132,6 +141,68 @@ SoundTestSelected:
 	jp TestComplete
  ENDIF
 
+ IFDEF GUIDED
+;; ---------------------------------------------------------------------------
+;; Modo automático: si al arrancar no se toca nada en 30 s (puede que el
+;; teclado no funcione), se hacen una tras otra las pruebas que no necesitan
+;; respuestas y se termina en el resumen. Cada prueba vuelve a
+;; MainMenuRepeat, que salta aquí mientras AutoStep no sea 0.
+;; ---------------------------------------------------------------------------
+AutoNext:
+	ld	a, (AutoStep)
+	cp	1
+	jr	nz, .step
+	;; Primer paso: explicar qué va a pasar
+	inc	a
+	ld	(AutoStep), a
+	ld	hl, TxtAutoTitle
+	ld	de, TxtAutoIntro
+	call	ExplainScreen
+	jr	nz, AutoNext
+	xor	a				; ESC: al menú
+	ld	(AutoStep), a
+	jp	MainMenuRepeat
+.step:
+	sub	2
+	ld	e, a
+	ld	d, 0
+	ld	hl, AutoSequence
+	add	hl, de
+	ld	a, (hl)
+	inc	a
+	jr	nz, .run
+	;; Fin: el resumen, ya esperando a una pulsación de verdad
+	xor	a
+	ld	(AutoStep), a
+	ld	a, AUTO_SUMMARY
+	ld	(SelectedMenuItem), a
+	jp	SummarySelected
+.run:
+	dec	a
+	ld	(SelectedMenuItem), a
+	ld	hl, AutoStep
+	inc	(hl)
+	add	a, a
+	ld	e, a
+	ld	hl, MenuFunctions
+	add	hl, de
+	ld	a, (hl)
+	inc	hl
+	ld	h, (hl)
+	ld	l, a
+	jp	(hl)
+
+;; Opciones del menú (empezando en 0) que no necesitan respuestas
+AUTO_SUMMARY	EQU 9
+AutoSequence:
+	db 0				; teclado y joystick (termina a los 10 s)
+	db 4				; disquetera
+	db 5				; RAM baja
+	db 6				; RAM alta
+	db 7				; ROMs
+	db #FF
+ ENDIF
+
 ;; Espera una tecla y vuelve al menú
 TestComplete:
 	ld	h, 0
@@ -139,6 +210,17 @@ TestComplete:
 	ld	(TxtCoords), hl
 	call	SetDefaultColors
 	ld	hl, TxtPressAnyKey
+ IFDEF GUIDED
+	ld	a, (AutoStep)
+	or	a
+	jr	z, .manual
+	ld	hl, TxtAutoNextHint
+	call	PrintString
+	ld	b, AUTO_WAIT_FRAMES
+	call	WaitFrames
+	jp	MainMenuRepeat
+.manual:
+ ENDIF
 	call	PrintString
 	call	WaitNoKeys
 .loop:

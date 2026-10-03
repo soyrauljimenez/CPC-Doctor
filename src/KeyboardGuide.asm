@@ -50,8 +50,53 @@ JOY_MASK	EQU %01111111		; bits de joystick en la fila 9 (el 7 es DEL)
 	call	ClearKeyboardBuffer
 	ld	hl, PrevOff2Buffer
 	call	ClearKeyboardBuffer
-	ld	a, 1
+	ld	hl, 0
+	ld	(KbIdleFrames), hl
+	xor	a
+	ld	(KbTimedOut), a
+	inc	a				; NZ
+	ret
+
+
+KB_IDLE_FRAMES	EQU 10 * 50
+
+;; Llamar una vez por cuadro, después de KbTrackFlaky. Cuenta el tiempo sin
+;; pulsaciones nuevas. Las de teclas con rebotes no cuentan: una tecla que
+;; falla sola no debe impedir que la prueba termine.
+;; OUT: Z si se han cumplido 10 s (y KbTimedOut = 1)
+@KbIdleTick:
+	ld	hl, EdgeOnKeyboardMatrixBuffer
+	ld	de, FlakyMatrixBuffer
+	ld	b, KB_ROWS
+	ld	c, 0
+.row:
+	ld	a, (de)
+	cpl
+	and	(hl)
+	or	c
+	ld	c, a
+	inc	hl
+	inc	de
+	djnz	.row
+	ld	a, c
 	or	a
+	ld	hl, 0
+	jr	nz, .store			; alguien ha pulsado algo
+	ld	hl, (KbIdleFrames)
+	inc	hl
+	ld	a, h
+	cp	high KB_IDLE_FRAMES
+	jr	nz, .store
+	ld	a, l
+	cp	low KB_IDLE_FRAMES
+	jr	nz, .store
+	ld	a, 1
+	ld	(KbTimedOut), a
+	xor	a				; Z
+	ret
+.store:
+	ld	(KbIdleFrames), hl
+	or	1				; NZ
 	ret
 
 
@@ -509,6 +554,12 @@ KbSlowScanCheck:
 	jr	nz, .kbSet
 	ld	b, TESTRESULT_PASSED
 .kbSet:
+	;; Una tecla atascada es una avería aunque se hayan probado pocas
+	ld	a, (KbStuckCount)
+	or	a
+	jr	z, .noStuckSet
+	ld	b, TESTRESULT_FAILED
+.noStuckSet:
 	;; Teclas que se encienden a la vez: avería, aunque todas respondan
 	push	bc
 	call	KbCountJoined
@@ -542,9 +593,13 @@ KbSlowScanCheck:
 	;; Si el patrón es el de la lectura lenta, se comprueba antes del resultado
 	xor	a
 	ld	(KbSlowResult), a
+	ld	a, (AutoStep)			; en el modo automático no hay nadie
+	or	a
+	jr	nz, .noSlowCheck
 	call	KbConsecutiveLines
 	cp	2
 	call	nc, KbSlowScanCheck
+.noSlowCheck:
 	call	KbResultScreen
 	jp	WaitOK
 
@@ -861,6 +916,10 @@ KbAnalysis:
 	ld	a, (KbPressedCount)
 	or	a
 	jr	nz, .some
+	ld	a, (KbTimedOut)
+	or	a
+	ld	hl, TxtKbIdleNone		; nadie ha pulsado nada en 10 s
+	jp	nz, PrintWrapped
 	ld	hl, TxtKbNone
 	jp	PrintWrapped
 .some:

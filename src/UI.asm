@@ -245,15 +245,34 @@ NumberKeyTable:
 ;; ---------------------------------------------------------------------------
 ;; WaitOK: espera a que se pulse ENTER, espacio, FUEGO o ESC.
 ;; OUT: Z si fue ESC / FUEGO 2
+;; En el modo automático sigue sola a los 5 segundos.
 ;; ---------------------------------------------------------------------------
 @WaitOK:
 	call	WaitNoKeys
+ IFDEF GUIDED
+	ld	hl, AUTO_WAIT_FRAMES
+	ld	(WaitOKFrames), hl
+ ENDIF
 .loop:
 	call	ReadInput
+ IFDEF GUIDED
+	ld	a, (AutoStep)
+	or	a
+	jr	z, .manual
+	ld	hl, (WaitOKFrames)
+	dec	hl
+	ld	(WaitOKFrames), hl
+	ld	a, h
+	or	l
+	jr	z, .ok
+.manual:
+	ld	a, (InputFlags)
+ ENDIF
 	bit	INPUT_BACK, a
 	jr	nz, .back
 	and	1 << INPUT_OK
 	jr	z, .loop
+.ok:
 	ld	a, 1
 	or	a
 	ret
@@ -460,6 +479,7 @@ TxtTitleSeparator: db ' - ', 0
 ;;      H = columna, L = fila de la primera opción
 ;;      A = opción seleccionada al empezar (0..)
 ;; OUT: A = opción elegida (0..) o #FF si se pulsa ESC / FUEGO 2
+;;      (versión guiada) #FE si se agota la cuenta atrás del modo automático
 ;;      Las opciones se eligen con el número, o con cursor/joystick y
 ;;      ENTER / espacio / FUEGO.
 ;; ---------------------------------------------------------------------------
@@ -484,6 +504,11 @@ TxtTitleSeparator: db ' - ', 0
 	call	WaitNoKeys
 .loop:
 	call	ReadInput
+ IFDEF GUIDED
+	call	AutoCountdownTick
+	ld	a, #FE				; se acabó el tiempo sin tocar nada
+	ret	z
+ ENDIF
 	ld	a, (NumberPressed)
 	or	a
 	jr	z, .noNumber
@@ -535,6 +560,51 @@ TxtTitleSeparator: db ' - ', 0
 	ld	(ChooseSelected), a
 	call	ChooseDrawAll
 	jr	.loop
+
+ IFDEF GUIDED
+@AUTO_START_FRAMES	EQU 30 * 50
+@AUTO_WAIT_FRAMES	EQU 5 * 50
+
+;; Llamar una vez por cuadro tras ReadInput. Descuenta la cuenta atrás del
+;; modo automático; cualquier pulsación nueva la anula. Las teclas atascadas
+;; no la anulan: no producen pulsaciones nuevas.
+;; OUT: Z si se acaba de agotar (y entonces AutoStep = 1)
+@AutoCountdownTick:
+	ld	hl, (AutoCountdown)
+	ld	a, h
+	or	l
+	jr	z, .off
+	call	AnyNewKey
+	jr	nz, .cancel
+	ld	hl, (AutoCountdown)
+	dec	hl
+	ld	(AutoCountdown), hl
+	ld	a, h
+	or	l
+	ret	nz
+	inc	a
+	ld	(AutoStep), a
+	xor	a				; Z
+	ret
+.cancel:
+	ld	hl, 0
+	ld	(AutoCountdown), hl
+.off:
+	or	1				; NZ
+	ret
+
+;; OUT: NZ si hay alguna tecla o botón recién pulsado
+@AnyNewKey:
+	ld	hl, EdgeOnKeyboardMatrixBuffer
+	ld	b, KeyboardBufferSize
+	xor	a
+.or:
+	or	(hl)
+	inc	hl
+	djnz	.or
+	or	a
+	ret
+ ENDIF
 
 ChooseDrawAll:
 	ld	ix, (ChooseTable)

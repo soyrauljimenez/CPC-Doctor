@@ -30,6 +30,8 @@ MOTOR_PORT	EQU #FA7E
 RPM_OK		EQU 45			; ±4,5 rpm (1,5 %) en décimas
 RPM_WARN	EQU 90			; ±9 rpm (3 %)
 
+AUTO_DISK_MEASURES EQU 15		; unos 6 segundos
+
 @DiskTestSelected:
 	ld	a, (FDCPresent)
 	or	a
@@ -61,6 +63,8 @@ RPM_WARN	EQU 90			; ±9 rpm (3 %)
 	ld	(DiskMeasured), a
 	ld	(DiskGoodCount), a
 	ld	(DiskFailCount), a
+	ld	a, AUTO_DISK_MEASURES
+	ld	(AutoDiskLeft), a
 
 .measure:
 	call	MeasureRPM
@@ -70,6 +74,13 @@ RPM_WARN	EQU 90			; ±9 rpm (3 %)
 	ld	a, h
 	or	l
 	jr	z, .finish
+	ld	a, (AutoStep)			; modo automático: termina sola
+	or	a
+	jr	z, .askUser
+	ld	hl, AutoDiskLeft
+	dec	(hl)
+	jr	z, .finish
+.askUser:
 	call	ReadInput
 	and	(1 << UI.INPUT_OK) | (1 << UI.INPUT_BACK)
 	jr	z, .measure
@@ -77,6 +88,17 @@ RPM_WARN	EQU 90			; ±9 rpm (3 %)
 	call	MotorOff
 	call	WaitNoKeys
 	call	DiskVerdict
+	;; En el modo automático nadie ha metido un disco: si no llega el
+	;; agujero índice, no se sabe si es una avería
+	ld	a, (AutoStep)
+	or	a
+	jr	z, .verdictDone
+	ld	a, (DiskMeasured)
+	or	a
+	jr	nz, .verdictDone
+	ld	a, TESTRESULT_INCONCLUSIVE
+	ld	(TestResultTableDisk), a
+.verdictDone:
 	call	DiskResultScreen
 	jp	MainMenuRepeat
 

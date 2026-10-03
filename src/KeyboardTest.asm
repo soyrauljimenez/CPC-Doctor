@@ -25,6 +25,8 @@
  IFDEF GUIDED
 	call	KbTrackFlaky
 	call	KbTrackPairs
+	call	KbIdleTick
+	jp	z, ExitTest			; 10 s sin pulsar nada
  ENDIF
 
 	call	CheckESCPressedLongEnough

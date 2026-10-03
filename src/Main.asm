@@ -139,6 +139,14 @@ RAMTestPassed:
 	DEFINE SOUND_TONE_H #00
 	INCLUDE "PlaySound.asm"
 	INCLUDE "PlaySound.asm"
+ IFDEF GUIDED
+	;; Si en 30 s no se pulsa nada, modo automático (puede que el teclado
+	;; no funcione y se quiera comprobar el resto)
+	ld	hl, AUTO_START_FRAMES
+	ld	(AutoCountdown), hl
+	xor	a
+	ld	(AutoStep), a
+ ENDIF
 	jp 	MainMenu
 
 .soakTest:

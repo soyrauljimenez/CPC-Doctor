@@ -25,9 +25,28 @@ HINT_ROW EQU 24
 	dw TxtAnswerYes, TxtAnswerNo, TxtAnswerUnsure, TxtAnswerRepeat, 0
 
 
-;; Texto de ayuda en la última línea de la pantalla
+;; Texto de ayuda en la última línea de la pantalla. En el modo automático,
+;; las de "pulsa ENTER" se cambian por la de que sigue sola.
 ;; IN: HL = texto
 @PrintHint:
+	push	de
+	call	.pick
+	pop	de
+	jr	.print
+.pick:
+	ld	a, (AutoStep)
+	or	a
+	ret	z
+	ld	de, TxtPressOKToStart
+	call	.same
+	jr	z, .auto
+	ld	de, TxtPressOKToReturn
+	call	.same
+	ret	nz
+.auto:
+	ld	hl, TxtAutoNextHint
+	ret
+.print:
 	push	hl
 	ld	h, 0
 	ld	l, HINT_ROW
@@ -43,6 +62,13 @@ HINT_ROW EQU 24
 	pop	hl
 	call	SetDefaultColors
 	jp	PrintString
+.same:					; Z si HL = DE
+	ld	a, h
+	cp	d
+	ret	nz
+	ld	a, l
+	cp	e
+	ret
 
 
 ;; IN: A = respuesta (0 sí, 1 no, 2 no lo sé, #FF sin responder)
