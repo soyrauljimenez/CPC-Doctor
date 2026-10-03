@@ -74,7 +74,23 @@ check keyboard "Teclas que han respondido: 2/73" "Pulsadas desde el principio (a
 # también la de la misma columna en la otra línea. Se imita pulsando las dos
 # en el mismo cuadro, dos veces.
 $EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 250 hold 0:2 hold 1:2 wait 4 release 0:2 release 1:2 wait 20 hold 0:2 hold 1:2 wait 4 release 0:2 release 1:2 wait 20 hold 8:2 wait 80 release 8:2 wait 80 vram $OUT/keyjoined.vram shot $OUT/keyjoined.png
-check keyjoined "Líneas unidas (una tecla enciende otra): 0-1" "Resultado: Error" "líneas de la matriz están unidas"
+check keyjoined "Líneas unidas: 0-1" "Resultado: Error" "líneas de la matriz están unidas"
+
+# AY lento (visto en un 464 real con un AY-3-8912A de recambio): cada tecla
+# aparece también en la línea siguiente. Se pulsan dos teclas de cada línea,
+# se sale y se mantiene la H cuando lo pide: la lectura lenta lo confirma.
+KEYS=""
+for r in 0 1 2 3 4 5 6 7; do for b in 3 4; do KEYS="$KEYS key $r:$b wait 12"; done; done
+$EMU $DISK_ES $BOOT sloway 100 key 8:0 wait 150 key 2:2 wait 250 $KEYS hold 8:2 wait 80 release 8:2 wait 30 vram $OUT/slowayhold.vram hold 5:4 wait 170 release 5:4 wait 60 vram $OUT/sloway.vram shot $OUT/sloway.png
+check slowayhold "mantén pulsada una tecla"
+check sloway "Líneas unidas: 0-1 1-2 2-3" "Comprobado: leyendo despacio" "AY-3-8912"
+
+# Líneas consecutivas unidas de verdad (0-1 y 1-2) con un AY normal: la
+# lectura lenta ve lo mismo, así que no se culpa al AY
+J=""
+for p in "0:2 1:2" "1:3 2:3"; do set -- $p; J="$J hold $1 hold $2 wait 4 release $1 release $2 wait 20 hold $1 hold $2 wait 4 release $1 release $2 wait 20"; done
+$EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 250 $J hold 8:2 wait 80 release 8:2 wait 30 hold 5:4 wait 170 release 5:4 wait 60 vram $OUT/joinednotay.vram shot $OUT/joinednotay.png
+check joinednotay "Líneas unidas: 0-1 1-2" "líneas de la matriz están unidas"
 
 # ---------------------------------------------------------------- sonido
 # Las respuestas del 464 real con el tono B averiado: A sí, B no, C sí,

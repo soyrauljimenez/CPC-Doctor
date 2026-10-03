@@ -267,6 +267,13 @@ KbPrintJoined:
 .item:
 	push	bc
 	push	de
+	;; Si no cabe " 0-1" en la línea, se sigue en la siguiente
+	ld	a, (txt_x)
+	add	a, 4
+	ld	b, a
+	ld	a, (WrapRight)
+	cp	b
+	call	c, WrapNewLine
 	ld	a, ' '
 	call	PrintChar
 	ld	a, (ix+1)
@@ -290,6 +297,169 @@ KbPrintJoined:
 	or	a
 	ret	z
 	jp	WrapNewLine
+
+
+;; ---------------------------------------------------------------------------
+;; Lectura lenta del puerto del AY
+;;
+;; Si cada tecla aparece también en la línea SIGUIENTE (0-1, 1-2, 2-3...), lo
+;; más probable no es un cruce de pistas sino que el puerto A del AY tarda en
+;; volver a reposo al cambiar de línea (resistencias pull-up internas débiles
+;; o inexistentes). Visto en un 464 real con un AY-3-8912A de recambio: con el
+;; AY original el teclado iba bien.
+;;
+;; Para confirmarlo se lee el teclado de las dos formas mientras el usuario
+;; mantiene una tecla pulsada: la lectura normal (la que usan el firmware y
+;; los juegos) y otra con una espera de unos 100 µs antes de cada línea.
+;; ---------------------------------------------------------------------------
+
+;; OUT: A = parejas de líneas consecutivas confirmadas, si TODAS las parejas
+;;      confirmadas son de líneas consecutivas; si no, 0
+KbConsecutiveLines:
+	ld	ix, KbPairs
+	ld	b, PAIR_SLOTS
+	ld	c, 0				; consecutivas
+.loop:
+	ld	a, (ix+3)
+	cp	PAIR_MIN
+	jr	c, .next
+	ld	a, (ix)
+	cp	PAIR_LINES
+	jr	nz, .other
+	ld	a, (ix+1)
+	inc	a
+	cp	(ix+2)
+	jr	nz, .other
+	inc	c
+.next:
+	ld	de, PAIR_SIZE
+	add	ix, de
+	djnz	.loop
+	ld	a, c
+	ret
+.other:
+	xor	a
+	ret
+
+;; Como ReadFullKeyboard, pero esperando unos 100 µs entre elegir cada línea
+;; y leerla. Deja el resultado en SlowMatrixBuffer.
+ReadKeyboardSlow:
+	ld	hl, SlowMatrixBuffer
+	ld	bc, #F40E
+	out	(c), c
+	ld	b, #F6
+	in	a, (c)
+	and	#30
+	ld	c, a
+	or	#C0
+	out	(c), a
+	out	(c), c
+	inc	b
+	ld	a, #92
+	out	(c), a
+	push	bc
+	set	6, c
+.line:
+	ld	b, #F6
+	out	(c), c
+	push	bc
+	ld	b, 25
+	djnz	$
+	pop	bc
+	ld	b, #F4
+	in	a, (c)
+	cpl
+	ld	(hl), a
+	inc	hl
+	inc	c
+	ld	a, c
+	and	#0F
+	cp	#0A
+	jr	nz, .line
+	pop	bc
+	ld	a, #82
+	out	(c), a
+	dec	b
+	out	(c), c
+	ret
+
+SLOW_FRAMES	EQU 150			; 3 segundos
+SLOW_ENOUGH	EQU 25			; medio segundo de evidencia
+
+;; Pide mantener una tecla y compara las dos lecturas.
+;; OUT: KbSlowResult = 0 no se pudo saber, 1 lectura lenta confirmada,
+;;      2 las dos lecturas coinciden (no es cuestión de tiempo)
+KbSlowScanCheck:
+	ld	hl, TxtKeyboardTitle
+	call	PrintScreenTitle
+	ld	hl, #0002
+	call	LocateWrap
+	ld	hl, TxtKbHoldKey
+	call	PrintWrapped
+	call	WaitNoKeys
+	xor	a
+	ld	(KbSlowYes), a
+	ld	(KbSlowNo), a
+	ld	b, SLOW_FRAMES
+.frame:
+	push	bc
+	call	WaitForVsync
+	call	ReadFullKeyboard
+	ld	hl, KeyboardMatrixBuffer
+	call	CountKeysInBuffer
+	push	af
+	call	ReadKeyboardSlow
+	ld	hl, SlowMatrixBuffer
+	call	CountKeysInBuffer
+	ld	c, a				; teclas con la lectura lenta
+	pop	af				; teclas con la lectura normal
+	ld	b, a
+	ld	a, c
+	or	a
+	jr	z, .skip			; nada pulsado
+	ld	a, (SlowMatrixBuffer+9)
+	or	a				; la línea 9 no tiene siguiente
+	jr	nz, .skip
+	ld	a, b
+	cp	c
+	ld	hl, KbSlowNo			; las dos lecturas coinciden
+	jr	z, .count
+	ld	a, c
+	dec	a
+	jr	nz, .skip
+	ld	hl, KbSlowYes			; lenta ve una, normal ve más
+.count:
+	inc	(hl)
+.skip:
+	;; Barra de progreso
+	pop	bc
+	push	bc
+	ld	a, SLOW_FRAMES
+	sub	b
+	srl	a
+	srl	a				; 0..37
+	add	a, 2
+	ld	(txt_x), a
+	ld	a, 20
+	ld	(txt_y), a
+	ld	a, '#'
+	call	PrintChar
+	pop	bc
+	djnz	.frame
+
+	ld	a, (KbSlowYes)
+	cp	SLOW_ENOUGH
+	ld	b, 1
+	jr	nc, .set
+	ld	a, (KbSlowNo)
+	cp	SLOW_ENOUGH
+	ld	b, 2
+	jr	nc, .set
+	ld	b, 0
+.set:
+	ld	a, b
+	ld	(KbSlowResult), a
+	ret
 
 
 ;; Máscara de las teclas atascadas para la salida (ESC / TAB / FUEGO)
@@ -369,6 +539,12 @@ KbPrintJoined:
 	ld	a, b
 	ld	(TestResultTableJoystick), a
 
+	;; Si el patrón es el de la lectura lenta, se comprueba antes del resultado
+	xor	a
+	ld	(KbSlowResult), a
+	call	KbConsecutiveLines
+	cp	2
+	call	nc, KbSlowScanCheck
 	call	KbResultScreen
 	jp	WaitOK
 
@@ -663,6 +839,18 @@ KbAnalysis:
 	call	KbCountJoined
 	or	a
 	jr	z, .notJoined
+	ld	a, (KbSlowResult)
+	cp	1
+	ld	hl, TxtKbSlowPortAdvice
+	jp	z, PrintWrapped
+	cp	2				; las dos lecturas coinciden: no es el AY
+	jr	z, .joinedAdvice
+	call	KbConsecutiveLines
+	cp	2
+	ld	hl, TxtKbSlowPortLikely
+	jp	nc, PrintWrapped
+.joinedAdvice:
+	call	KbCountJoined
 	ld	hl, TxtKbJoinedLinesAdvice
 	ld	a, c
 	cp	PAIR_LINES

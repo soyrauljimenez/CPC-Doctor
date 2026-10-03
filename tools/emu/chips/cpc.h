@@ -339,6 +339,11 @@ bool cpcdoc_50hz = true;
 bool (*cpcdoc_tape_bit)(void);
 uint16_t cpcdoc_fault_start, cpcdoc_fault_len;   // avería simulada: estos bits se leen a 0
 uint8_t cpcdoc_fault_mask;
+// AY lento (visto con un AY-3-8912A de recambio): durante estos ciclos tras
+// cambiar de línea del teclado, el puerto A sigue viendo la línea anterior
+uint32_t cpcdoc_slow_ay;
+uint16_t cpcdoc_prev_columns;
+uint64_t cpcdoc_columns_tick;
 
 static uint64_t _cpc_tick(cpc_t* sys, uint64_t cpu_pins) {
     cpu_pins = z80_tick(&sys->cpu, cpu_pins);
@@ -432,6 +437,10 @@ static uint64_t _cpc_tick(cpc_t* sys, uint64_t cpu_pins) {
             }
             // PC0..PC3: select keyboard matrix line
             uint16_t col_mask = 1<<(I8255_GET_PC(ppi_pins) & 0x0F);
+            if (col_mask != sys->kbd.active_columns) {
+                cpcdoc_prev_columns = sys->kbd.active_columns;
+                cpcdoc_columns_tick = cpcdoc_ticks;
+            }
             kbd_set_active_columns(&sys->kbd, col_mask);
             // FIXME: cassette write data
             cpcdoc_motor = 0 != (sys->ppi.pc.outp & 0x10);
@@ -521,6 +530,12 @@ static uint8_t _cpc_psg_in(int port_id, void* user_data) {
     cpc_t* sys = (cpc_t*) user_data;
     if (port_id == AY38910_PORT_A) {
         uint8_t data = (uint8_t) kbd_scan_lines(&sys->kbd);
+        if (cpcdoc_slow_ay && (cpcdoc_ticks - cpcdoc_columns_tick) < cpcdoc_slow_ay) {
+            uint16_t cur = sys->kbd.active_columns;
+            kbd_set_active_columns(&sys->kbd, cpcdoc_prev_columns);
+            data |= (uint8_t) kbd_scan_lines(&sys->kbd);
+            kbd_set_active_columns(&sys->kbd, cur);
+        }
         if (sys->kbd.active_columns & (1<<9)) {
             /*
                 joystick input is implemented like this:

@@ -147,3 +147,7 @@ DivCounter: db 0
 KbEdgeCount: db 0
 KbEdges: ds 4
 KbPairs: ds 12 * 5
+SlowMatrixBuffer: ds 10
+KbSlowYes: db 0
+KbSlowNo: db 0
+KbSlowResult: db 0

@@ -37,6 +37,8 @@
         regs               muestra los registros de la CPU
         level N            ejecuta N cuadros y muestra el nivel de audio (RMS)
         ay                 muestra los registros del AY
+        sloway N   AY lento: N ciclos tras cambiar de línea del teclado se sigue
+                   viendo la anterior (cada tecla aparece también en la siguiente)
         fault DIR LEN MASK a partir de aquí, las lecturas de DIR..DIR+LEN-1
                            devuelven los bits MASK a 0 (chip de RAM dañado)
 */
@@ -75,6 +77,7 @@ extern bool cpcdoc_50hz;
 extern bool (*cpcdoc_tape_bit)(void);
 extern uint16_t cpcdoc_fault_start, cpcdoc_fault_len;
 extern uint8_t cpcdoc_fault_mask;
+extern uint32_t cpcdoc_slow_ay;
 
 typedef struct { uint32_t len; uint8_t level; } pulse_t;   // len en ticks de 4 MHz
 static pulse_t* tape;
@@ -382,6 +385,7 @@ int main(int argc, char** argv) {
             cpcdoc_fault_mask = (uint8_t)strtol(argv[i + 3], NULL, 16);
             i += 3;
         }
+        else if (!strcmp(cmd, "sloway") && arg) { cpcdoc_slow_ay = (uint32_t)atoi(arg); i++; }
         else if (!strcmp(cmd, "level") && arg) {
             audio_sum = 0; audio_count = 0;
             frames(atoi(arg));

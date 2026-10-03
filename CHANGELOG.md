@@ -1,5 +1,19 @@
 # Cambios
 
+## Sin publicar
+
+### Nuevo
+- Teclado: detecta teclas que se encienden a la vez (líneas o columnas de la
+  matriz unidas) y las lista todas.
+- Teclado: si cada tecla aparece también en la línea siguiente, comprueba si
+  es el chip AY, que lee el teclado y tarda en reaccionar al cambiar de
+  línea. Pide mantener una tecla y compara la lectura normal con otra más
+  lenta. Pasa con algunos AY de recambio, aunque suenen bien.
+- Emulador de pruebas: avería `sloway` para imitar ese AY.
+
+### Corregido
+- La lista de líneas unidas se salía de la pantalla.
+
 ## 0.9 — primera versión de CPC Doctor
 
 Basada en Amstrad Diagnostics 1.4 (commit 7ac70fc).
