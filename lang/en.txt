@@ -74,7 +74,7 @@ ThisROM = CPC DOCTOR (this ROM)
 CantAccessLowerROM = Cannot read the system ROM
 
 # ---------------------------------------------------------------- keyboard
-KeyboardTitle = Keyboard and joystick
+KeyboardTitle = Keyboard, joystick
 KeyboardOptions = Hold ESC or FIRE to exit. Hold TAB: other layout.
 
 # ---------------------------------------------------------------- soak test
