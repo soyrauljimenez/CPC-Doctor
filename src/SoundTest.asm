@@ -94,10 +94,10 @@ PlayStep:
 	jr	nz, .notA
 	ld	a, 0
 	ld	hl, TONE_A
-	call	AYRegWriteWord
+	call	AYWriteW
 	ld	a, 8
 	ld	l, SOUND_VOLUME
-	call	AYRegWriteByte
+	call	AYWriteB
 	ld	l, %10111110
 	jr	.mixer
 .notA:
@@ -105,10 +105,10 @@ PlayStep:
 	jr	nz, .notB
 	ld	a, 2
 	ld	hl, TONE_B
-	call	AYRegWriteWord
+	call	AYWriteW
 	ld	a, 9
 	ld	l, SOUND_VOLUME
-	call	AYRegWriteByte
+	call	AYWriteB
 	ld	l, %10111101
 	jr	.mixer
 .notB:
@@ -116,10 +116,10 @@ PlayStep:
 	jr	nz, .notC
 	ld	a, 4
 	ld	hl, TONE_C
-	call	AYRegWriteWord
+	call	AYWriteW
 	ld	a, 10
 	ld	l, SOUND_VOLUME
-	call	AYRegWriteByte
+	call	AYWriteB
 	ld	l, %10111011
 	jr	.mixer
 .notC:
@@ -128,38 +128,51 @@ PlayStep:
 	;; Ruido por el canal B (el central: se oye por los dos lados)
 	ld	a, 6
 	ld	l, 8
-	call	AYRegWriteByte
+	call	AYWriteB
 	ld	a, 9
 	ld	l, SOUND_VOLUME
-	call	AYRegWriteByte
+	call	AYWriteB
 	ld	l, %10101111
 	jr	.mixer
 .envelope:
 	;; Tono en el canal B con envolvente descendente de unos 2 segundos
 	ld	a, 2
 	ld	hl, TONE_A
-	call	AYRegWriteWord
+	call	AYWriteW
 	;; Un ciclo de la envolvente dura 256 * EP µs (reloj de 1 MHz):
 	;; con EP = 7000 el volumen baja de 15 a 0 en unos 1,8 s. (Antes era
 	;; 440: 0,1 s, apenas un chasquido; se descubrió en un 464 real.)
 	ld	a, 11
 	ld	hl, 7000
-	call	AYRegWriteWord
+	call	AYWriteW
 	ld	a, 13
 	ld	l, 0				; \___
-	call	AYRegWriteByte
+	call	AYWriteB
 	ld	a, 9
 	ld	l, #10				; volumen controlado por la envolvente
-	call	AYRegWriteByte
+	call	AYWriteB
 	ld	l, %10111101
 .mixer:
 	ld	a, 7
-	call	AYRegWriteByte
+	call	AYWriteB
 	ld	b, STEP_FRAMES
 	call	WaitFrames
 	jp	Silence
 
 SOUND_VOLUME EQU 15
+
+ IFDEF GUIDED
+;; En la versión guiada cada registro se relee después de escribirlo: si no
+;; coincide, el AY no recibe bien los datos (una patilla DA0-DA7 que hace mal
+;; contacto, el zócalo o una pista), y no es el generador de sonido lo que
+;; falla. Un fallo así puede hacer que un canal suene unas veces sí y otras
+;; no, y confundirse con un generador averiado.
+AYWriteW	EQU AYCheckedWriteWord
+AYWriteB	EQU AYCheckedWriteByte
+ ELSE
+AYWriteW	EQU AYRegWriteWord
+AYWriteB	EQU AYRegWriteByte
+ ENDIF
 
 
 ;; Todo en silencio. El bit 6 del mezclador queda a 0: el puerto A del AY
@@ -207,6 +220,101 @@ SOUND_VOLUME EQU 15
 	out	(c), c
 	pop	bc
 	ret
+
+
+ IFDEF GUIDED
+;; Como AYRegWriteWord / AYRegWriteByte, pero comprobando lo escrito.
+;; Los bits que no se guardan bien se acumulan en AYWriteErrors.
+AYCheckedWriteWord:
+	push	af
+	call	AYCheckedWriteByte
+	pop	af
+	inc	a
+	ld	l, h
+	;; sigue en AYCheckedWriteByte
+
+;; IN: A = registro (0-13), L = valor. Conserva A, BC, DE, HL.
+AYCheckedWriteByte:
+	call	AYRegWriteByte
+	push	af
+	push	bc
+	push	de
+	push	hl
+	ld	e, a
+	call	AYRegReadByte
+	pop	hl
+	push	hl
+	xor	l				; bits distintos de lo escrito
+	ld	d, 0
+	ld	hl, AYRegMasks			; sin contar los que el AY no guarda
+	add	hl, de
+	and	(hl)
+	ld	hl, AYWriteErrors
+	or	(hl)
+	ld	(hl), a
+	pop	hl
+	pop	de
+	pop	bc
+	pop	af
+	ret
+
+;; Prueba del bus de datos del AY: escribe patrones en los registros 4
+;; (%0100) y 11 (%1011) y los relee. Una patilla DA que falla también cambia
+;; el número de registro, y entonces se relee otro; como esos dos números
+;; son complementarios, a uno de ellos no le afecta. Solo cuenta un bit
+;; erróneo si falla en los dos. Acumula el resultado en AYBusBits.
+AYBusTest:
+	ld	c, 4
+	call	.register
+	push	de
+	ld	c, 11
+	call	.register
+	pop	hl
+	ld	a, e
+	and	l
+	ld	hl, AYBusBits
+	or	(hl)
+	ld	(hl), a
+	ld	a, 4				; deja los dos registros a 0
+	ld	l, 0
+	call	AYRegWriteByte
+	ld	a, 11
+	jp	AYRegWriteByte
+
+;; IN: C = registro  OUT: E = bits que no coinciden
+.register:
+	ld	e, 0
+	ld	hl, BusPatterns
+.pattern:
+	ld	a, (hl)
+	inc	hl
+	cp	#AB				; fin
+	ret	z
+	push	hl
+	ld	l, a
+	ld	a, c
+	call	AYRegWriteByte
+	push	bc
+	push	de
+	push	hl
+	ld	a, c
+	call	AYRegReadByte
+	pop	hl
+	pop	de
+	pop	bc
+	xor	l
+	or	e
+	ld	e, a
+	pop	hl
+	jr	.pattern
+
+BusPatterns:
+	db #00, #FF, #55, #AA, #01, #02, #04, #08, #10, #20, #40, #80, #AB
+
+;; Bits que guarda cada registro (el AY lee a 0 los que no usa)
+AYRegMasks:
+	db #FF, #0F, #FF, #0F, #FF, #0F, #1F, #FF, #1F, #1F, #1F, #FF, #FF, #0F
+ ENDIF
 
 
 ;; IN: A = registro  OUT: A = valor
@@ -329,6 +437,10 @@ GuidedSoundTest:
 	call	PrintHint
 	call	WaitOK
 	ret	z				; ESC: volver sin resultado
+	xor	a
+	ld	(AYWriteErrors), a
+	ld	(AYBusBits), a
+	call	AYBusTest
 	ld	a, (AutoStep)
 	or	a
 	jr	nz, AutoSoundDemo
@@ -367,6 +479,7 @@ GuidedSoundTest:
 	cp	SOUND_STEPS
 	jr	nz, .step
 
+	call	AYBusSummary
 	call	SoundVerdict
 	jp	SoundResultScreen
 
@@ -397,9 +510,29 @@ AutoSoundDemo:
 	ld	(SoundStep), a
 	cp	SOUND_STEPS
 	jr	nz, .step
+	;; Lo único medido: si el AY no guarda bien los registros, es un error
+	call	AYBusSummary
+	ld	a, (AYWriteErrors)
+	or	a
+	ret	z
+	ld	a, TESTRESULT_FAILED
+	ld	(TestResultTableSound), a
+	ret
+
+;; Repite la prueba del bus al terminar (el fallo puede ir y venir) y deja
+;; en AYWriteErrors los bits a mostrar: los de la prueba del bus si ha
+;; encontrado alguno; si no, los de las escrituras de los sonidos.
+AYBusSummary:
+	call	AYBusTest
+	ld	a, (AYBusBits)
+	or	a
+	ret	z
+	ld	(AYWriteErrors), a
 	ret
 
 ANSWER_Y EQU 14
+
+TxtDA:	db ' DA', 0
 
 SoundStepScreen:
 	ld	hl, TxtSoundTitle
@@ -495,6 +628,13 @@ SoundVerdict:
 	jr	nz, .set
 	ld	a, TESTRESULT_PASSED
 .set:
+	ld	b, a
+	ld	a, (AYWriteErrors)		; medido: manda sobre las respuestas
+	or	a
+	ld	a, b
+	jr	z, .store
+	ld	a, TESTRESULT_FAILED
+.store:
 	ld	(TestResultTableSound), a
 	ret
 
@@ -531,6 +671,38 @@ SoundResultScreen:
 	cp	SOUND_STEPS
 	jr	nz, .line
 
+	;; Medido: bits que el AY no guarda bien
+	ld	a, (AYWriteErrors)
+	or	a
+	jr	z, .busOk
+	call	NewLine
+	call	SetErrorColors
+	ld	hl, TxtSoundBusBits
+	call	PrintString
+	ld	a, (AYWriteErrors)
+	ld	c, a
+	ld	b, 0
+.busBit:
+	bit	0, c
+	jr	z, .busNext
+	push	bc
+	ld	hl, TxtDA
+	call	PrintString
+	pop	bc
+	push	bc
+	ld	a, b
+	add	a, '0'
+	call	PrintChar
+	pop	bc
+.busNext:
+	srl	c
+	inc	b
+	ld	a, b
+	cp	8
+	jr	nz, .busBit
+	call	SetDefaultColors
+	call	NewLine
+.busOk:
 	;; Resultado y qué hacer después
 	call	NewLine
 	ld	a, (TestResultTableSound)
@@ -541,6 +713,10 @@ SoundResultScreen:
 	ld	l, a
 	ld	h, 0
 	call	LocateWrap
+	ld	hl, TxtSoundBusAdvice
+	ld	a, (AYWriteErrors)
+	or	a
+	jr	nz, .advice
 	ld	hl, TxtSoundAllOk
 	ld	a, (TestResultTableSound)
 	cp	TESTRESULT_PASSED

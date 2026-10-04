@@ -341,6 +341,8 @@ uint16_t cpcdoc_fault_start, cpcdoc_fault_len;   // avería simulada: estos bits
 uint8_t cpcdoc_fault_mask;
 // avería en una página física de 16 KB de RAM (0-3 base, 4-7 los 64 KB del 6128)
 uint8_t cpcdoc_faultbank_page, cpcdoc_faultbank_mask;
+// patillas de datos del AY con mal contacto: esos bits llegan siempre a 1
+uint8_t cpcdoc_aybus_mask;
 // AY lento (visto con un AY-3-8912A de recambio): durante estos ciclos tras
 // cambiar de línea del teclado, el puerto A sigue viendo la línea anterior
 uint32_t cpcdoc_slow_ay;
@@ -420,10 +422,10 @@ static uint64_t _cpc_tick(cpc_t* sys, uint64_t cpu_pins) {
                 uint64_t ay_pins = 0;
                 if (sys->ppi.pins & I8255_PC7) { ay_pins |= AY38910_BDIR; }
                 if (sys->ppi.pins & I8255_PC6) { ay_pins |= AY38910_BC1; }
-                const uint8_t ay_data = I8255_GET_PA(sys->ppi.pins);
+                const uint8_t ay_data = I8255_GET_PA(sys->ppi.pins) | cpcdoc_aybus_mask;
                 AY38910_SET_DATA(ay_pins, ay_data);
                 ay_pins = ay38910_iorq(&sys->psg, ay_pins);
-                I8255_SET_PA(ppi_pins, AY38910_GET_DATA(ay_pins));
+                I8255_SET_PA(ppi_pins, AY38910_GET_DATA(ay_pins) | cpcdoc_aybus_mask);
             }
             if (cpcdoc_links & 1) { ppi_pins |= I8255_PB1; }
             if (cpcdoc_links & 2) { ppi_pins |= I8255_PB2; }
@@ -443,7 +445,7 @@ static uint64_t _cpc_tick(cpc_t* sys, uint64_t cpu_pins) {
                 uint64_t ay_pins = 0;
                 if (ppi_pins & I8255_PC7) { ay_pins |= AY38910_BDIR; }
                 if (ppi_pins & I8255_PC6) { ay_pins |= AY38910_BC1; }
-                const uint8_t ay_data = I8255_GET_PA(ppi_pins);
+                const uint8_t ay_data = I8255_GET_PA(ppi_pins) | cpcdoc_aybus_mask;
                 AY38910_SET_DATA(ay_pins, ay_data);
                 ay38910_iorq(&sys->psg, ay_pins);
             }

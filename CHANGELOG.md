@@ -1,5 +1,16 @@
 # Cambios
 
+## Sin publicar
+
+### Nuevo
+- Sonido: después de configurar cada sonido se releen los registros del AY,
+  y antes y después de la prueba se comprueba su bus de datos con patrones.
+  Si un bit no se guarda bien, se indica la patilla (DA0-DA7) y se explica
+  que el fallo está en el camino de los datos (patilla, zócalo o pista), no
+  en el generador. Puede hacer que un sonido salga unas veces sí y otras no.
+- Emulador de pruebas: opción `aybus` para imitar una patilla de datos del
+  AY con mal contacto.
+
 ## 0.9.2
 
 ### Nuevo

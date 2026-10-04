@@ -138,6 +138,12 @@ check kbidle "Nadie ha pulsado ninguna tecla en 10 segundos" "volver al menú"
 $EMU $DISK_ES $BOOT key 7:1 wait 100 key 2:2 wait 130 key 8:0 wait 130 key 8:1 wait 130 key 8:0 wait 130 key 8:0 wait 130 key 8:1 wait 100 vram $OUT/soundtoneb.vram shot $OUT/soundtoneb.png
 check soundtoneb "Resultado: Error" "generador de tono B"
 
+# Patilla DA1 del AY con mal contacto (llega siempre a 1): al releer los
+# registros no coinciden. La avería se activa ya dentro de la prueba, porque
+# también deja sin leer una columna del teclado; se contesta con el 1.
+$EMU $DISK_ES $BOOT key 7:1 wait 100 aybus 02 key 2:2 wait 130 key 8:0 wait 130 key 8:0 wait 130 key 8:0 wait 130 key 8:0 wait 130 key 8:0 wait 100 vram $OUT/soundbus.vram shot $OUT/soundbus.png
+check soundbus "Registros del AY: no guarda bien DA1" "Resultado: Error" "patilla DA"
+
 # ---------------------------------------------------------------- salir al BASIC
 $EMU $DISK_ES $BOOT key 8:2 wait 40 key 8:0 wait 200 shot $OUT/basic.png vram $OUT/basic.vram
 python3 - $OUT/basic.vram <<'PY' && { PASS=$((PASS + 1)); echo "ok     basic"; } || { FAIL=$((FAIL + 1)); echo "FALLO  basic: no ha vuelto al BASIC"; }

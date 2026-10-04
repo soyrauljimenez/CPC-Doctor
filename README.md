@@ -116,7 +116,7 @@ del 6128): la carga, la identificación, la pregunta del modelo, el teclado y el
 joystick, el sonido (que encontró una avería real en el chip AY), la RAM baja,
 la prueba continua, la ayuda y la salida al BASIC.
 
-Todo lo demás está comprobado solo en el emulador de pruebas (87 comprobaciones
+Todo lo demás está comprobado solo en el emulador de pruebas (90 comprobaciones
 automáticas). Falta probar en máquinas reales, entre otras cosas, la
 disquetera, la cassette con el tono, otros modelos, CRTC y ampliaciones. Ver
 [docs/VALIDACION.md](docs/VALIDACION.md). Si lo pruebas en tu CPC, cuéntalo.

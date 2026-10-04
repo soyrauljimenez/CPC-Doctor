@@ -167,3 +167,6 @@ FDCVersion: db 0
 ChipBits: db 0
 ChipBank: db 0
 ChipBoard: db 0
+;; Bits que el AY no ha guardado bien en la prueba de sonido (SoundTest.asm)
+AYWriteErrors: db 0
+AYBusBits: db 0
