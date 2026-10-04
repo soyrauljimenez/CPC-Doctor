@@ -41,6 +41,10 @@ El emulador no puede reproducir estas situaciones:
   real con un AY-3-8912A de recambio, pero la comparación entre la lectura
   normal y la lenta solo se ha probado con la avería imitada en el emulador
   (`sloway`). Hace falta un CPC con un AY así para confirmarla.
+- **La comprobación de los registros del AY.** Probada en el emulador
+  (`aybus`) y en un 464 real con un AY cuyo tono B falla a ratos: ahí no da
+  aviso, como debe ser, porque los datos llegan bien y lo que falla es el
+  generador. Falta un CPC con una patilla DA de verdad en mal estado.
 - **Qué chip de RAM revisar.** Las posiciones salen de los manuales de
   servicio de Amstrad (464 de 1985 y "Amendment", 664, 6128 y Plus) y del
   trazado de la placa MC0020x de pelrun/cpc-schematics. Que en el 6128
