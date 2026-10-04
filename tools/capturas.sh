@@ -35,7 +35,7 @@ $EMU $DISK $BOOT key 8:1 wait 120 $OK wait 60 $OK wait 60 $OK wait 60 $SI wait 6
 $EMU $DISK $BOOT key 7:1 wait 150 $OK wait 130 $SI wait 130 $NO wait 130 $SI wait 130 $SI wait 130 $NO wait 100 shot $IMG/sonido.png
 
 # RAM baja con un chip dañado simulado (bit 3)
-$EMU $DISK $BOOT fault A000 400 08 key 6:0 wait 150 $OK wait 600 shot $IMG/ram-baja.png
+$EMU $DISK $BOOT fault B000 400 08 key 6:0 wait 150 $OK wait 600 shot $IMG/ram-baja.png
 
 # Resumen final
 $EMU $DISK $BOOT key 4:0 wait 100 shot $IMG/resumen.png

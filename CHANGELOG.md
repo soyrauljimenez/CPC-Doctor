@@ -1,6 +1,6 @@
 # Cambios
 
-## Sin publicar
+## 0.9.2
 
 ### Nuevo
 - Identificación: versión de la controladora de disco. Los µPD765A y sus
