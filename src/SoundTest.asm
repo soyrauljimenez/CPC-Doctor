@@ -164,9 +164,9 @@ SOUND_VOLUME EQU 15
  IFDEF GUIDED
 ;; En la versión guiada cada registro se relee después de escribirlo: si no
 ;; coincide, el AY no recibe bien los datos (una patilla DA0-DA7 que hace mal
-;; contacto, el zócalo o una pista), y no es el generador de sonido lo que
-;; falla. Un fallo así puede hacer que un canal suene unas veces sí y otras
-;; no, y confundirse con un generador averiado.
+;; contacto: soldadura, pista o el zócalo si se ha puesto uno), y no es el
+;; generador de sonido lo que falla. Un fallo así puede hacer que un canal
+;; suene unas veces sí y otras no, y confundirse con un generador averiado.
 AYWriteW	EQU AYCheckedWriteWord
 AYWriteB	EQU AYCheckedWriteByte
  ELSE
