@@ -131,7 +131,7 @@ posterior y Python 3.
 ```bash
 ./build.sh          # compila todas las versiones
 tests/run.sh        # pruebas automáticas en el emulador
-tools/m4.sh         # lo sube a una M4 Board y lo ejecuta en el CPC
+tools/m4.sh         # lo sube a una M4 Board y lo ejecuta en el CPC (-n: solo lo sube)
 ```
 
 Los textos están en `lang/es.txt` y `lang/en.txt`. Para otro idioma basta con
