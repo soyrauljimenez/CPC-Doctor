@@ -83,6 +83,7 @@ El emulador no puede reproducir estas situaciones:
 | 2026-09-26 | CPC 464 | M4 Board, ROM del 6128 | Disco desde la M4, español | Z80 detectado como **NMOS, Zilog** (el emulador daba NEC). Disquetera: "No disponible" (la M4 no tiene FDC), correcto. Ayuda y salida al BASIC con ESC funcionan. | Raul Jimenez |
 | 2026-10-03 | CPC 464 | M4 Board, ROM del 6128, AY-3-8912 sustituido | Disco desde la M4, español | Sonido: con el chip nuevo suenan todos los canales y da **Superado**. **Segundo diagnóstico real:** cada tecla encendía también la de la línea siguiente de la matriz (↓ y f7, H y G, espacio y V). Desde entonces la prueba de teclado detecta las teclas que se encienden juntas. | Raul Jimenez |
 | 2026-10-03 | CPC 464 | M4 Board, ROM del 6128 | Disco desde la M4, español | **La causa era el AY nuevo (AY-3-8912A):** leyendo el teclado con una espera de unos 100 µs antes de cada línea, cada tecla aparecía una sola vez, y con el AY original el teclado iba bien. El puerto A del recambio tarda en volver a reposo al cambiar de línea. Desde entonces la prueba reconoce el patrón (líneas consecutivas unidas) y lo confirma comparando la lectura normal con una lenta. | Raul Jimenez |
+| 2026-10-04 | CPC 464 | M4 Board, ROM del 6128 | Disco desde la M4 cargado a mano con `RUN"DOCTOR`, español | Carga y arranca bien (hasta entonces siempre se había lanzado desde la página de la M4). Versión 0.9.3. | Raul Jimenez |
 
 ## Fallos del programa encontrados en máquinas reales
 
