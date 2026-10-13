@@ -85,6 +85,7 @@ El emulador no puede reproducir estas situaciones:
 | 2026-10-03 | CPC 464 | M4 Board, ROM del 6128 | Disco desde la M4, español | **La causa era el AY nuevo (AY-3-8912A):** leyendo el teclado con una espera de unos 100 µs antes de cada línea, cada tecla aparecía una sola vez, y con el AY original el teclado iba bien. El puerto A del recambio tarda en volver a reposo al cambiar de línea. Desde entonces la prueba reconoce el patrón (líneas consecutivas unidas) y lo confirma comparando la lectura normal con una lenta. | Raul Jimenez |
 | 2026-10-04 | CPC 464 | M4 Board, ROM del 6128 | Disco desde la M4 cargado a mano con `RUN"DOCTOR`, español | Carga y arranca bien (hasta entonces siempre se había lanzado desde la página de la M4). Versión 0.9.3. | Raul Jimenez |
 | 2026-10-13 | CPC 464 | M4 Board con su propia ROM baja | Disco desde la M4, español | Informe en la M4: /DOCTOR.TXT y /DOCTOR.ROM se escriben y se leen por la red. Con la ROM baja de la M4 apartada se lee la del sistema (OS 464 EN, idéntica a la conocida) y se indica la que pone la M4 encima. | Raul Jimenez |
+| 2026-10-13 | CPC 464 "teclas altas", teclado inglés, de las primeras versiones | M4 Board con su propia ROM baja | Disco desde la M4, español | CPC Doctor mide: CRTC 0, Z80 NMOS Zilog, marca Amstrad, 50 Hz y ROM del sistema OS 464 EN v1 (1984). Coincide con lo documentado para los primeros 464 de placa larga. | Raul Jimenez |
 
 ## Fallos del programa encontrados en máquinas reales
 
