@@ -26,6 +26,26 @@
 ;; IN: A character to print. 
 ;; Location: txt_x and txt_y
 @PrintChar:
+ IFDEF GUIDED
+	;; Informe en la M4: se captura el carácter, y con ReportOnly no se pinta
+	push	af
+	ld	a, (ReportOn)
+	or	a
+	jr	z, .noReport
+	pop	af
+	call	ReportChar
+	push	af
+	ld	a, (ReportOnly)
+	or	a
+	jr	z, .noReport
+	ld	a, (txt_x)			; sin pintar, pero avanzando como al pintar
+	inc	a
+	ld	(txt_x), a
+	pop	af
+	ret
+.noReport:
+	pop	af
+ ENDIF
 	push	af
 	push	bc
 

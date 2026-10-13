@@ -45,6 +45,11 @@ Las pruebas de **imagen y sonido** dependen de lo que ves y oyes: el programa no
 las puede medir y no las presenta como mediciones. **ESC** en el menú vuelve al
 BASIC.
 
+**Informe en la M4 Board.** Si el CPC tiene una M4, al mostrar el resumen se
+escribe también `/DOCTOR.TXT` en su tarjeta (el resumen y las ROMs del
+ordenador) y `/DOCTOR.ROM` (copia de la ROM del sistema). Se pueden descargar
+desde la web de la M4 sin hacer fotos de la pantalla.
+
 **Modo automático.** Si al arrancar no se pulsa nada en 30 segundos (por
 ejemplo, porque el teclado no funciona), CPC Doctor sigue solo: prueba teclado y joystick,
 muestra los patrones de imagen y toca los sonidos sin preguntar (quedan sin

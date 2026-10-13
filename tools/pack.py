@@ -6,9 +6,10 @@ pack.py — comprime el programa para que cargue antes desde cinta.
 
 ENTRADA.raw es el programa tal cual se ejecuta en DESTINO (por ejemplo
 #0400). Se genera un .BIN con cabecera AMSDOS que contiene los datos
-comprimidos y, detrás, un pequeño descompresor (src/loader/unpack.asm).
-El fichero se carga lo más arriba posible sin pisar el firmware (#A600) y
-el descompresor lo expande sobre DESTINO y salta allí.
+comprimidos y, delante, un pequeño cargador (src/loader/unpack.asm).
+El fichero se carga lo más arriba posible sin pisar el firmware (#A600).
+Al arrancar, el cargador sube los datos y el descompresor a #BE00 (CPC
+Doctor no usa el firmware) y desde allí expande el programa sobre DESTINO.
 
 Formato (LZ sencillo):
     0LLLLLLL                 L+1 bytes literales (1-128) a continuación
@@ -26,6 +27,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from cpcfile import amsdos_header  # noqa: E402
 
 TOP = 0xA600            # el firmware y el BASIC usan lo que hay por encima
+RUN_HIGH = 0xBE00       # adonde sube el cargador los datos (src/loader/unpack.asm)
 MAX_LITERAL = 128
 WINDOW = 0x7FFF
 SHORT_MAX, LONG_MAX = 65, 66
@@ -145,24 +147,26 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         stub_path = os.path.join(tmp, 'stub.bin')
         # Primero con una dirección cualquiera, para saber cuánto ocupa
-        def assemble(src, stub_addr):
+        def assemble(stub_addr):
             subprocess.run([sjasmplus, '--nologo', '--msg=err',
-                            f'-DPACKED={src}', f'-DUNPACK_TO={dest}',
+                            f'-DPACKED_LEN={len(packed)}', f'-DUNPACK_TO={dest}',
                             f'-DUNPACK_END={dest + len(data)}',
                             f'-DSTUB_AT={stub_addr}', f'-DOutFile="{stub_path}"',
                             os.path.join(root, 'src', 'loader', 'unpack.asm')],
                            check=True)
             return open(stub_path, 'rb').read()
-        stub = assemble(0x8000, 0x9000)
+        # Primero con una dirección cualquiera, para saber cuánto ocupa
+        stub = assemble(0x9000)
         load = TOP - len(stub) - len(packed)
-        stub_addr = load + len(packed)
-        stub = assemble(load, stub_addr)
-    check_in_place(packed, dest, load)
-    if dest + len(data) > stub_addr:
+        stub = assemble(load)
+    # El cargador sube los datos para que acaben en RUN_HIGH y descomprime desde allí
+    check_in_place(packed, dest, RUN_HIGH - len(packed))
+    if dest + len(data) > RUN_HIGH:
         raise SystemExit('el programa descomprimido pisaría el descompresor')
     if load <= dest:
         raise SystemExit('el programa comprimido no cabe')
-    body = packed + stub
+    body = stub + packed
+    stub_addr = load
     open(out_path, 'wb').write(amsdos_header(name, load, stub_addr, len(body)) + body)
     print(f'{os.path.basename(out_path)}: {len(data)} -> {len(body)} bytes '
           f'({100 * len(body) // len(data)} %), carga en &{load:04X}, '

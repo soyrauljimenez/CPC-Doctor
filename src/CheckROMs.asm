@@ -70,9 +70,51 @@ CheckLowerROM:
 	ld hl, txt_x
 	inc (hl)
 	pop hl
+ IFDEF GUIDED
+	push	hl
+ ENDIF
 	call PrintCRC
 
 	call NewLine
+ IFDEF GUIDED
+	;; ¿La M4 pone otra ROM baja encima? Entonces es la que se usa
+	pop	de
+	ld	a, (M4Slot)
+	inc	a
+	ret	z				; sin M4, no
+	push	de
+	call	CRCLowerRomActive
+	ld	bc, RESTORE_ROM_CONFIG
+	out	(c), c
+	pop	de
+	or	a
+	sbc	hl, de
+	ret	z
+	add	hl, de
+	push	hl
+	call	SetWarningColors
+	ld	hl, TxtM4LowerROM
+	call	PrintString
+	call	SetDefaultColors
+	ld	a, ' '
+	call	PrintChar
+	pop	hl
+	push	hl
+	call	GetROMAddrFromCRC
+	or	a
+	jr	z, .m4Unknown
+	call	PrintROMName
+	jr	.m4Crc
+.m4Unknown:
+	ld	hl, TxtUnknownROM
+	call	PrintString
+.m4Crc:
+	ld	hl, txt_x
+	inc	(hl)
+	pop	hl
+	call	PrintCRC
+	jp	NewLine
+ ENDIF
 	ret
 
 .unknownROM:

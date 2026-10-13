@@ -13,6 +13,7 @@ SUM_LABEL_X	EQU 1
 SUM_VALUE_X	EQU 12
 
 @SummarySelected:
+	call	ReportBegin			; con una M4, también en /DOCTOR.TXT
 	ld	hl, TxtSummaryTitle
 	call	PrintScreenTitle
 
@@ -261,6 +262,7 @@ SUM_VALUE_X	EQU 12
 	call	LocateWrap
 	ld	hl, TxtSummaryPhoto
 	call	PrintWrapped
+	call	ReportEnd
 	call	WaitOK
 	jp	MainMenuRepeat
 

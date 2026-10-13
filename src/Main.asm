@@ -147,6 +147,7 @@ RAMTestPassed:
 	xor	a
 	ld	(AutoStep), a
 	call	AYPortProbe			; ¿el AY puede leer bien el teclado?
+	call	FindM4				; para dejar el informe en su tarjeta
  ENDIF
 	jp 	MainMenu
 
@@ -221,6 +222,7 @@ RAMInitialize:
  INCLUDE "VideoTest.asm"
  INCLUDE "Summary.asm"
  INCLUDE "RAMChips.asm"
+ INCLUDE "M4Report.asm"
  ENDIF
 
  INCLUDE "texts.asm"
@@ -232,7 +234,7 @@ RAMInitialize:
 ;; arriba para no pisarlo (fuera de la ventana #4000-#7FFF de la RAM alta).
 ;; Por encima de #A67B está el espacio del firmware y AMSDOS, pero el
 ;; programa no los usa una vez cargado (salir al BASIC reinicia en frío).
-RAMProgramAddr EQU #A800
+RAMProgramAddr EQU #B000
  ELSE
 RAMProgramAddr EQU #8000
  ENDIF
@@ -248,6 +250,12 @@ RAMBegin:
  IFDEF TRY_UNPAGING_LOW_ROM
  	INCLUDE "Dandanator.asm"
  	INCLUDE "M4.asm"
+ ELSE
+  IFDEF GUIDED
+	;; La M4 puede poner su propia ROM baja encima de la del sistema: para
+	;; leer la del sistema hay que apartarla un momento
+ 	INCLUDE "M4.asm"
+  ENDIF
  ENDIF
  	INCLUDE "VariablesInitialized.asm"
 RAMDataEnd:

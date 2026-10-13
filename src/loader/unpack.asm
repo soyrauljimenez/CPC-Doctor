@@ -1,5 +1,5 @@
 ;; Descompresor del cargador de CPC Doctor (ver tools/pack.py).
-;; Se ensambla con PACKED, UNPACK_TO, UNPACK_END y STUB_AT definidos desde fuera.
+;; Se ensambla con PACKED_LEN, UNPACK_TO, UNPACK_END y STUB_AT definidos desde fuera.
 ;;
 ;;   0LLLLLLL           L+1 bytes literales
 ;;   10LLLLLL d         copia de L+2 bytes desde DE - (d+1)
@@ -10,8 +10,29 @@
 	OUTPUT OutFile
 	ORG STUB_AT
 
+;; El fichero se carga justo debajo de #A600 (lo que deja libre el
+;; firmware): este cargador y detrás los datos comprimidos. Como CPC Doctor
+;; no usa el firmware, primero sube el descompresor y los datos a lo alto de
+;; la memoria (RUN_HIGH) y descomprime desde allí: así el programa puede llegar
+;; más arriba de donde se cargó el fichero.
+RUN_HIGH	EQU #BE00
+
 	di
-	ld	hl, PACKED
+	ld	sp, #C000
+	ld	hl, DecompSource
+	ld	de, RUN_HIGH
+	ld	bc, DecompEnd - DecompStart
+	ldir
+	ld	hl, PackedHere + PACKED_LEN - 1	; los datos, hasta justo debajo
+	ld	de, RUN_HIGH - 1			; del descompresor
+	ld	bc, PACKED_LEN
+	lddr
+	jp	RUN_HIGH
+
+DecompSource:
+	DISP RUN_HIGH
+DecompStart:
+	ld	hl, RUN_HIGH - PACKED_LEN
 	ld	de, UNPACK_TO
 .loop:
 	ld	a, (hl)
@@ -66,3 +87,6 @@
 	cp	high UNPACK_END
 	jr	nz, .loop
 	jp	UNPACK_TO
+DecompEnd:
+	ENT
+PackedHere:

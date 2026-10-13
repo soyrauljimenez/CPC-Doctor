@@ -34,7 +34,26 @@
 
 
 ; OUT HL = CRC
+ IFDEF GUIDED
+;; La ROM baja del sistema, apartando la de la M4 si pone una encima
 @CRCLowerRom:
+	ld	a, (M4Slot)			; sin M4, no hay nada que apartar
+	inc	a
+	jr	z, CRCLowerRomActive
+	call	M4DisableLowerROM
+	call	CRCLowerRomActive
+	push	hl
+	call	M4EnableLowerROM
+	pop	hl
+	ld	bc, RESTORE_ROM_CONFIG
+	out	(c), c
+	ret
+
+;; La ROM baja que ve el ordenador (con la de la M4, si la pone)
+@CRCLowerRomActive:
+ ELSE
+@CRCLowerRom:
+ ENDIF
  IFDEF TRY_UNPAGING_LOW_ROM
 	call M4DisableLowerROM
 	call DandanatorDisableLowerROM
@@ -56,6 +75,33 @@
  ENDIF
 	ret
 
+
+ IFDEF GUIDED
+;; Copia BC bytes de la ROM baja desde HL a DE (para el informe en la M4).
+;; Tiene que estar aquí, por encima de #4000: la ROM tapa #0000-#3FFF.
+@CopyFromLowerROM:
+	push	bc
+	push	de
+	push	hl
+	call	M4DisableLowerROM		; la del sistema, no la de la M4 (solo
+						; se usa para el informe, con M4)
+	pop	hl
+	pop	de
+	pop	bc
+	push	bc
+	ld	bc, #7F89			; ROM baja conectada, modo 1
+	out	(c), c
+	pop	bc
+	ldir
+	push	de
+	push	hl
+	call	M4EnableLowerROM
+	pop	hl
+	pop	de
+	ld	bc, RESTORE_ROM_CONFIG
+	out	(c), c
+	ret
+ ENDIF
 
 ;; IN  - Address to read
 ;; OUT - HL: Contents of address

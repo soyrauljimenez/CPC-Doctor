@@ -170,3 +170,13 @@ ChipBoard: db 0
 ;; Bits que el AY no ha guardado bien en la prueba de sonido (SoundTest.asm)
 AYWriteErrors: db 0
 AYBusBits: db 0
+ IFDEF GUIDED
+;; Informe en la M4 (M4Report.asm)
+M4Resp: ds 8
+ReportFd: db 0
+ReportLen: db 0
+ReportCol: db 0
+ReportRow: db 0
+ReportPacket: ds 4 + 240
+BasicName: ds 16
+ ENDIF

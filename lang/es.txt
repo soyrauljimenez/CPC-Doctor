@@ -94,6 +94,7 @@ SoundStepNoise = Ruido
 SoundStepVolume = Volumen que baja
 
 [GUIDED]
+M4LowerROM = La M4 pone encima:
 # ================================================================ versión guiada
 MenuVideo = Imagen
 MenuSummary = Resumen final

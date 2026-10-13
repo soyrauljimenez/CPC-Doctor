@@ -6,6 +6,7 @@ TxtOS464FR: db 'OS 464 FR',0
 TxtOS664EN: db 'OS 664',0
 TxtOS6128EN: db 'OS 6128 EN',0
 TxtOS6128SP: db 'OS 6128 SP',0
+TxtOS6128SP2: db 'OS 6128 SP VARIANTE',0
 TxtOS6128FR: db 'OS 6128 FR',0
 TxtOS6128DK: db 'OS 6128 DK',0
 TxtOSSch464SP: db 'OS 464 SCHNEIDER SP',0
@@ -35,6 +36,7 @@ ROMInfoTable:
 	defw #FD6F, TxtOS664EN
 	defw #B360, TxtOS6128EN
 	defw #BAF7, TxtOS6128SP
+	defw #B3A1, TxtOS6128SP2		; equipo real: arranca con "(s3)"; 57 bytes distintos de la inglesa
 	defw #8051, TxtOS6128FR
 	defw #6895, TxtOS6128DK		; issue #15, CRC de un único equipo real: falta confirmarlo
 	defw #DCCF, TxtOSSch464SP

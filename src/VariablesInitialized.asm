@@ -45,3 +45,10 @@ TestResultTableTape:
 	db TESTRESULT_UNTESTED
 TestResultTableDisk:
 	db TESTRESULT_UNTESTED
+ IFDEF GUIDED
+;; Informe en la M4 (M4Report.asm). Aquí y no en Variables.asm: PrintChar
+;; los mira desde el principio y tienen que empezar a 0.
+M4Slot: db #FF				; ranura de la ROM de la M4, #FF si no hay
+ReportOn: db 0
+ReportOnly: db 0			; capturar sin pintar
+ ENDIF

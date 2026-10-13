@@ -58,18 +58,18 @@ check upperram "RAM alta encontrada: 64KB" "Prueba de la RAM alta superada" "Con
 $EMU $DISK_ES $BOOT key 6:0 wait 80 key 2:2 wait 600 vram $OUT/lowerram.vram shot $OUT/lowerram.png
 check lowerram "KB de 64 KB." "Resultado: Superado"
 
-# Chip de RAM dañado: el bit 3 se lee siempre a 0 en #B000-#B3FF
-$EMU $DISK_ES $BOOT fault B000 400 08 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/lowerramfault.vram shot $OUT/lowerramfault.png
+# Chip de RAM dañado: el bit 3 se lee siempre a 0 en #B800-#BBFF
+$EMU $DISK_ES $BOOT fault B800 400 08 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/lowerramfault.vram shot $OUT/lowerramfault.png
 check lowerramfault "Resultado: Error bits 03" " X " "Chips a revisar (6128, placa original): IC130"
 
 # Qué chip es cada bit según la placa (esquemas de Amstrad). Se cambian a mano
 # el modelo (6128 -> 464: 3 xor 2) y el CRTC (1 -> 4: 1 xor 5; 1 -> 3: 1 xor 2)
-VAR() { grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*\b$1:" build/es/RAMBuild.lst | awk '{print $2}' | grep -E "^A" | head -1; }
-$EMU $DISK_ES $BOOT corrupt $(VAR ModelType) 02 fault B000 400 81 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/chips464.vram
+VAR() { grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*\b$1:" build/es/RAMBuild.lst | awk '{print $2}' | grep -E "^[A-F]" | head -1; }
+$EMU $DISK_ES $BOOT corrupt $(VAR ModelType) 02 fault B800 400 81 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/chips464.vram
 check chips464 "Error bits 00 07" "Chips a revisar (464/664): IC120 IC124"
-$EMU $DISK_ES $BOOT corrupt $(VAR CRTCType) 05 fault B000 400 FF key 6:0 wait 80 key 2:2 wait 600 vram $OUT/chips40226.vram
+$EMU $DISK_ES $BOOT corrupt $(VAR CRTCType) 05 fault B800 400 FF key 6:0 wait 80 key 2:2 wait 600 vram $OUT/chips40226.vram
 check chips40226 "(6128 con 40226, probable): IC109" "IC110 IC111 IC112 IC113 IC114 IC115 IC116"
-$EMU $DISK_ES $BOOT corrupt $(VAR CRTCType) 02 fault B000 400 81 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/chipsplus.vram
+$EMU $DISK_ES $BOOT corrupt $(VAR CRTCType) 02 fault B800 400 81 key 6:0 wait 80 key 2:2 wait 600 vram $OUT/chipsplus.vram
 check chipsplus "Chips a revisar (Plus): IC110 IC111"
 
 # RAM alta del 6128 con los bits 0 y 7 rotos en su segunda página: se ven
@@ -160,7 +160,7 @@ if grep -qF "AVISO" $OUT/summary.txt; then FAIL=$((FAIL + 1)); echo "FALLO  summ
 
 # Con un CRTC de tipo 4 el Gate Array es el 40226. El emulador solo tiene el
 # tipo 1: se cambia la variable a mano (1 xor 5 = 4) antes del resumen.
-CRTCVAR=$(grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*CRTCType:" build/es/RAMBuild.lst | awk '{print $2}' | grep -E "^A" | head -1)
+CRTCVAR=$(grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*CRTCType:" build/es/RAMBuild.lst | awk '{print $2}' | grep -E "^[A-F]" | head -1)
 $EMU $DISK_ES $BOOT corrupt $CRTCVAR 05 key 4:0 wait 80 vram $OUT/crtc4.vram
 check crtc4 "CRTC 4 (40226)"
 
@@ -178,7 +178,7 @@ $EMU -m 464 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7
 if [ $((0x$(awk '{print $2}' $OUT/soak464.peek))) -ge 3 ]; then PASS=$((PASS + 1)); echo "ok     soak464 ($(cat $OUT/soak464.peek))"; else FAIL=$((FAIL + 1)); echo "FALLO  soak464: menos de 3 vueltas ($(cat $OUT/soak464.peek))"; fi
 
 # Prueba continua con un chip de RAM dañado: debe pararse y decirlo
-$EMU $DISK_ES $BOOT fault B000 400 08 key 4:1 wait 700 vram $OUT/soakfault.vram shot $OUT/soakfault.png
+$EMU $DISK_ES $BOOT fault B800 400 08 key 4:1 wait 700 vram $OUT/soakfault.vram shot $OUT/soakfault.png
 check soakfault "Prueba detenida por un error en la vuelta 1"
 
 # 464 con las ROM del 6128 (ampliación habitual): debe preguntar el modelo

@@ -1,5 +1,23 @@
 # Cambios
 
+## Sin publicar
+
+### Nuevo
+- Informe en la M4 Board: al mostrar el resumen, si el CPC tiene una M4,
+  se escribe también /DOCTOR.TXT en su tarjeta (el resumen y las ROMs) y
+  /DOCTOR.ROM (copia de la ROM del sistema), para leerlos por la red desde
+  otro ordenador sin fotos de la pantalla. Se usan las órdenes de la M4
+  directamente, sin el firmware del CPC.
+- ROMs: si la M4 pone su propia ROM baja encima de la del sistema, se lee
+  la del sistema apartando la de la M4, y se indica también la que pone la
+  M4.
+- ROMs: nueva variante de la ROM del sistema del 6128 español (B3A1).
+
+### Cambiado
+- El cargador de la versión de disco y cinta sube los datos comprimidos a
+  lo alto de la memoria antes de descomprimir: el programa ya no está
+  limitado a #A600. El bloque de trabajo pasa a #B000.
+
 ## 0.9.3
 
 ### Nuevo

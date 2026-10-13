@@ -94,6 +94,7 @@ SoundStepNoise = Noise
 SoundStepVolume = Fading volume
 
 [GUIDED]
+M4LowerROM = The M4 maps over it:
 # ================================================================ guided version
 MenuVideo = Picture
 MenuSummary = Final summary
