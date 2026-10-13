@@ -166,7 +166,7 @@ check crtc4 "CRTC 4 (GA 40226)" "(1988+)"
 
 # Segunda página del resumen: detalles del equipo
 $EMU $DISK_ES $BOOT key 4:0 wait 80 key 2:2 wait 150 vram $OUT/details.vram shot $OUT/details.png
-check details "Detalles del equipo" "CPC 6128 (según la ROM del sistema)" "ROM baja: OS 6128 EN (B360)" "00 BASIC"
+check details "Detalles del equipo" "CPC 6128 (EN) (según la ROM del sistema)" "ROM baja: OS 6128 EN (B360)" "00 BASIC"
 
 # ---------------------------------------------------------------- inglés, 464 y cinta
 $EMU -m 464 -t build/dist/cpcdoctor-en.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT vram $OUT/tape464.vram shot $OUT/tape464.png

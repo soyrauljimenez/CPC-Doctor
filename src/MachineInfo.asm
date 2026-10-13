@@ -158,6 +158,7 @@ CRTCMakers:
 	ld	hl, ModelNames
 	add	hl, de
 	call	PrintString
+	call	PrintModelSuffix
 	ld	a, ' '
 	call	PrintChar
 	ld	hl, TxtModelByUser
