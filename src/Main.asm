@@ -223,6 +223,7 @@ RAMInitialize:
  INCLUDE "Summary.asm"
  INCLUDE "RAMChips.asm"
  INCLUDE "M4Report.asm"
+ INCLUDE "MachineInfo.asm"
  ENDIF
 
  INCLUDE "texts.asm"

@@ -264,6 +264,7 @@ SUM_VALUE_X	EQU 12
 	call	PrintWrapped
 	call	ReportEnd
 	call	WaitOK
+	call	nz, ShowMachineDetails		; ENTER: la segunda página
 	jp	MainMenuRepeat
 
 

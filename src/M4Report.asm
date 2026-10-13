@@ -1,8 +1,8 @@
 ;; M4Report.asm — informe en la tarjeta de la M4 Board (versión RAM)
 ;;
 ;; Si el CPC tiene una M4 Board, al mostrar el resumen se escribe también
-;; /DOCTOR.TXT en su tarjeta SD: el mismo texto del resumen y las ROMs del
-;; ordenador. Se puede leer desde otro ordenador por la red (la web de la
+;; /DOCTOR.TXT en su tarjeta SD: el mismo texto del resumen y de la página
+;; de detalles del equipo, y /DOCTOR.ROM con la ROM del sistema. Se puede leer desde otro ordenador por la red (la web de la
 ;; M4) sin hacer fotos de la pantalla.
 ;;
 ;; El texto se captura de PrintChar mientras se pinta: cada carácter va a
@@ -97,13 +97,14 @@ OpenPacket:
 OpenEnd:
 
 ;; ---------------------------------------------------------------------------
-;; ReportEnd: añade las ROMs, vacía el búfer y cierra el fichero.
+;; ReportEnd: añade los detalles del equipo, vacía el búfer y cierra el
+;; fichero; después copia la ROM del sistema.
 ;; ---------------------------------------------------------------------------
 @ReportEnd:
 	ld	a, (ReportOn)
 	or	a
 	ret	z
-	call	ReportROMs
+	call	ReportDetails
 	call	ReportNewLine
 	call	Flush
 	ld	hl, ClosePacket
@@ -152,75 +153,16 @@ OpenRomPacket:
 	db '/DOCTOR.ROM', 0
 OpenRomEnd:
 
-;; Las ROMs, sin pintarlas: la baja con su versión exacta (por su CRC) y
-;; los nombres de las altas. El resultado de la ROM baja se deja como
-;; estaba: esto no es la prueba de ROMs.
-ReportROMs:
+;; La página de detalles del equipo, sin pintarla (va detrás del resumen)
+ReportDetails:
 	ld	a, 1
 	ld	(ReportOnly), a
 	ld	hl, #0040			; fila 64: fuera de la pantalla
 	ld	(TxtCoords), hl
 	call	ReportNewLine
-	ld	a, (TestResultTableLowerROM)
-	push	af
-	call	ROMTEST.CheckLowerROM
-	pop	af
-	ld	(TestResultTableLowerROM), a
-	;; Nombre de la ROM 0 (BASIC): las ranuras vacías la repiten
-	xor	a
-	ld	de, BasicName
-	call	GetROMString
-	ld	b, 0
-.slot:
-	push	bc
-	ld	a, b
-	ld	de, ROMStringBuffer
-	call	GetROMString
-	pop	bc
-	push	bc
-	ld	a, b
-	or	a
-	jr	z, .print			; la 0 siempre
-	call	SameAsBasic
-	jr	z, .next
-.print:
-	call	NewLine
-	ld	hl, TxtROM
-	call	PrintString
-	pop	bc
-	push	bc
-	ld	a, b
-	call	PrintAHex
-	ld	a, ':'
-	call	PrintChar
-	ld	a, ' '
-	call	PrintChar
-	ld	hl, ROMStringBuffer
-	call	PrintString7BitEnding
-.next:
-	pop	bc
-	inc	b
-	ld	a, b
-	cp	32
-	jr	nz, .slot
-	call	NewLine
+	call	PrintMachineDetails
 	xor	a
 	ld	(ReportOnly), a
-	ret
-
-;; OUT: Z si ROMStringBuffer es igual que BasicName
-SameAsBasic:
-	ld	hl, ROMStringBuffer
-	ld	de, BasicName
-.cmp:
-	ld	a, (de)
-	cp	(hl)
-	ret	nz
-	inc	hl
-	inc	de
-	bit	7, a				; el último carácter lleva el bit 7
-	jr	z, .cmp
-	xor	a				; Z: iguales
 	ret
 
 ;; ---------------------------------------------------------------------------

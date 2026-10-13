@@ -95,6 +95,17 @@ SoundStepVolume = Volumen que baja
 
 [GUIDED]
 M4LowerROM = La M4 pone encima:
+DetailsTitle = Detalles del equipo
+DetailsModel = MODELO
+DetailsROMs = ROMS
+DetailsBoard = PLACA
+ModelByROM = (según la ROM del sistema)
+ModelByUser = (lo has indicado tú)
+ModelUnsure = (sin confirmar)
+HintCostDown = Placa abaratada (Z80329, Gate Array 40226), de 1988 o posterior. Siempre con teclas bajas.
+HintSpain = ROM española: se vendió en España desde septiembre de 1985, cuando ya no se fabricaban los de teclas altas. Placa larga o corta: mira el ancho de la placa (unos 40 cm la larga, 24 cm la corta).
+Hint472 = ROM del 664 sin disquetera: probablemente un CPC 472 español (placa larga).
+Hint464 = Si es de teclas altas o bajas y si la placa es larga o corta no se puede medir. Mira la altura de las teclas (unos 12,5 mm las altas, 8 mm las bajas) o la etiqueta del número de serie, que lleva el año y el mes.
 # ================================================================ versión guiada
 MenuVideo = Imagen
 MenuSummary = Resumen final
@@ -205,7 +216,7 @@ SummaryNotStated = no indicada
 SummaryPending = PENDIENTE:
 SummaryNothingPending = nada
 SummaryCode = Código:
-SummaryPhoto = Haz una foto de esta pantalla si vas a pedir ayuda en un foro.
+SummaryPhoto = Haz una foto si vas a pedir ayuda en un foro. ENTER: detalles del equipo.
 SummaryKeys =  teclas
 SummaryBits = bits 
 Help1 = CPC Doctor te ayuda a comprobar un Amstrad CPC paso a paso y a explicar lo que le pasa.|| Manejo: elige con los cursores o el joystick y confirma con ENTER, espacio o FUEGO. También puedes pulsar el número de la opción. ESC vuelve atrás.|| Resultados:| Superado: la prueba ha salido bien.| Error: se ha observado un fallo.| Inconcluso: no se puede asegurar; repite la prueba.| Sin probar: todavía no se ha hecho.|| Las pruebas de imagen y sonido dependen de lo que tú veas y oigas: el programa no puede medirlas. Las causas que se proponen son posibilidades para comprobar, no un diagnóstico seguro.

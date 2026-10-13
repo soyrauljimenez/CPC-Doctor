@@ -106,6 +106,24 @@
 ;; IN  - Address to read
 ;; OUT - HL: Contents of address
 @ReadFromLowerROM:
+ IFDEF GUIDED
+	;; Con una M4 que pone su propia ROM baja, el modelo se deduce de la del
+	;; sistema: es la del ordenador (la de la M4 puede ser la de otro modelo)
+	ld	a, (M4Slot)
+	inc	a
+	jr	z, ReadFromLowerROMActive
+	push	ix
+	call	M4DisableLowerROM
+	pop	ix
+	call	ReadFromLowerROMActive
+	push	hl
+	call	M4EnableLowerROM
+	pop	hl
+	ld	bc, RESTORE_ROM_CONFIG
+	out	(c), c
+	ret
+ReadFromLowerROMActive:
+ ENDIF
  IFDEF TRY_UNPAGING_LOW_ROM
 	call 	M4DisableLowerROM
 	call 	DandanatorDisableLowerROM

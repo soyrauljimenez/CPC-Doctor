@@ -164,12 +164,16 @@ CRTCVAR=$(grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*CRTCType:" build/es/RAMBuild.l
 $EMU $DISK_ES $BOOT corrupt $CRTCVAR 05 key 4:0 wait 80 vram $OUT/crtc4.vram
 check crtc4 "CRTC 4 (40226)"
 
+# Segunda página del resumen: detalles del equipo
+$EMU $DISK_ES $BOOT key 4:0 wait 80 key 2:2 wait 150 vram $OUT/details.vram shot $OUT/details.png
+check details "Detalles del equipo" "CPC 6128 (según la ROM del sistema)" "ROM baja: OS 6128 EN (B360)" "00 BASIC"
+
 # ---------------------------------------------------------------- inglés, 464 y cinta
 $EMU -m 464 -t build/dist/cpcdoctor-en.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT vram $OUT/tape464.vram shot $OUT/tape464.png
 check tape464 "CPC 464" "64KB" "Upper RAM : Not available" "4. Cassette"
 
 # Prueba de cassette con el motor un 5 % lento (la cinta sigue tras el programa)
-$EMU -m 464 -v 105 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT wait 500 key 7:0 wait 80 key 2:2 wait 300 vram $OUT/cassette.vram shot $OUT/cassette.png
+$EMU -m 464 -v 105 -t build/dist/cpcdoctor-es.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT wait 500 key 7:0 wait 80 key 2:2 wait 400 vram $OUT/cassette.vram shot $OUT/cassette.png
 check cassette "Velocidad: -4," "Estabilidad: 100%"
 
 # Prueba continua en un 464 sin RAM alta: debe dar vueltas (antes se colgaba)
@@ -194,7 +198,7 @@ check aftersoak "CPC 464, 64KB" "RAM alta : No disponible" "Sonido," "Cassette"
 
 # ---------------------------------------------------------------- ROM baja
 $EMU -m 464 -o build/dist/cpcdoctor-es-lower.rom wait 700 vram $OUT/lowerrom.vram shot $OUT/lowerrom.png
-check lowerrom "CPC Doctor V0.9.3L" "RAM baja  : Superado" "6. Prueba continua"
+check lowerrom "CPC Doctor V0.9.4L" "RAM baja  : Superado" "6. Prueba continua"
 
 # ---------------------------------------------------------------- tono de calibración
 # El WAV de audio/ debe ser un tono de 2000 Hz de unos dos minutos

@@ -71,6 +71,11 @@ CheckLowerROM:
 	inc (hl)
 	pop hl
  IFDEF GUIDED
+	ld	(SysROMCRC), hl
+	push	hl
+	ld	hl, 0
+	ld	(M4ROMCRC), hl
+	pop	hl
 	push	hl
  ENDIF
 	call PrintCRC
@@ -91,6 +96,7 @@ CheckLowerROM:
 	sbc	hl, de
 	ret	z
 	add	hl, de
+	ld	(M4ROMCRC), hl
 	push	hl
 	call	SetWarningColors
 	ld	hl, TxtM4LowerROM

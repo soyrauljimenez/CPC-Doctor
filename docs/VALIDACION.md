@@ -87,6 +87,7 @@ El emulador no puede reproducir estas situaciones:
 | 2026-10-13 | CPC 464 | M4 Board con su propia ROM baja | Disco desde la M4, español | Informe en la M4: /DOCTOR.TXT y /DOCTOR.ROM se escriben y se leen por la red. Con la ROM baja de la M4 apartada se lee la del sistema (OS 464 EN, idéntica a la conocida) y se indica la que pone la M4 encima. | Raul Jimenez |
 | 2026-10-13 | CPC 464 "teclas altas", teclado inglés, de las primeras versiones | M4 Board con su propia ROM baja | Disco desde la M4, español | CPC Doctor mide: CRTC 0, Z80 NMOS Zilog, marca Amstrad, 50 Hz y ROM del sistema OS 464 EN v1 (1984). Coincide con lo documentado para los primeros 464 de placa larga. | Raul Jimenez |
 | 2026-10-13 | CPC 464 con Ñ, placa larga | M4 Board con su propia ROM baja | Disco desde la M4, español | CPC Doctor mide: CRTC 0, Z80 NMOS Zilog, marca Amstrad, 50 Hz y ROM del sistema OS 464 SP "s1" (3E84). La "ROM del 6128" que se veía en este equipo en las filas anteriores era la que pone la M4 encima (6128 SP, B3A1). Mismo CRTC y Z80 que el 464 de teclas altas: en placa larga no sirven para distinguirlos; la ROM española sí lo excluye. | Raul Jimenez |
+| 2026-10-13 | CPC 464 con Ñ, placa larga | M4 Board con su propia ROM baja (6128 SP) | Disco desde la M4, español | El modelo sale como CPC 464 sin preguntar (se deduce de la ROM del sistema, no de la de la M4). La página de detalles y el informe muestran la ROM del sistema, la de la M4 y la deducción por la ROM española. | Raul Jimenez |
 
 ## Fallos del programa encontrados en máquinas reales
 

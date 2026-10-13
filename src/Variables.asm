@@ -179,4 +179,6 @@ ReportCol: db 0
 ReportRow: db 0
 ReportPacket: ds 4 + 240
 BasicName: ds 16
+SysROMCRC: dw 0				; firma de la ROM baja del sistema
+M4ROMCRC: dw 0				; la de la ROM baja de la M4 (0 si no pone)
  ENDIF

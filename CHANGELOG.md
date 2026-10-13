@@ -1,8 +1,18 @@
 # Cambios
 
-## Sin publicar
+## 0.9.4
 
 ### Nuevo
+- Página "Detalles del equipo", al pulsar ENTER en el resumen: de dónde sale
+  el modelo, la ROM del sistema y la que pone la M4 encima, las ROMs de
+  expansión y lo que se puede deducir de la placa: placa abaratada (CRTC 4,
+  1988 o posterior), ROM española del 464 (vendido desde septiembre de 1985,
+  no es de teclas altas) o ROM del 664 sin disquetera (probable CPC 472).
+  Si no se puede deducir, explica cómo mirarlo (altura de las teclas,
+  etiqueta del número de serie). Fuentes: CPCWiki (Keyboard Versions,
+  Mainboard Versions, 472) y la AUA.
+- El modelo se deduce de la ROM del sistema, aunque la M4 ponga encima la
+  de otro modelo: ya no se pregunta en ese caso.
 - Informe en la M4 Board: al mostrar el resumen, si el CPC tiene una M4,
   se escribe también /DOCTOR.TXT en su tarjeta (el resumen y las ROMs) y
   /DOCTOR.ROM (copia de la ROM del sistema), para leerlos por la red desde
