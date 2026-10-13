@@ -45,10 +45,76 @@ CRC_OS6128DK	EQU #6895
 	ld	(M4ROMCRC), hl
 	ret
 
-;; Detrás del modelo, la versión según la ROM del sistema: " (1988+)" con
-;; la placa abaratada (CRTC 4); si no, el idioma de la ROM, que es el del
-;; teclado con que se vendió: " (Ñ)" la española, " (FR)" la francesa
-;; (AZERTY), " (DK)" la danesa y " (EN)" la inglesa.
+;; Teclado según la tabla de la ROM del sistema (GetKeyTableWindow): KeyWin
+;; empieza 24 bytes antes de "rtgfbv". Posiciones, vistas en las ROM del
+;; 464, 664 y 6128 inglesas y españolas:
+;;   KeyWin+3   ':' en la inglesa, #AB (Ñ) en la española
+;;   KeyWin+17  'y' (QWERTY) o 'z' (QWERTZ)
+;;   KeyWin+41  'q' y KeyWin+43 'a' (al revés en AZERTY)
+KB_UNKNOWN	EQU 0
+KB_EN		EQU 1
+KB_ES		EQU 2
+KB_FR		EQU 3
+KB_DE		EQU 4
+KB_DK		EQU 5
+
+;; OUT: KeyboardKind
+@DetectKeyboardKind:
+	ld	hl, (SysROMCRC)			; la danesa solo por su firma
+	ld	de, CRC_OS6128DK
+	or	a
+	sbc	hl, de
+	ld	a, KB_DK
+	jr	z, .set
+	call	GetKeyTableWindow
+	jr	c, .fromBanner
+	ld	a, (KeyWin + 3)
+	cp	#AB
+	ld	a, KB_ES
+	jr	z, .set
+	ld	a, (KeyWin + 41)
+	cp	'a'
+	jr	nz, .notFR
+	ld	a, (KeyWin + 43)
+	cp	'q'
+	ld	a, KB_FR
+	jr	z, .set
+.notFR:
+	ld	a, (KeyWin + 17)
+	cp	'z'
+	ld	a, KB_DE
+	jr	z, .set
+	ld	a, (KeyWin + 17)
+	cp	'y'
+	jr	nz, .fromBanner
+	ld	a, (KeyWin + 41)
+	cp	'q'
+	jr	nz, .fromBanner
+	ld	a, (KeyWin + 43)
+	cp	'a'
+	jr	nz, .fromBanner
+	ld	a, (KeyWin + 3)
+	cp	':'
+	ld	a, KB_EN
+	jr	z, .set
+.fromBanner:
+	;; Si la tabla no aclara nada, lo que diga el texto de arranque
+	ld	a, (KeyboardLanguage)
+	cp	KEYBOARD_LANGUAGE_SPANISH
+	ld	a, KB_ES
+	jr	z, .set
+	ld	a, (KeyboardLanguage)
+	cp	KEYBOARD_LANGUAGE_FRENCH
+	ld	a, KB_FR
+	jr	z, .set
+	ld	a, KB_UNKNOWN
+.set:
+	ld	(KeyboardKind), a
+	ret
+
+;; Detrás del modelo: " (1988+)" con la placa abaratada (CRTC 4); si no, el
+;; teclado según la ROM del sistema: (Ñ), (FR), (DE), (DK) o (EN). Si no se
+;; sabe, nada.
 @PrintModelSuffix:
 	ld	a, (CRTCType)
 	cp	4
@@ -60,21 +126,23 @@ CRC_OS6128DK	EQU #6895
 	ld	a, (ModelDoubt)
 	or	a
 	ret	nz
-	ld	hl, (SysROMCRC)
-	ld	de, CRC_OS6128DK
+	ld	a, (KeyboardKind)
 	or	a
-	sbc	hl, de
-	ld	hl, TxtModelDanish
-	jp	z, PrintString
-	ld	a, (KeyboardLanguage)
-	ld	hl, TxtModelSpanish
-	cp	KEYBOARD_LANGUAGE_SPANISH
-	jp	z, PrintString
-	ld	hl, TxtModelFrench
-	cp	KEYBOARD_LANGUAGE_FRENCH
-	jp	z, PrintString
-	ld	hl, TxtModelEnglish
+	ret	z
+	dec	a
+	add	a, a
+	ld	e, a
+	ld	d, 0
+	ld	hl, KeyboardSuffixes
+	add	hl, de
+	ld	a, (hl)
+	inc	hl
+	ld	h, (hl)
+	ld	l, a
 	jp	PrintString
+
+KeyboardSuffixes:
+	dw TxtModelEnglish, TxtModelSpanish, TxtModelFrench, TxtModelGerman, TxtModelDanish
 
 ;; Tipo de CRTC y quién lo fabrica: 0 Hitachi HD6845S o UMC UM6845, 1 UMC
 ;; UM6845R, 2 Motorola MC6845; 3 y 4 van dentro del ASIC 40489 (Plus) y del

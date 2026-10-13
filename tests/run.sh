@@ -117,7 +117,7 @@ check joinednotay "Líneas unidas: 0-1 1-2" "líneas de la matriz están unidas"
 # ---------------------------------------------------------------- modo automático
 # Sin tocar nada 30 s: hace las pruebas que no necesitan respuestas y acaba en
 # el resumen. La C atascada desde el arranque no debe impedirlo.
-$EMU $DISK_ES wait 150 type 'run"doctor~' wait 100 hold 7:6 wait 3400 vram $OUT/autokb.vram shot $OUT/autokb.png wait 450 vram $OUT/autovideo.vram wait 12150 vram $OUT/auto.vram shot $OUT/auto.png
+$EMU $DISK_ES wait 150 type 'run"doctor~' wait 100 hold 7:6 wait 3500 vram $OUT/autokb.vram shot $OUT/autokb.png wait 400 vram $OUT/autovideo.vram wait 12100 vram $OUT/auto.vram shot $OUT/auto.png
 check autokb "Pulsadas desde el principio (atascadas): C" "Resultado: Error" "sigue solo en 5 s"
 check autovideo "Imagen" "mira la pantalla (no se pregunta)"
 check auto "Resumen final" "Imagen   : Sin probar" "Sonido   : Sin probar" "Teclado  : Error" "RAM baja : Superado" "RAM alta : Superado" "ROM baja : Superado" "Disco    : Inconcluso"
@@ -168,6 +168,26 @@ check crtc4 "CRTC 4 (GA 40226)" "(1988+)"
 $EMU $DISK_ES $BOOT key 4:0 wait 80 key 2:2 wait 150 vram $OUT/details.vram shot $OUT/details.png
 check details "Detalles del equipo" "CPC 6128 (EN) (según la ROM del sistema)" "ROM baja: OS 6128 EN (B360)" "00 BASIC"
 
+# Teclado según la tabla de la ROM del sistema. Se generan variantes de la
+# ROM inglesa del 6128 tocando la tabla: Ñ en lugar de ':' (española), 'z'
+# en lugar de 'y' (QWERTZ) y 'a' y 'q' cambiadas (AZERTY)
+python3 - <<'PY'
+d = open('tools/emu/roms/cpc6128.rom', 'rb').read()[:16384]
+r = d.find(b'rtgfbv')
+for name, changes in (('es', {r - 21: 0xAB}), ('de', {r - 7: ord('z')}),
+                      ('fr', {r + 17: ord('a'), r + 19: ord('q')})):
+    v = bytearray(d)
+    for pos, val in changes.items():
+        v[pos] = val
+    open(f'tests/out/os6128{name}.rom', 'wb').write(v)
+PY
+for L in es de fr; do
+	$EMU -m 6128 -o $OUT/os6128$L.rom -d build/dist/cpcdoctor-es.dsk $BOOT vram $OUT/kbd$L.vram
+done
+check kbdes "CPC 6128 (Ñ)"
+check kbdde "CPC 6128 (DE)"
+check kbdfr "CPC 6128 (FR)"
+
 # ---------------------------------------------------------------- inglés, 464 y cinta
 $EMU -m 464 -t build/dist/cpcdoctor-en.cdt wait 150 type 'run"~' wait 20 key 5:7 $TAPEWAIT vram $OUT/tape464.vram shot $OUT/tape464.png
 check tape464 "CPC 464" "64KB" "Upper RAM : Not available" "4. Cassette"
@@ -198,7 +218,7 @@ check aftersoak "CPC 464 (EN), 64KB" "RAM alta : No disponible" "Sonido," "Casse
 
 # ---------------------------------------------------------------- ROM baja
 $EMU -m 464 -o build/dist/cpcdoctor-es-lower.rom wait 700 vram $OUT/lowerrom.vram shot $OUT/lowerrom.png
-check lowerrom "CPC Doctor V0.9.5L" "RAM baja  : Superado" "6. Prueba continua"
+check lowerrom "CPC Doctor V0.9.6L" "RAM baja  : Superado" "6. Prueba continua"
 
 # ---------------------------------------------------------------- tono de calibración
 # El WAV de audio/ debe ser un tono de 2000 Hz de unos dos minutos

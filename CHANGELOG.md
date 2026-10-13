@@ -1,5 +1,14 @@
 # Cambios
 
+## 0.9.6
+
+### Cambiado
+- El teclado del equipo se deduce de la tabla de teclas de la ROM del
+  sistema, sea cual sea la ROM: Ñ (española), FR (AZERTY), DE (QWERTZ),
+  DK (por su firma) o EN (QWERTY inglés). Antes, cualquier ROM que no fuera
+  española ni francesa salía como inglesa; ahora, si no se puede saber, no
+  se indica.
+
 ## 0.9.5
 
 ### Nuevo

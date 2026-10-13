@@ -103,6 +103,57 @@
 	ret
  ENDIF
 
+ IFDEF GUIDED
+;; Busca en la ROM baja del sistema la tabla del teclado: el trozo "rtgfbv"
+;; (igual en QWERTY, QWERTZ y AZERTY) y copia en KeyWin los 64 bytes que
+;; empiezan 24 antes. Tiene que estar aquí: la ROM tapa #0000-#3FFF.
+;; OUT: carry si no se encuentra
+@GetKeyTableWindow:
+	ld	a, (M4Slot)
+	inc	a
+	call	nz, M4DisableLowerROM
+	ld	bc, #7F89			; ROM baja conectada, modo 1
+	out	(c), c
+	ld	hl, 24
+.search:
+	push	hl
+	ld	de, KeyAnchor
+	ld	b, 6
+.cmp:
+	ld	a, (de)
+	cp	(hl)
+	jr	nz, .no
+	inc	hl
+	inc	de
+	djnz	.cmp
+	pop	hl				; encontrado
+	ld	de, -24
+	add	hl, de
+	ld	de, KeyWin
+	ld	bc, 64
+	ldir
+	or	a
+	jr	.done
+.no:
+	pop	hl
+	inc	hl
+	ld	a, h
+	cp	#3F
+	jr	nz, .search
+	scf
+.done:
+	push	af
+	ld	a, (M4Slot)
+	inc	a
+	call	nz, M4EnableLowerROM
+	ld	bc, RESTORE_ROM_CONFIG
+	out	(c), c
+	pop	af
+	ret
+
+KeyAnchor:	db 'rtgfbv'
+ ENDIF
+
 ;; IN  - Address to read
 ;; OUT - HL: Contents of address
 @ReadFromLowerROM:

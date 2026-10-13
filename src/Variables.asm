@@ -181,4 +181,6 @@ ReportPacket: ds 4 + 240
 BasicName: ds 16
 SysROMCRC: dw 0				; firma de la ROM baja del sistema
 M4ROMCRC: dw 0				; la de la ROM baja de la M4 (0 si no pone)
+KeyWin: ds 64				; trozo de la tabla del teclado de la ROM
+KeyboardKind: db 0			; teclado según la ROM (MachineInfo.asm)
  ENDIF
