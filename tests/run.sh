@@ -39,7 +39,7 @@ check() {
 DISK_ES="-m 6128 -d build/dist/cpcdoctor-es.dsk"
 # Mientras carga la cinta se pulsa de vez en cuando el cursor derecha (no hace
 # nada en el menú) para que no salte el modo automático de los 30 s
-TAPEWAIT=$(for i in $(seq 17); do printf ' wait 1000 key 0:1'; done)
+TAPEWAIT=$(for i in $(seq 18); do printf ' wait 1000 key 0:1'; done)
 BOOT='wait 150 type run"doctor~ wait 400'
 
 # ---------------------------------------------------------------- arranque
@@ -117,7 +117,7 @@ check joinednotay "Líneas unidas: 0-1 1-2" "líneas de la matriz están unidas"
 # ---------------------------------------------------------------- modo automático
 # Sin tocar nada 30 s: hace las pruebas que no necesitan respuestas y acaba en
 # el resumen. La C atascada desde el arranque no debe impedirlo.
-$EMU $DISK_ES wait 150 type 'run"doctor~' wait 100 hold 7:6 wait 3400 vram $OUT/autokb.vram shot $OUT/autokb.png wait 350 vram $OUT/autovideo.vram wait 12250 vram $OUT/auto.vram shot $OUT/auto.png
+$EMU $DISK_ES wait 150 type 'run"doctor~' wait 100 hold 7:6 wait 3400 vram $OUT/autokb.vram shot $OUT/autokb.png wait 450 vram $OUT/autovideo.vram wait 12150 vram $OUT/auto.vram shot $OUT/auto.png
 check autokb "Pulsadas desde el principio (atascadas): C" "Resultado: Error" "sigue solo en 5 s"
 check autovideo "Imagen" "mira la pantalla (no se pregunta)"
 check auto "Resumen final" "Imagen   : Sin probar" "Sonido   : Sin probar" "Teclado  : Error" "RAM baja : Superado" "RAM alta : Superado" "ROM baja : Superado" "Disco    : Inconcluso"
@@ -154,7 +154,7 @@ PY
 
 # ---------------------------------------------------------------- resumen
 $EMU $DISK_ES $BOOT key 4:0 wait 80 vram $OUT/summary.vram shot $OUT/summary.png
-check summary "CPC 6128, 128KB, CRTC 1, AY-3-8912" "PENDIENTE:" "Código: 09A-3-01-"
+check summary "CPC 6128 (EN), 128KB, CRTC 1 (UMC 6845R), AY-3-8912" "PENDIENTE:" "Código: 09A-3-01-"
 # Un AY sano no da el aviso del puerto A
 if grep -qF "AVISO" $OUT/summary.txt; then FAIL=$((FAIL + 1)); echo "FALLO  summary: aviso del puerto con un AY sano"; else PASS=$((PASS + 1)); fi
 
@@ -162,7 +162,7 @@ if grep -qF "AVISO" $OUT/summary.txt; then FAIL=$((FAIL + 1)); echo "FALLO  summ
 # tipo 1: se cambia la variable a mano (1 xor 5 = 4) antes del resumen.
 CRTCVAR=$(grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*CRTCType:" build/es/RAMBuild.lst | awk '{print $2}' | grep -E "^[A-F]" | head -1)
 $EMU $DISK_ES $BOOT corrupt $CRTCVAR 05 key 4:0 wait 80 vram $OUT/crtc4.vram
-check crtc4 "CRTC 4 (40226)"
+check crtc4 "CRTC 4 (GA 40226)" "(1988+)"
 
 # Segunda página del resumen: detalles del equipo
 $EMU $DISK_ES $BOOT key 4:0 wait 80 key 2:2 wait 150 vram $OUT/details.vram shot $OUT/details.png
@@ -194,7 +194,7 @@ check modelconfirmed "Modelo    : CPC 464" "RAM alta  : No disponible"
 
 # Tras una vuelta de prueba continua se conservan el modelo y los resultados
 $EMU -m 464 -o $OUT/os6128.rom -b $OUT/basic11.rom -t build/dist/cpcdoctor-es.cdt wait 200 type 'run"~' wait 20 key 5:7 $TAPEWAIT key 8:0 wait 100 key 4:1 wait 1200 hold 8:2 wait 400 release 8:2 wait 150 key 4:0 wait 100 vram $OUT/aftersoak.vram shot $OUT/aftersoak.png
-check aftersoak "CPC 464, 64KB" "RAM alta : No disponible" "Sonido," "Cassette" 
+check aftersoak "CPC 464 (EN), 64KB" "RAM alta : No disponible" "Sonido," "Cassette" 
 
 # ---------------------------------------------------------------- ROM baja
 $EMU -m 464 -o build/dist/cpcdoctor-es-lower.rom wait 700 vram $OUT/lowerrom.vram shot $OUT/lowerrom.png

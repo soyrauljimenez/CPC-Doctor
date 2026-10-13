@@ -289,6 +289,9 @@ SetUpScreen:
 	ld	hl, TxtUnknownModel
 	call	PrintString
 .modelKnown:
+ IFDEF GUIDED
+	call	PrintModelSuffix		; " (Ñ)" o " (1988+)"
+ ENDIF
 
 	ld	hl, TxtVendor
 	call	PrintInfoLabel
@@ -337,7 +340,7 @@ SetUpScreen:
 	add	a, '0'
 	call	PrintChar
  IFDEF GUIDED
-	call	PrintGateArray
+	call	PrintCRTCMaker
  ENDIF
 
 	ld	hl, TxtFDC
@@ -366,11 +369,16 @@ SetUpScreen:
 	ld	hl, TxtZ80
 	call	PrintInfoLabel
 	call	PrintZ80Type
+	ld	hl, TxtInfoROM			; la ROM del sistema, ocupando la fila
+	call	PrintInfoLabel			; en blanco de antes de los resultados
+	call	PrintSystemROMShort
  ENDIF
 
 	;; Resultados
 	ld	hl, (InfoRow)
+ IFNDEF GUIDED
 	inc	l
+ ENDIF
 	ld	h, 0
 	ld	(TxtCoords), hl
 	inc	l

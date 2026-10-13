@@ -20,6 +20,117 @@
 
 CRC_OS464SP	EQU #3E84
 CRC_OS664	EQU #FD6F
+CRC_OS6128SP	EQU #BAF7
+CRC_OS6128SP2	EQU #B3A1
+CRC_OS6128DK	EQU #6895
+
+;; Al arrancar: la firma de la ROM del sistema y, si la M4 pone otra
+;; encima, la de esa (SysROMCRC y M4ROMCRC, como la prueba de ROMs)
+@IdentifyLowerROM:
+	call	CRCLowerRom
+	ld	(SysROMCRC), hl
+	ld	hl, 0
+	ld	(M4ROMCRC), hl
+	ld	a, (M4Slot)
+	inc	a
+	ret	z
+	call	CRCLowerRomActive
+	ld	bc, RESTORE_ROM_CONFIG
+	out	(c), c
+	ld	de, (SysROMCRC)
+	or	a
+	sbc	hl, de
+	ret	z
+	add	hl, de
+	ld	(M4ROMCRC), hl
+	ret
+
+;; Detrás del modelo, la versión según la ROM del sistema: " (1988+)" con
+;; la placa abaratada (CRTC 4); si no, el idioma de la ROM, que es el del
+;; teclado con que se vendió: " (Ñ)" la española, " (FR)" la francesa
+;; (AZERTY), " (DK)" la danesa y " (EN)" la inglesa.
+@PrintModelSuffix:
+	ld	a, (CRTCType)
+	cp	4
+	ld	hl, TxtModel1988
+	jp	z, PrintString
+	ld	a, (ModelType)			; sin modelo claro, nada
+	or	a
+	ret	z
+	ld	a, (ModelDoubt)
+	or	a
+	ret	nz
+	ld	hl, (SysROMCRC)
+	ld	de, CRC_OS6128DK
+	or	a
+	sbc	hl, de
+	ld	hl, TxtModelDanish
+	jp	z, PrintString
+	ld	a, (KeyboardLanguage)
+	ld	hl, TxtModelSpanish
+	cp	KEYBOARD_LANGUAGE_SPANISH
+	jp	z, PrintString
+	ld	hl, TxtModelFrench
+	cp	KEYBOARD_LANGUAGE_FRENCH
+	jp	z, PrintString
+	ld	hl, TxtModelEnglish
+	jp	PrintString
+
+;; Tipo de CRTC y quién lo fabrica: 0 Hitachi HD6845S o UMC UM6845, 1 UMC
+;; UM6845R, 2 Motorola MC6845; 3 y 4 van dentro del ASIC 40489 (Plus) y del
+;; Gate Array 40226 (abaratados). Fuente: CPCWiki (CRTC) y el Compendium
+;; de Longshot.
+@PrintCRTCMaker:
+	ld	a, (CRTCType)
+	cp	5
+	ret	nc
+	add	a, a
+	ld	e, a
+	ld	d, 0
+	ld	hl, CRTCMakers
+	add	hl, de
+	ld	a, (hl)
+	inc	hl
+	ld	h, (hl)
+	ld	l, a
+	jp	PrintString
+
+CRTCMakers:
+	dw TxtCRTC0Maker, TxtCRTC1Maker, TxtCRTC2Maker, TxtGA40489Long, TxtGA40226Long
+
+;; El nombre de la ROM del sistema en 16 columnas como mucho, o "? XXXX"
+@PrintSystemROMShort:
+	ld	hl, (SysROMCRC)
+	push	hl
+	call	ROMTEST.GetROMAddrFromCRC
+	pop	hl
+	or	a
+	jr	z, .unknown
+	ld	ix, de
+	ld	l, (ix+2)
+	ld	h, (ix+3)
+	ld	b, 16
+.char:
+	ld	a, (hl)
+	or	a
+	ret	z
+	call	PrintChar
+	inc	hl
+	djnz	.char
+	ret
+.unknown:
+	push	hl
+	ld	a, '?'
+	call	PrintChar
+	ld	a, ' '
+	call	PrintChar
+	pop	hl
+	push	hl
+	ld	a, h
+	call	PrintAHex
+	pop	hl
+	ld	a, l
+	jp	PrintAHex
 
 ;; Pantalla completa
 @ShowMachineDetails:

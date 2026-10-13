@@ -19,7 +19,7 @@ OK='key 2:2'
 SI='key 8:0'
 NO='key 8:1'
 # Mientras carga la cinta, el cursor derecha evita el modo automático de 30 s
-TAPEWAIT=$(for i in $(seq 17); do printf ' wait 1000 key 0:1'; done)
+TAPEWAIT=$(for i in $(seq 18); do printf ' wait 1000 key 0:1'; done)
 
 # Menú principal
 $EMU $DISK $BOOT shot $IMG/menu.png

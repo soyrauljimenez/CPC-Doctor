@@ -44,6 +44,7 @@ SUM_VALUE_X	EQU 12
 	ld	a, '?'
 	call	PrintChar
 .modelOk:
+	call	PrintModelSuffix
 	call	Separator
 	ld 	a, (ValidBankCount)
 	ld 	l,a
@@ -67,7 +68,7 @@ SUM_VALUE_X	EQU 12
 	ld	a, (CRTCType)
 	add	a, '0'
 	call	PrintChar
-	call	PrintGateArray
+	call	PrintCRTCMaker
 	call	Separator
 	ld	a, (PSGType)
 	or	a

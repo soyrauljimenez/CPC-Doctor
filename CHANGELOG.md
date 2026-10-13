@@ -1,5 +1,17 @@
 # Cambios
 
+## Sin publicar
+
+### Nuevo
+- Ficha del menú y resumen: la versión del equipo detrás del modelo, por la
+  ROM del sistema (Ñ, FR, DK o EN; "1988+" con la placa abaratada), una
+  línea con la ROM del sistema y quién fabrica el CRTC (Hitachi/UMC, UMC
+  6845R, Motorola, o el ASIC o Gate Array que lo lleva dentro).
+- Detalles del equipo: con la ROM española dice "teclado con Ñ" y explica
+  aparte cómo saber si la placa es larga o corta.
+- Pitido de arranque por los canales A y B a la vez (versión de disco y
+  cinta), para oírlo aunque falle uno de los dos.
+
 ## 0.9.4
 
 ### Nuevo

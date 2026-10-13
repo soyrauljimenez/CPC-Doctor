@@ -148,6 +148,7 @@ RAMTestPassed:
 	ld	(AutoStep), a
 	call	AYPortProbe			; ¿el AY puede leer bien el teclado?
 	call	FindM4				; para dejar el informe en su tarjeta
+	call	IdentifyLowerROM		; la ROM del sistema, para la ficha
  ENDIF
 	jp 	MainMenu
 
