@@ -1,6 +1,6 @@
 # Cambios
 
-## Sin publicar
+## 0.9.5
 
 ### Nuevo
 - Ficha del menú y resumen: la versión del equipo detrás del modelo, por la

@@ -198,7 +198,7 @@ check aftersoak "CPC 464 (EN), 64KB" "RAM alta : No disponible" "Sonido," "Casse
 
 # ---------------------------------------------------------------- ROM baja
 $EMU -m 464 -o build/dist/cpcdoctor-es-lower.rom wait 700 vram $OUT/lowerrom.vram shot $OUT/lowerrom.png
-check lowerrom "CPC Doctor V0.9.4L" "RAM baja  : Superado" "6. Prueba continua"
+check lowerrom "CPC Doctor V0.9.5L" "RAM baja  : Superado" "6. Prueba continua"
 
 # ---------------------------------------------------------------- tono de calibración
 # El WAV de audio/ debe ser un tono de 2000 Hz de unos dos minutos
