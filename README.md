@@ -39,13 +39,13 @@ un diagnóstico seguro.
 | **7. RAM alta** | Medido. Bancos de 64 KB hasta 4 MB y configuración C3. En un 6128 sin ampliaciones, también el chip que falla. |
 | **8. ROMs** | Medido. Identifica la ROM baja y las altas por su CRC. |
 | **9. Prueba continua** | Medido. Repite las pruebas de memoria y ROM sin parar, para fallos que aparecen en caliente. |
-| **0. Resumen final** | Una pantalla para fotografiar: equipo, resultados, lo pendiente y un código con todos los resultados. |
+| **0. Resumen y equipo** | Una pantalla para fotografiar: equipo, resultados, lo pendiente y un código con todos los resultados. Con ENTER, los **detalles del equipo**: modelo, ROMs, BASIC y lo que se sabe de la placa. |
 
 Las pruebas de **imagen y sonido** dependen de lo que ves y oyes: el programa no
 las puede medir y no las presenta como mediciones. **ESC** en el menú vuelve al
 BASIC.
 
-**Detalles del equipo.** Al pulsar ENTER en el resumen se ve una segunda
+**Detalles del equipo.** En la opción 0 (Resumen y equipo), al pulsar ENTER se ve una segunda
 página: de dónde sale el modelo, la ROM del sistema (y la que pone la M4
 encima, si la pone), las ROMs de expansión y lo que se puede deducir de la
 placa, separando lo seguro de lo que hay que mirar.
@@ -121,14 +121,14 @@ Otras piezas de terceros:
 
 ## Estado
 
-Versión **0.9.6**. Se han probado en un **CPC 464 real** (con M4 Board y la ROM
+Versión **0.9.7**. Se han probado en un **CPC 464 real** (con M4 Board y la ROM
 del 6128): la carga, la identificación, la pregunta del modelo, el teclado y el
 joystick (también las teclas que se encienden juntas), el sonido (que encontró
 una avería real en el chip AY), la comprobación de los registros del AY, la
 medida de su puerto A, el modo automático, la RAM baja, la prueba continua, la
 ayuda y la salida al BASIC.
 
-Todo lo demás está comprobado solo en el emulador de pruebas (98 comprobaciones
+Todo lo demás está comprobado solo en el emulador de pruebas (99 comprobaciones
 automáticas). Falta probar en máquinas reales, entre otras cosas, la
 disquetera, la cassette con el tono, otros modelos, CRTC y ampliaciones. Ver
 [docs/VALIDACION.md](docs/VALIDACION.md). Si lo pruebas en tu CPC, cuéntalo.
@@ -192,7 +192,7 @@ after loading (for example, because the keyboard is dead), the tests that need
 no answers run by themselves and end on the summary.
 
 Build with `./build.sh` (sjasmplus ≥ 1.21, Python 3) and run the automated tests
-with `tests/run.sh`. Version 0.9.6 has been partly tested on a real CPC 464; see
+with `tests/run.sh`. Version 0.9.7 has been partly tested on a real CPC 464; see
 [docs/VALIDACION.md](docs/VALIDACION.md).
 
 **Disclaimer:** CPC Doctor is provided as is, without warranty of any kind (MIT

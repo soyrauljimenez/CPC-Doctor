@@ -121,11 +121,11 @@ Hint472 = ROM del 664 sin disquetera: probablemente un CPC 472 español (placa l
 Hint464 = Si es de teclas altas o bajas y si la placa es larga o corta no se puede medir. Mira la altura de las teclas (unos 12,5 mm las altas, 8 mm las bajas) o la etiqueta del número de serie, que lleva el año y el mes.
 # ================================================================ versión guiada
 MenuVideo = Imagen
-MenuSummary = Resumen final
+MenuSummary = Resumen y equipo
 MenuHelp = Ayuda
 ResultVideo = Imagen
 ResultSound = Sonido
-MenuHint2 = Consejo: haz las pruebas en orden y termina con el 0.
+MenuHint2 = Consejo: el 0 muestra el resumen y qué equipo es.
 PressOKToStart = Pulsa ENTER o FUEGO para seguir (ESC vuelve)
 Result = Resultado:
 Observed = LO QUE HAS OBSERVADO
@@ -229,11 +229,12 @@ SummaryNotStated = no indicada
 SummaryPending = PENDIENTE:
 SummaryNothingPending = nada
 SummaryCode = Código:
-SummaryPhoto = Haz una foto si vas a pedir ayuda en un foro. ENTER: detalles del equipo.
+SummaryPhoto = Haz una foto si vas a pedir ayuda en un foro.
+SummaryHint = ENTER: detalles del equipo   ESC: volver al menú
 SummaryKeys =  teclas
 SummaryBits = bits 
 Help1 = CPC Doctor te ayuda a comprobar un Amstrad CPC paso a paso y a explicar lo que le pasa.|| Manejo: elige con los cursores o el joystick y confirma con ENTER, espacio o FUEGO. También puedes pulsar el número de la opción. ESC vuelve atrás.|| Resultados:| Superado: la prueba ha salido bien.| Error: se ha observado un fallo.| Inconcluso: no se puede asegurar; repite la prueba.| Sin probar: todavía no se ha hecho.|| Las pruebas de imagen y sonido dependen de lo que tú veas y oigas: el programa no puede medirlas. Las causas que se proponen son posibilidades para comprobar, no un diagnóstico seguro.
-Help2 = Si el teclado no funciona, no toques nada al arrancar: a los 30 segundos se hacen solas las pruebas que no necesitan respuestas.|| Si tu CPC no llega a cargar este programa, prueba la versión en ROM: la ROM baja sustituye a la del sistema y funciona aunque falle la RAM.|| CPC Doctor está basado en Amstrad Diagnostics de Noel Llopis, con aportaciones de Brendan Alford, Gérald Vincent, Kevin Thacker, Rhino, KaosOverride, Spirax, issalig, Cacharreo, kuro68k, Renaud Guérin, Lordheavy, Cheshirecat, nicolas-robin e Ismael Salvador (disquetera y Z80).|| Licencia MIT. Código fuente y documentación en el repositorio del proyecto.
+Help2 = En el 0, ENTER muestra los detalles del equipo.|| Si el teclado no funciona, no toques nada al arrancar: a los 30 segundos se hacen solas las pruebas que no necesitan respuestas.|| Si tu CPC no llega a cargar este programa, prueba la versión en ROM: la ROM baja sustituye a la del sistema y funciona aunque falle la RAM.|| CPC Doctor está basado en Amstrad Diagnostics de Noel Llopis, con aportaciones de Brendan Alford, Gérald Vincent, Kevin Thacker, Rhino, KaosOverride, Spirax, issalig, Cacharreo, kuro68k, Renaud Guérin, Lordheavy, Cheshirecat, nicolas-robin e Ismael Salvador (disquetera y Z80). Licencia MIT. Código fuente y documentación en el repositorio del proyecto.
 
 # ---------------------------------------------------------------- RAM baja guiada
 LowerRAMIntro = Vamos a comprobar los 64 KB de RAM principal.|| Este programa se ha cargado en la propia RAM, así que no puede comprobar la zona que ocupa. Probará todo lo demás y te enseñará un mapa con lo comprobado y lo que no.|| Si el CPC ha llegado a cargar este programa, la RAM funciona al menos en parte: un chip de RAM muerto suele impedir que arranque. Para comprobar también esa zona, usa la versión en ROM: la ROM baja comprueba de #4000 a #FFFF y la ROM alta de #0000 a #BFFF.|| La pantalla se llenará de rayas durante unos segundos: es normal.

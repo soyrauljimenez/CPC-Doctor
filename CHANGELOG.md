@@ -1,6 +1,6 @@
 # Cambios
 
-## Sin publicar
+## 0.9.7
 
 ### Nuevo
 - Detalles del equipo: el BASIC de la ROM 0, con su versión (del texto que
@@ -8,6 +8,9 @@
   con el país.
 
 ### Cambiado
+- La opción 0 del menú se llama "Resumen y equipo", el consejo del menú
+  dice que ahí está qué equipo es, y en el resumen "ENTER: detalles del
+  equipo" va en la línea de ayuda, aparte. También lo explica la Ayuda.
 - El bloque de trabajo de la versión de disco y cinta pasa a #B400.
 
 ## 0.9.6

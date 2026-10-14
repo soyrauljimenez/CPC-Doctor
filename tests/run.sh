@@ -44,7 +44,7 @@ BOOT='wait 150 type run"doctor~ wait 400'
 
 # ---------------------------------------------------------------- arranque
 $EMU $DISK_ES $BOOT vram $OUT/menu6128.vram shot $OUT/menu6128.png
-check menu6128 "CPC 6128" "128KB" "AY-3-8912" "Disquetera: Sí (765A)" "1. Teclado y joystick" "5. Disquetera" "0. Resumen final"
+check menu6128 "CPC 6128" "128KB" "AY-3-8912" "Disquetera: Sí (765A)" "1. Teclado y joystick" "5. Disquetera" "0. Resumen y equipo"
 
 # Controladora que responde a la orden VERSION (µPD765B o posterior)
 $EMU $DISK_ES fdcb $BOOT vram $OUT/fdc765b.vram
@@ -218,7 +218,7 @@ check aftersoak "CPC 464 (EN), 64KB" "RAM alta : No disponible" "Sonido," "Casse
 
 # ---------------------------------------------------------------- ROM baja
 $EMU -m 464 -o build/dist/cpcdoctor-es-lower.rom wait 700 vram $OUT/lowerrom.vram shot $OUT/lowerrom.png
-check lowerrom "CPC Doctor V0.9.6L" "RAM baja  : Superado" "6. Prueba continua"
+check lowerrom "CPC Doctor V0.9.7L" "RAM baja  : Superado" "6. Prueba continua"
 
 # ---------------------------------------------------------------- tono de calibración
 # El WAV de audio/ debe ser un tono de 2000 Hz de unos dos minutos

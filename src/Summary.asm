@@ -263,6 +263,8 @@ SUM_VALUE_X	EQU 12
 	call	LocateWrap
 	ld	hl, TxtSummaryPhoto
 	call	PrintWrapped
+	ld	hl, TxtSummaryHint		; en la línea de ayuda, aparte
+	call	PrintHint
 	call	ReportEnd
 	call	WaitOK
 	call	nz, ShowMachineDetails		; ENTER: la segunda página
