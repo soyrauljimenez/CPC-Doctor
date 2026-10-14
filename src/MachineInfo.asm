@@ -308,23 +308,35 @@ GetBoardHint:
 
 ;; El BASIC (ROM alta 0): su versión, del texto que muestra al arrancar
 ;; ("BASIC 1.0", "BASIC 1.1"...), y su nombre por la firma, con el país.
-;; Es el que está activo: si la M4 pone su propia ROM 0, es el de la M4.
+;; Es el que está activo. Si la M4 pone su propia ROM baja, suele poner
+;; también su BASIC: se mira el de la placa apagando un momento las ROMs de
+;; la M4 (EnsureBasicInfo) y, si es otro, se muestra en su propia línea.
 PrintBasicInfo:
+	call	EnsureBasicInfo
 	ld	hl, TxtBasicROM
 	call	PrintString
-	;; La firma tarda unos segundos: se calcula una vez y se guarda
-	ld	a, (BasicKnown)
-	or	a
-	jr	nz, .known
-	call	GetBasicVersion
-	ld	(BasicVersion), a
-	xor	a
-	call	CRCUpperRom
-	ld	(BasicCRC), hl
-	ld	a, 1
-	ld	(BasicKnown), a
-.known:
 	ld	a, (BasicVersion)
+	ld	hl, (BasicCRC)
+	call	PrintBasicLine
+	ld	hl, (M4ROMCRC)
+	ld	a, h
+	or	l
+	ret	z
+	ld	hl, (BoardBasicCRC)		; el mismo: es el de la placa
+	ld	de, (BasicCRC)
+	or	a
+	sbc	hl, de
+	ret	z
+	ld	hl, TxtBoardBasic
+	call	PrintString
+	ld	a, (BoardBasicVersion)
+	ld	hl, (BoardBasicCRC)
+	jp	PrintBasicLine
+
+;; IN: A = cifra de la versión (0 si no se sabe), HL = firma
+;; "1.x, NOMBRE (FIRMA)" y salto de línea
+PrintBasicLine:
+	push	hl
 	or	a
 	jr	z, .noVersion
 	push	af
@@ -339,7 +351,7 @@ PrintBasicInfo:
 	ld	a, ' '
 	call	PrintChar
 .noVersion:
-	ld	hl, (BasicCRC)
+	pop	hl
 	push	hl
 	call	ROMTEST.GetROMAddrFromCRC
 	or	a
@@ -354,18 +366,56 @@ PrintBasicInfo:
 	call	PrintChar
 	pop	hl
 	call	ROMTEST.PrintCRC
-	call	NewLine
-	;; Si la M4 pone su propia ROM baja, el BASIC activo suele ser también
-	;; el suyo: el de la placa no se puede leer por debajo
+	jp	NewLine
+
+;; Calcula una vez la versión y la firma del BASIC activo y, con una M4 que
+;; pone su ROM baja, las del BASIC con esa ROM apartada (tardan unos segundos)
+EnsureBasicInfo:
+	ld	a, (BasicKnown)
+	or	a
+	ret	nz
+	call	GetBasicVersion
+	ld	(BasicVersion), a
+	xor	a
+	call	CRCUpperRom
+	ld	(BasicCRC), hl
+	ld	(BoardBasicCRC), hl
+	ld	a, (BasicVersion)
+	ld	(BoardBasicVersion), a
 	ld	hl, (M4ROMCRC)
 	ld	a, h
 	or	l
-	ret	z
-	call	SetWarningColors
-	ld	hl, TxtBasicFromM4
-	call	PrintString
-	call	SetDefaultColors
-	jp	NewLine
+	jr	z, .done
+	;; La M4 no deja apartar solo su ROM 0 (C_ROMLOW solo aparta la baja),
+	;; así que se apagan todas sus ROMs menos la suya (C_ROMSOFF, sin
+	;; reiniciar), se lee la ROM 0 de la placa y se vuelven a cargar
+	;; (C_ROMSUPDATE). Probado en un 464 real: la M4 recupera sus ROMs.
+	ld	a, (M4Slot)
+	ld	(RomsOffPacket + 3), a
+	ld	hl, RomsOffPacket
+	call	M4REPORT.M4Send
+	call	GetBasicVersion
+	ld	(BoardBasicVersion), a
+	xor	a
+	call	CRCUpperRom
+	ld	(BoardBasicCRC), hl
+	ld	hl, RomsUpdatePacket
+	call	M4REPORT.M4Send
+	;; Esperar a que vuelva el BASIC de la M4 (hasta 5 segundos)
+	ld	b, 250
+.wait:
+	push	bc
+	call	WaitForVsync
+	call	GetBasicVersion
+	pop	bc
+	ld	hl, BasicVersion
+	cp	(hl)
+	jr	z, .done
+	djnz	.wait
+.done:
+	ld	a, 1
+	ld	(BasicKnown), a
+	ret
 
 ;; OUT: A = cifra tras "BASIC 1." en los primeros 256 bytes de la ROM 0,
 ;;      o 0 si no está
@@ -402,6 +452,11 @@ GetBasicVersion:
 	ret
 
 BasicText:	db 'BASIC 1.'
+
+;; Órdenes de la M4 (fuente oficial de su ROM): C_ROMSOFF #4318 con la ROM
+;; que se respeta y 0 = sin reiniciar; C_ROMSUPDATE #432B recarga las ROMs
+RomsOffPacket:	db 4, #18, #43, 0, 0
+RomsUpdatePacket: db 2, #2B, #43
 
 ;; " nn NOMBRE" de cada ROM alta (las ranuras vacías repiten la 0, BASIC)
 PrintUpperROMNames:

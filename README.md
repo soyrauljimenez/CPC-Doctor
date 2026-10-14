@@ -46,8 +46,8 @@ las puede medir y no las presenta como mediciones. **ESC** en el menú vuelve al
 BASIC.
 
 **Detalles del equipo.** En la opción 0 (Resumen y equipo), al pulsar ENTER se ve una segunda
-página: de dónde sale el modelo, la ROM del sistema (y la que pone la M4
-encima, si la pone), las ROMs de expansión y lo que se puede deducir de la
+página: de dónde sale el modelo, la ROM del sistema y el BASIC (y los que pone
+la M4 encima, si los pone), las ROMs de expansión y lo que se puede deducir de la
 placa, separando lo seguro de lo que hay que mirar.
 
 **Informe en la M4 Board.** Si el CPC tiene una M4, al mostrar el resumen se
@@ -121,7 +121,7 @@ Otras piezas de terceros:
 
 ## Estado
 
-Versión **0.9.8**. Se han probado en un **CPC 464 real** (con M4 Board y la ROM
+Versión **0.9.9**. Se han probado en un **CPC 464 real** (con M4 Board y la ROM
 del 6128): la carga, la identificación, la pregunta del modelo, el teclado y el
 joystick (también las teclas que se encienden juntas), el sonido (que encontró
 una avería real en el chip AY), la comprobación de los registros del AY, la
@@ -192,7 +192,7 @@ after loading (for example, because the keyboard is dead), the tests that need
 no answers run by themselves and end on the summary.
 
 Build with `./build.sh` (sjasmplus ≥ 1.21, Python 3) and run the automated tests
-with `tests/run.sh`. Version 0.9.8 has been partly tested on a real CPC 464; see
+with `tests/run.sh`. Version 0.9.9 has been partly tested on a real CPC 464; see
 [docs/VALIDACION.md](docs/VALIDACION.md).
 
 **Disclaimer:** CPC Doctor is provided as is, without warranty of any kind (MIT

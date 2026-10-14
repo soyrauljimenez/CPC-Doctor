@@ -185,4 +185,6 @@ KeyWin: ds 64				; trozo de la tabla del teclado de la ROM
 KeyboardKind: db 0			; teclado según la ROM (MachineInfo.asm)
 BasicVersion: db 0			; cifra de "BASIC 1.x" (0 si no se sabe)
 BasicCRC: dw 0
+BoardBasicVersion: db 0		; el de la placa, con la ROM baja de la M4 apartada
+BoardBasicCRC: dw 0
  ENDIF

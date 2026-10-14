@@ -1,5 +1,14 @@
 # Cambios
 
+## 0.9.9
+
+### Nuevo
+- Detalles del equipo: si la M4 pone su propia ROM baja y su BASIC, se lee
+  también el BASIC de la placa. Para eso se apagan un momento las ROMs de
+  la M4 (C_ROMSOFF, sin reiniciar), se lee la ROM 0 y se vuelven a cargar
+  (C_ROMSUPDATE). Sale en su propia línea, "BASIC de la placa". Sustituye
+  al aviso de la 0.9.8.
+
 ## 0.9.8
 
 ### Nuevo
