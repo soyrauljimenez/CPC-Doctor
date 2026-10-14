@@ -183,4 +183,6 @@ SysROMCRC: dw 0				; firma de la ROM baja del sistema
 M4ROMCRC: dw 0				; la de la ROM baja de la M4 (0 si no pone)
 KeyWin: ds 64				; trozo de la tabla del teclado de la ROM
 KeyboardKind: db 0			; teclado según la ROM (MachineInfo.asm)
+BasicVersion: db 0			; cifra de "BASIC 1.x" (0 si no se sabe)
+BasicCRC: dw 0
  ENDIF

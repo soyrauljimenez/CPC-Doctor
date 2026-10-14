@@ -1,5 +1,15 @@
 # Cambios
 
+## Sin publicar
+
+### Nuevo
+- Detalles del equipo: el BASIC de la ROM 0, con su versión (del texto que
+  muestra al arrancar, "BASIC 1.0", "1.1"...) y su nombre por la firma,
+  con el país.
+
+### Cambiado
+- El bloque de trabajo de la versión de disco y cinta pasa a #B400.
+
 ## 0.9.6
 
 ### Cambiado

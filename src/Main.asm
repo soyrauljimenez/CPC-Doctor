@@ -237,7 +237,7 @@ RAMInitialize:
 ;; arriba para no pisarlo (fuera de la ventana #4000-#7FFF de la RAM alta).
 ;; Por encima de #A67B está el espacio del firmware y AMSDOS, pero el
 ;; programa no los usa una vez cargado (salir al BASIC reinicia en frío).
-RAMProgramAddr EQU #B000
+RAMProgramAddr EQU #B400
  ELSE
 RAMProgramAddr EQU #8000
  ENDIF

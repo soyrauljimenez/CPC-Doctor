@@ -50,5 +50,6 @@ TestResultTableDisk:
 ;; los mira desde el principio y tienen que empezar a 0.
 M4Slot: db #FF				; ranura de la ROM de la M4, #FF si no hay
 ReportOn: db 0
+BasicKnown: db 0			; BasicVersion y BasicCRC ya calculados
 ReportOnly: db 0			; capturar sin pintar
  ENDIF

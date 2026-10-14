@@ -252,6 +252,7 @@ CRTCMakers:
 	call	ROMTEST.CheckLowerROM
 	pop	af
 	ld	(TestResultTableLowerROM), a
+	call	PrintBasicInfo
 	call	PrintUpperROMNames
 	call	NewLine
 	call	NewLine
@@ -304,6 +305,92 @@ GetBoardHint:
 	ret	z
 	ld	hl, 0
 	ret
+
+;; El BASIC (ROM alta 0): su versión, del texto que muestra al arrancar
+;; ("BASIC 1.0", "BASIC 1.1"...), y su nombre por la firma, con el país.
+;; Es el que está activo: si la M4 pone su propia ROM 0, es el de la M4.
+PrintBasicInfo:
+	ld	hl, TxtBasicROM
+	call	PrintString
+	;; La firma tarda unos segundos: se calcula una vez y se guarda
+	ld	a, (BasicKnown)
+	or	a
+	jr	nz, .known
+	call	GetBasicVersion
+	ld	(BasicVersion), a
+	xor	a
+	call	CRCUpperRom
+	ld	(BasicCRC), hl
+	ld	a, 1
+	ld	(BasicKnown), a
+.known:
+	ld	a, (BasicVersion)
+	or	a
+	jr	z, .noVersion
+	push	af
+	ld	a, '1'
+	call	PrintChar
+	ld	a, '.'
+	call	PrintChar
+	pop	af
+	call	PrintChar
+	ld	a, ','
+	call	PrintChar
+	ld	a, ' '
+	call	PrintChar
+.noVersion:
+	ld	hl, (BasicCRC)
+	push	hl
+	call	ROMTEST.GetROMAddrFromCRC
+	or	a
+	jr	z, .unknown
+	call	ROMTEST.PrintROMName
+	jr	.crc
+.unknown:
+	ld	hl, TxtUnknownROM
+	call	PrintString
+.crc:
+	ld	a, ' '
+	call	PrintChar
+	pop	hl
+	call	ROMTEST.PrintCRC
+	jp	NewLine
+
+;; OUT: A = cifra tras "BASIC 1." en los primeros 256 bytes de la ROM 0,
+;;      o 0 si no está
+GetBasicVersion:
+	ld	bc, #7F85			; ROM alta conectada, modo 1
+	out	(c), c
+	ld	bc, #DF00
+	xor	a
+	out	(c), a
+	ld	hl, #C000
+.search:
+	push	hl
+	ld	de, BasicText
+	ld	b, 8
+.cmp:
+	ld	a, (de)
+	cp	(hl)
+	jr	nz, .no
+	inc	hl
+	inc	de
+	djnz	.cmp
+	ld	a, (hl)				; la cifra
+	pop	hl
+	jr	.done
+.no:
+	pop	hl
+	inc	l
+	jr	nz, .search
+	xor	a
+.done:
+	push	af
+	call	RestoreROMState
+	pop	af
+	ret
+
+BasicText:	db 'BASIC 1.'
 
 ;; " nn NOMBRE" de cada ROM alta (las ranuras vacías repiten la 0, BASIC)
 PrintUpperROMNames:
