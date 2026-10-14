@@ -115,6 +115,7 @@ CRTC2Maker =  (Motorola)
 GA40489Long =  (ASIC 40489)
 GA40226Long =  (GA 40226)
 BasicROM = BASIC (ROM 00): 
+BasicFromM4 =  Probablemente es el de la M4, no el de la placa.
 HintCostDown = Placa abaratada (Z80329, Gate Array 40226), de 1988 o posterior. Siempre con teclas bajas.
 HintSpain = CPC 464 español con teclado con Ñ: esta ROM solo se puso en ellos, desde septiembre de 1985, así que no es de teclas altas.|| Placa larga o corta: no se puede medir, hubo de las dos con esta ROM. Mira el ancho de la placa (unos 40 cm la larga, 24 cm la corta) o la posición de los conectores de joystick y estéreo (a la izquierda en la corta).
 Hint472 = ROM del 664 sin disquetera: probablemente un CPC 472 español (placa larga).

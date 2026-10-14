@@ -354,6 +354,17 @@ PrintBasicInfo:
 	call	PrintChar
 	pop	hl
 	call	ROMTEST.PrintCRC
+	call	NewLine
+	;; Si la M4 pone su propia ROM baja, el BASIC activo suele ser también
+	;; el suyo: el de la placa no se puede leer por debajo
+	ld	hl, (M4ROMCRC)
+	ld	a, h
+	or	l
+	ret	z
+	call	SetWarningColors
+	ld	hl, TxtBasicFromM4
+	call	PrintString
+	call	SetDefaultColors
 	jp	NewLine
 
 ;; OUT: A = cifra tras "BASIC 1." en los primeros 256 bytes de la ROM 0,

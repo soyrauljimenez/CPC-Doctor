@@ -1,5 +1,12 @@
 # Cambios
 
+## 0.9.8
+
+### Nuevo
+- Detalles del equipo: si la M4 pone su propia ROM baja, la línea del
+  BASIC avisa de que probablemente es el de la M4 y no el de la placa (el
+  de la placa no se puede leer por debajo).
+
 ## 0.9.7
 
 ### Nuevo

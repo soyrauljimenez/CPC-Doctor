@@ -115,6 +115,7 @@ CRTC2Maker =  (Motorola)
 GA40489Long =  (ASIC 40489)
 GA40226Long =  (GA 40226)
 BasicROM = BASIC (ROM 00): 
+BasicFromM4 =  Probably the M4 one, not the one on the board.
 HintCostDown = Cost-down board (Z80329, gate array 40226), from 1988 or later. Always with low keys.
 HintSpain = Spanish CPC 464 with an Ñ keyboard: this ROM was only fitted to those, from September 1985, so it is not a tall-key model.|| Long or short board: it cannot be measured, both existed with this ROM. Look at the board width (about 40 cm long, 24 cm short) or at where the joystick and stereo connectors are (on the left on the short one).
 Hint472 = 664 ROM without a disc drive: probably a Spanish CPC 472 (long board).
