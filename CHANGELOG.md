@@ -1,5 +1,11 @@
 # Cambios
 
+## Sin publicar
+
+### Nuevo
+- Resumen: la línea del teclado dice también las líneas o columnas de la
+  matriz que no responden ("columna 3") y si hay líneas o columnas unidas.
+
 ## 0.9.9
 
 ### Nuevo

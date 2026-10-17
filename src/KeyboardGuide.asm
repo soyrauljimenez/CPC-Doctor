@@ -507,6 +507,46 @@ KbSlowScanCheck:
 	ret
 
 
+;; Líneas (0-8) y columnas sin ninguna tecla que haya respondido, para el
+;; resumen. Solo con bastantes teclas probadas y no todas, como el análisis.
+;; OUT: KbDeadLines (bits 0-8), KbDeadCols (bits 0-7)
+ComputeKbDead:
+	ld	hl, 0
+	ld	(KbDeadLines), hl
+	xor	a
+	ld	(KbDeadCols), a
+	ld	a, (KbPressedCount)
+	cp	KEYBOARD_KEY_COUNT
+	ret	z
+	cp	MIN_FOR_ANALYSIS
+	ret	c
+	;; Líneas: una fila sin nada pulsado
+	ld	hl, PresseddMatrixBuffer + JOY_ROW - 1
+	ld	de, 0
+	ld	b, JOY_ROW
+.line:
+	sla	e
+	rl	d
+	ld	a, (hl)
+	or	a
+	jr	nz, .alive
+	inc	e
+.alive:
+	dec	hl
+	djnz	.line
+	ld	(KbDeadLines), de
+	;; Columnas: un bit a 0 en todas las filas 0-8
+	ld	hl, PresseddMatrixBuffer
+	ld	b, JOY_ROW
+	xor	a
+.or:
+	or	(hl)
+	inc	hl
+	djnz	.or
+	cpl
+	ld	(KbDeadCols), a
+	ret
+
 ;; Máscara de las teclas atascadas para la salida (ESC / TAB / FUEGO)
 ;; IN: A = fila del búfer, E = índice de fila  OUT: A sin las atascadas
 @KbMaskStuck:
@@ -532,6 +572,7 @@ KbSlowScanCheck:
 	call	CountKeysInBuffer.pressed	; A = teclas pulsadas
 	ld	(KbPressedCount), a
 	call	CountStuckAndFlaky
+	call	ComputeKbDead
 
 	;; Resultado del teclado
 	ld	a, (KbPressedCount)

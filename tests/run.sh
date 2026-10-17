@@ -98,6 +98,14 @@ check keyboard "Teclas que han respondido: 2/73" "Pulsadas desde el principio (a
 $EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 250 hold 0:2 hold 1:2 wait 4 release 0:2 release 1:2 wait 20 hold 0:2 hold 1:2 wait 4 release 0:2 release 1:2 wait 20 hold 8:2 wait 80 release 8:2 wait 80 vram $OUT/keyjoined.vram shot $OUT/keyjoined.png
 check keyjoined "Líneas unidas: 0-1" "Resultado: Error" "líneas de la matriz están unidas"
 
+# Columna 3 de la matriz sin respuesta: se pulsan todas las teclas de las
+# líneas 0-8 menos las de esa columna. El resumen tiene que decirlo.
+KEYS=""
+for r in 0 1 2 3 4 5 6 7 8; do for b in 0 1 2 4 5 6 7; do KEYS="$KEYS key $r:$b wait 6"; done; done
+$EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 250 $KEYS hold 8:2 wait 80 release 8:2 wait 80 vram $OUT/kbcol3.vram key 2:2 wait 60 key 4:0 wait 100 vram $OUT/kbcol3sum.vram
+check kbcol3 "No responde ninguna tecla de la columna (bit) 3"
+check kbcol3sum "Teclado  : Error (63/73 teclas, columna 3)"
+
 # AY lento (visto en un 464 real con un AY-3-8912A de recambio): cada tecla
 # aparece también en la línea siguiente. Se pulsan dos teclas de cada línea,
 # se sale y se mantiene la H cuando lo pide: la lectura lenta lo confirma.

@@ -50,6 +50,8 @@ TestResultTableDisk:
 ;; los mira desde el principio y tienen que empezar a 0.
 M4Slot: db #FF				; ranura de la ROM de la M4, #FF si no hay
 ReportOn: db 0
+KbDeadLines: dw 0			; líneas sin respuesta (KeyboardGuide.asm)
+KbDeadCols: db 0			; columnas sin respuesta
 BasicKnown: db 0			; BasicVersion y BasicCRC ya calculados
 ReportOnly: db 0			; capturar sin pintar
  ENDIF

@@ -341,8 +341,94 @@ DetailKeyboard:
 	call	PrintANoPad
 	ld	hl, TxtSummaryKeys
 	call	PrintString
+	;; Líneas y columnas que no responden, y líneas o columnas unidas. El
+	;; bucle del resumen usa IX y BC: se conservan
+	push	ix
+	push	bc
+	call	DetailKbMatrix
+	pop	bc
+	pop	ix
 	ld	a, ')'
 	jp	PrintChar
+
+DetailKbMatrix:
+	ld	hl, (KbDeadLines)
+	ld	de, TxtSummaryKbLine
+	ld	bc, TxtSummaryKbLines
+	ld	a, 9
+	call	DetailKbList
+	ld	a, (KbDeadCols)
+	ld	l, a
+	ld	h, 0
+	ld	de, TxtSummaryKbCol
+	ld	bc, TxtSummaryKbCols
+	ld	a, 8
+	call	DetailKbList
+	call	KBGUIDE.KbCountJoined		; A = parejas, C = tipo de la primera
+	or	a
+	jr	z, .close
+	ld	a, ','
+	call	PrintChar
+	ld	hl, TxtSummaryKbJoinedLines
+	ld	a, c
+	cp	1				; PAIR_LINES
+	jr	z, .joined
+	ld	hl, TxtSummaryKbJoinedCols
+.joined:
+	jp	PrintString
+.close:
+	ret
+
+;; ", línea 3" o ", líneas 3 5" con los bits a 1 de HL
+;; IN: HL = bits, A = cuántos, DE = singular, BC = plural
+DetailKbList:
+	push	af
+	ld	a, h
+	or	l
+	jr	nz, .some
+	pop	af
+	ret
+.some:
+	push	bc
+	push	de
+	;; ¿Uno solo? (HL & (HL-1) = 0)
+	ld	d, h
+	ld	e, l
+	dec	de
+	ld	a, d
+	and	h
+	ld	d, a
+	ld	a, e
+	and	l
+	or	d
+	pop	de
+	pop	bc
+	push	hl
+	ld	h, d
+	ld	l, e
+	jr	z, .one
+	ld	h, b
+	ld	l, c
+.one:
+	ld	a, ','
+	call	PrintChar
+	call	PrintString
+	pop	hl
+	pop	af
+	ld	b, a
+	ld	c, '0'
+.bit:
+	srl	h
+	rr	l
+	jr	nc, .next
+	ld	a, ' '
+	call	PrintChar
+	ld	a, c
+	call	PrintChar
+.next:
+	inc	c
+	djnz	.bit
+	ret
 
 ;; Primer paso de la prueba de imagen que no se vio bien
 DetailVideo:
