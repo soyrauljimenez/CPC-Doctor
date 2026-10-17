@@ -119,7 +119,7 @@ BasicROM = BASIC (ROM 00):
 BoardBasic = BASIC de la placa: 
 HintCostDown = Placa abaratada (Z80329, Gate Array 40226), de 1988 o posterior. Siempre con teclas bajas.
 HintSpain = CPC 464 español con teclado con Ñ: esta ROM solo se puso en ellos, desde septiembre de 1985, así que no es de teclas altas.|| Placa larga o corta: no se puede medir, hubo de las dos con esta ROM. Mira el ancho de la placa (unos 40 cm la larga, 24 cm la corta) o la posición de los conectores de joystick y estéreo (a la izquierda en la corta).
-Hint472 = ROM del 664 sin disquetera: probablemente un CPC 472 español (placa larga).
+Hint472 = ROM del 664 sin disquetera: un CPC 472 de los primeros, con teclado inglés sin Ñ. Se vendió en España de septiembre de 1985 a 1986, con placa larga; el 472 con Ñ llevaba otra ROM, la española del 464.
 Hint464 = Si es de teclas altas o bajas y si la placa es larga o corta no se puede medir. Mira la altura de las teclas (unos 12,5 mm las altas, 8 mm las bajas) o la etiqueta del número de serie, que lleva el año y el mes.
 # ================================================================ versión guiada
 MenuVideo = Imagen
@@ -232,7 +232,7 @@ SummaryPending = PENDIENTE:
 SummaryNothingPending = nada
 SummaryCode = Código:
 SummaryPhoto = Haz una foto si vas a pedir ayuda en un foro.
-SummaryHint = ENTER: detalles del equipo   ESC: volver al menú
+SummaryHint = ENTER o espacio: detalles del equipo  ESC: menú
 SummaryKeys =  teclas
 SummaryKbLine =  línea
 SummaryKbLines =  líneas
