@@ -233,6 +233,7 @@ SummaryNothingPending = nothing
 SummaryCode = Code:
 SummaryPhoto = Take a photo if you ask for help on a forum.
 SummaryHint = ENTER or space: machine details  ESC: menu
+SummaryBusy = One moment: saving the report to the M4...
 SummaryKeys =  keys
 SummaryKbLine =  line
 SummaryKbLines =  lines

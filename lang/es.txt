@@ -233,6 +233,7 @@ SummaryNothingPending = nada
 SummaryCode = Código:
 SummaryPhoto = Haz una foto si vas a pedir ayuda en un foro.
 SummaryHint = ENTER o espacio: detalles del equipo  ESC: menú
+SummaryBusy = Un momento: guardando el informe en la M4...
 SummaryKeys =  teclas
 SummaryKbLine =  línea
 SummaryKbLines =  líneas

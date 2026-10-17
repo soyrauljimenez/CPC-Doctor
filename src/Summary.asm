@@ -263,9 +263,21 @@ SUM_VALUE_X	EQU 12
 	call	LocateWrap
 	ld	hl, TxtSummaryPhoto
 	call	PrintWrapped
+	;; Con M4, escribir el informe tarda unos segundos (y el teclado no se
+	;; atiende): se avisa en la línea de ayuda, sin que vaya al informe
+	ld	a, (ReportOn)
+	or	a
+	jr	z, .noReport
+	xor	a
+	ld	(ReportOn), a
+	ld	hl, TxtSummaryBusy
+	call	PrintHint
+	ld	a, 1
+	ld	(ReportOn), a
+	call	ReportEnd
+.noReport:
 	ld	hl, TxtSummaryHint		; en la línea de ayuda, aparte
 	call	PrintHint
-	call	ReportEnd
 	call	WaitOK
 	call	nz, ShowMachineDetails		; ENTER: la segunda página
 	jp	MainMenuRepeat

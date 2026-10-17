@@ -40,7 +40,7 @@ DISK_ES="-m 6128 -d build/dist/cpcdoctor-es.dsk"
 # Mientras carga la cinta se pulsa de vez en cuando el cursor derecha (no hace
 # nada en el menú) para que no salte el modo automático de los 30 s
 TAPEWAIT=$(for i in $(seq 18); do printf ' wait 1000 key 0:1'; done)
-BOOT='wait 150 type run"doctor~ wait 400'
+BOOT='wait 150 type run"doctor~ wait 500'
 
 # ---------------------------------------------------------------- arranque
 $EMU $DISK_ES $BOOT vram $OUT/menu6128.vram shot $OUT/menu6128.png
@@ -140,7 +140,7 @@ check auto "Resumen final" "Imagen   : Sin probar" "Sonido   : Sin probar" "Tecl
 
 # AY con el puerto A lento (pull-ups débiles): se mide al arrancar, sin
 # pulsar teclas. La primera lectura llega a unos 170 ciclos de soltarlo.
-$EMU $DISK_ES slowport 400 wait 150 type 'run"doctor~' wait 400 key 8:0 wait 150 key 2:2 wait 250 hold 8:2 wait 80 release 8:2 wait 30 vram $OUT/slowport.vram shot $OUT/slowport.png wait 60 key 2:2 wait 80 key 4:0 wait 100 vram $OUT/slowportsum.vram
+$EMU $DISK_ES slowport 400 wait 150 type 'run"doctor~' wait 500 key 8:0 wait 150 key 2:2 wait 250 hold 8:2 wait 80 release 8:2 wait 30 vram $OUT/slowport.vram shot $OUT/slowport.png wait 60 key 2:2 wait 80 key 4:0 wait 100 vram $OUT/slowportsum.vram
 check slowport "Puerto A del AY: lento" "Resultado: Error" "resistencias pull-up"
 check slowportsum "AVISO: el puerto A del AY es lento"
 
