@@ -293,7 +293,7 @@ TxtSeparator: db ', ', 0
 ;; Código: versión, modelo, bancos de RAM alta y un dígito por prueba
 ;; en el orden de SummaryItems (0 sin probar, 1 superado, 2 error,
 ;; 3 cancelado, 4 no disponible, 5 inconcluso).
-;; Ejemplo: 09A-3-01-11101150
+;; Ejemplo: 10A-3-01-11101150
 PrintResultCode:
 	ld	a, VERSION_CODE_1
 	call	PrintChar

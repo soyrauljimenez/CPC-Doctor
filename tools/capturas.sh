@@ -14,7 +14,7 @@ IMG=docs/img
 mkdir -p $IMG
 rm -f $IMG/*.png
 DISK="-m 6128 -d build/dist/cpcdoctor-es.dsk"
-BOOT='wait 150 type run"doctor~ wait 450'
+BOOT='wait 150 type run"doctor~ wait 550'
 OK='key 2:2'
 SI='key 8:0'
 NO='key 8:1'

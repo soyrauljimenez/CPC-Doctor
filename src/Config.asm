@@ -46,8 +46,8 @@
 		DEFINE RESTORE_ROM_CONFIG #7F00 + %10001101
 	ENDIF
 
-	DEFINE VERSION_STR '0.9.9'
-	DEFINE VERSION_CODE_1 '0'		; versión en el código del resumen
-	DEFINE VERSION_CODE_2 '9'		; CPC Doctor, basado en Amstrad Diagnostics 1.4
+	DEFINE VERSION_STR '1.0.0'
+	DEFINE VERSION_CODE_1 '1'		; versión en el código del resumen
+	DEFINE VERSION_CODE_2 '0'		; CPC Doctor, basado en Amstrad Diagnostics 1.4
 
 

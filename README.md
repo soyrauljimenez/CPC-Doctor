@@ -121,14 +121,15 @@ Otras piezas de terceros:
 
 ## Estado
 
-Versión **0.9.9**. Se han probado en un **CPC 464 real** (con M4 Board y la ROM
-del 6128): la carga, la identificación, la pregunta del modelo, el teclado y el
-joystick (también las teclas que se encienden juntas), el sonido (que encontró
-una avería real en el chip AY), la comprobación de los registros del AY, la
-medida de su puerto A, el modo automático, la RAM baja, la prueba continua, la
+Versión **1.0.0**. Se ha probado en **CPC 464 reales** con M4 Board: la carga,
+la identificación (modelo, ROM del sistema, BASIC y lo que pone la M4 encima),
+el teclado y el joystick (también las teclas que se encienden juntas y las
+líneas o columnas que no responden), el sonido (que encontró una avería real en
+el chip AY), la comprobación de los registros del AY, la medida de su puerto A,
+el modo automático, la RAM baja, la prueba continua, el informe en la M4, la
 ayuda y la salida al BASIC.
 
-Todo lo demás está comprobado solo en el emulador de pruebas (99 comprobaciones
+Todo lo demás está comprobado solo en el emulador de pruebas (103 comprobaciones
 automáticas). Falta probar en máquinas reales, entre otras cosas, la
 disquetera, la cassette con el tono, otros modelos, CRTC y ampliaciones. Ver
 [docs/VALIDACION.md](docs/VALIDACION.md). Si lo pruebas en tu CPC, cuéntalo.
@@ -192,7 +193,7 @@ after loading (for example, because the keyboard is dead), the tests that need
 no answers run by themselves and end on the summary.
 
 Build with `./build.sh` (sjasmplus ≥ 1.21, Python 3) and run the automated tests
-with `tests/run.sh`. Version 0.9.9 has been partly tested on a real CPC 464; see
+with `tests/run.sh`. Version 1.0.0 has been tested on real CPC 464 machines with an M4 Board; see
 [docs/VALIDACION.md](docs/VALIDACION.md).
 
 **Disclaimer:** CPC Doctor is provided as is, without warranty of any kind (MIT

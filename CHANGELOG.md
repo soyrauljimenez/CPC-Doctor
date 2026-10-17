@@ -1,6 +1,8 @@
 # Cambios
 
-## Sin publicar
+## 1.0.0
+
+Primera versión estable. Reúne todo lo de las 0.9.x.
 
 ### Nuevo
 - Resumen: la línea del teclado dice también las líneas o columnas de la
@@ -11,6 +13,9 @@
   "CPC 472" y se trata como un 464 (dibujo del teclado, chips de RAM).
 
 ### Corregido
+- Resumen: mientras se guarda el informe en la M4 (unos segundos) se avisa
+  en la línea de ayuda, y la ayuda dice "ENTER o espacio" (si ENTER falla,
+  se puede usar el espacio).
 - Con una M4 que pone su propio BASIC, CPC Doctor podía seguir mandándole
   órdenes mientras recargaba sus ROMs y colgarse en los detalles del
   equipo, si el BASIC de la M4 y el de la placa tenían la misma versión.

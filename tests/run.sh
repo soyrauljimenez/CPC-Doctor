@@ -170,7 +170,7 @@ PY
 
 # ---------------------------------------------------------------- resumen
 $EMU $DISK_ES $BOOT key 4:0 wait 80 vram $OUT/summary.vram shot $OUT/summary.png
-check summary "CPC 6128 (EN), 128KB, CRTC 1 (UMC 6845R), AY-3-8912" "PENDIENTE:" "Código: 09A-3-01-"
+check summary "CPC 6128 (EN), 128KB, CRTC 1 (UMC 6845R), AY-3-8912" "PENDIENTE:" "Código: 10A-3-01-"
 # Un AY sano no da el aviso del puerto A
 if grep -qF "AVISO" $OUT/summary.txt; then FAIL=$((FAIL + 1)); echo "FALLO  summary: aviso del puerto con un AY sano"; else PASS=$((PASS + 1)); fi
 
@@ -234,7 +234,7 @@ check aftersoak "CPC 464 (EN), 64KB" "RAM alta : No disponible" "Sonido," "Casse
 
 # ---------------------------------------------------------------- ROM baja
 $EMU -m 464 -o build/dist/cpcdoctor-es-lower.rom wait 700 vram $OUT/lowerrom.vram shot $OUT/lowerrom.png
-check lowerrom "CPC Doctor V0.9.9L" "RAM baja  : Superado" "6. Prueba continua"
+check lowerrom "CPC Doctor V1.0.0L" "RAM baja  : Superado" "6. Prueba continua"
 
 # ---------------------------------------------------------------- tono de calibración
 # El WAV de audio/ debe ser un tono de 2000 Hz de unos dos minutos
