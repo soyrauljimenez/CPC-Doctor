@@ -103,8 +103,16 @@ check keyjoined "Líneas unidas: 0-1" "Resultado: Error" "líneas de la matriz e
 KEYS=""
 for r in 0 1 2 3 4 5 6 7 8; do for b in 0 1 2 4 5 6 7; do KEYS="$KEYS key $r:$b wait 6"; done; done
 $EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 250 $KEYS hold 8:2 wait 80 release 8:2 wait 80 vram $OUT/kbcol3.vram key 2:2 wait 60 key 4:0 wait 100 vram $OUT/kbcol3sum.vram
-check kbcol3 "No responde ninguna tecla de la columna (bit) 3"
+check kbcol3 "No responde (o solo una tecla) la columna (bit) 3"
 check kbcol3sum "Teclado  : Error (63/73 teclas, columna 3)"
+
+# Línea 3 con una sola tecla que responde ('^', como en un 472 real): se
+# pulsan todas las de las líneas 0-8 menos las de la línea 3, y el '^'
+KEYS="key 3:0 wait 6"
+for r in 0 1 2 4 5 6 7 8; do for b in 0 1 2 3 4 5 6 7; do KEYS="$KEYS key $r:$b wait 6"; done; done
+$EMU $DISK_ES $BOOT key 8:0 wait 150 key 2:2 wait 250 $KEYS hold 8:2 wait 80 release 8:2 wait 80 vram $OUT/kbline3.vram key 2:2 wait 60 key 4:0 wait 100 vram $OUT/kbline3sum.vram
+check kbline3 "No responde (o solo una tecla) la línea 3"
+check kbline3sum "línea 3"
 
 # AY lento (visto en un 464 real con un AY-3-8912A de recambio): cada tecla
 # aparece también en la línea siguiente. Se pulsan dos teclas de cada línea,

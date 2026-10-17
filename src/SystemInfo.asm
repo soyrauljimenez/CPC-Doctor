@@ -63,6 +63,25 @@
  ENDIF
 
 .noFDC:
+ IFDEF GUIDED
+	;; ROM del 664 sin disquetera ni RAM alta: un CPC 472 (la carcasa y el
+	;; teclado del 464, con la ROM del 664). El 664 lleva la disquetera
+	;; dentro. Lo que haya dicho el usuario manda.
+	ld	a, (ModelConfirmed)
+	or	a
+	ret	nz
+	ld	a, (ModelType)
+	cp	MODEL_CPC664
+	ret	nz
+	ld	a, (FDCPresent)
+	ld	hl, ValidBankCount
+	or	(hl)
+	ret	nz
+	ld	a, MODEL_CPC472
+	ld	(ModelType), a
+	ld	a, KEYBOARD_LAYOUT_464
+	ld	(KeyboardLayout), a
+ ENDIF
 
 	ret
 

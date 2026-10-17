@@ -187,4 +187,5 @@ BasicVersion: db 0			; cifra de "BASIC 1.x" (0 si no se sabe)
 BasicCRC: dw 0
 BoardBasicVersion: db 0		; el de la placa, con la ROM baja de la M4 apartada
 BoardBasicCRC: dw 0
+ActiveROM0Sum: dw 0			; suma rápida de la ROM 0 de la M4
  ENDIF

@@ -237,6 +237,10 @@ CRTCMakers:
 	ld	a, (ModelDoubt)
 	or	a
 	jr	nz, .source
+	ld	hl, TxtModelBy472
+	ld	a, (ModelType)
+	cp	MODEL_CPC472
+	jr	z, .source
 	ld	hl, TxtModelByROM
 .source:
 	call	PrintString
@@ -390,6 +394,8 @@ EnsureBasicInfo:
 	;; así que se apagan todas sus ROMs menos la suya (C_ROMSOFF, sin
 	;; reiniciar), se lee la ROM 0 de la placa y se vuelven a cargar
 	;; (C_ROMSUPDATE). Probado en un 464 real: la M4 recupera sus ROMs.
+	call	QuickSumROM0			; para saber cuándo vuelve la de la M4
+	ld	(ActiveROM0Sum), hl
 	ld	a, (M4Slot)
 	ld	(RomsOffPacket + 3), a
 	ld	hl, RomsOffPacket
@@ -401,15 +407,21 @@ EnsureBasicInfo:
 	ld	(BoardBasicCRC), hl
 	ld	hl, RomsUpdatePacket
 	call	M4REPORT.M4Send
-	;; Esperar a que vuelva el BASIC de la M4 (hasta 5 segundos)
+	;; Esperar a que la M4 vuelva a poner su ROM 0, exactamente la de antes
+	;; (la versión no basta: la de la placa puede ser también 1.1), y al
+	;; menos medio segundo; como mucho, 10 segundos
+	ld	b, 25
+	call	WaitFrames
 	ld	b, 250
 .wait:
 	push	bc
 	call	WaitForVsync
-	call	GetBasicVersion
+	call	WaitForVsync
+	call	QuickSumROM0
+	ld	de, (ActiveROM0Sum)
+	or	a
+	sbc	hl, de
 	pop	bc
-	ld	hl, BasicVersion
-	cp	(hl)
 	jr	z, .done
 	djnz	.wait
 .done:
@@ -452,6 +464,30 @@ GetBasicVersion:
 	ret
 
 BasicText:	db 'BASIC 1.'
+
+;; OUT: HL = suma de los primeros 256 bytes de la ROM alta 0 (rápida)
+QuickSumROM0:
+	ld	bc, #7F85			; ROM alta conectada, modo 1
+	out	(c), c
+	ld	bc, #DF00
+	xor	a
+	out	(c), a
+	ld	hl, 0
+	ld	de, #C000
+	ld	b, 0
+.add:
+	ld	a, (de)
+	add	a, l
+	ld	l, a
+	jr	nc, .nc
+	inc	h
+.nc:
+	inc	de
+	djnz	.add
+	push	hl
+	call	RestoreROMState
+	pop	hl
+	ret
 
 ;; Órdenes de la M4 (fuente oficial de su ROM): C_ROMSOFF #4318 con la ROM
 ;; que se respeta y 0 = sin reiniciar; C_ROMSUPDATE #432B recarga las ROMs

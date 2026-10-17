@@ -5,6 +5,16 @@
 ### Nuevo
 - Resumen: la línea del teclado dice también las líneas o columnas de la
   matriz que no responden ("columna 3") y si hay líneas o columnas unidas.
+- Teclado: una línea o columna cuenta como sin respuesta también cuando
+  solo responde una de sus teclas.
+- CPC 472: con la ROM del 664 y sin disquetera ni RAM alta, el modelo es
+  "CPC 472" y se trata como un 464 (dibujo del teclado, chips de RAM).
+
+### Corregido
+- Con una M4 que pone su propio BASIC, CPC Doctor podía seguir mandándole
+  órdenes mientras recargaba sus ROMs y colgarse en los detalles del
+  equipo, si el BASIC de la M4 y el de la placa tenían la misma versión.
+  Ahora espera a que la ROM 0 vuelva a ser exactamente la de antes.
 
 ## 0.9.9
 

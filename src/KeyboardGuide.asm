@@ -507,8 +507,9 @@ KbSlowScanCheck:
 	ret
 
 
-;; Líneas (0-8) y columnas sin ninguna tecla que haya respondido, para el
-;; resumen. Solo con bastantes teclas probadas y no todas, como el análisis.
+;; Líneas (0-8) y columnas en las que no ha respondido ninguna tecla o solo
+;; una (visto en un 472 real: de la línea 3 solo respondía '^'), para el
+;; análisis y el resumen. Solo con bastantes teclas probadas y no todas.
 ;; OUT: KbDeadLines (bits 0-8), KbDeadCols (bits 0-7)
 ComputeKbDead:
 	ld	hl, 0
@@ -520,7 +521,7 @@ ComputeKbDead:
 	ret	z
 	cp	MIN_FOR_ANALYSIS
 	ret	c
-	;; Líneas: una fila sin nada pulsado
+	;; Líneas: como mucho un bit a 1 en la fila (x AND (x-1) = 0)
 	ld	hl, PresseddMatrixBuffer + JOY_ROW - 1
 	ld	de, 0
 	ld	b, JOY_ROW
@@ -528,22 +529,40 @@ ComputeKbDead:
 	sla	e
 	rl	d
 	ld	a, (hl)
-	or	a
+	ld	c, a
+	dec	a
+	and	c
 	jr	nz, .alive
 	inc	e
 .alive:
 	dec	hl
 	djnz	.line
 	ld	(KbDeadLines), de
-	;; Columnas: un bit a 0 en todas las filas 0-8
+	;; Columnas: como mucho una fila con ese bit a 1
+	ld	c, 1				; bit de la columna
+	ld	e, 0				; columnas muertas
+.col:
 	ld	hl, PresseddMatrixBuffer
 	ld	b, JOY_ROW
-	xor	a
-.or:
-	or	(hl)
+	ld	d, 0				; filas con la tecla pulsada
+.row:
+	ld	a, (hl)
+	and	c
+	jr	z, .notSet
+	inc	d
+.notSet:
 	inc	hl
-	djnz	.or
-	cpl
+	djnz	.row
+	ld	a, d
+	cp	2
+	jr	nc, .colAlive
+	ld	a, e
+	or	c
+	ld	e, a
+.colAlive:
+	sla	c
+	jr	nz, .col
+	ld	a, e
 	ld	(KbDeadCols), a
 	ret
 
@@ -1015,70 +1034,18 @@ KbAnalysis:
 .enough:
 	xor	a
 	ld	(KbPatternFound), a
-	;; Líneas 0-8 completas sin respuesta
-	ld	hl, PresseddMatrixBuffer
-	ld	b, 0
-.line:
-	ld	a, (hl)
-	or	a
-	jr	nz, .nextLine
-	push	hl
-	push	bc
-	ld	hl, TxtKbLineDead
-	call	PrintWrapped
-	ld	a, ' '
-	call	PrintChar
-	pop	bc
-	push	bc
-	ld	a, b
-	add	a, '0'
-	call	PrintChar
-	call	WrapNewLine
-	ld	a, 1
-	ld	(KbPatternFound), a
-	pop	bc
-	pop	hl
-.nextLine:
-	inc	hl
-	inc	b
-	ld	a, b
-	cp	JOY_ROW
-	jr	nz, .line
-
-	;; Columnas: OR de las filas 0-8; un bit a 0 es una columna muerta
-	ld	hl, PresseddMatrixBuffer
+	;; Líneas y columnas sin respuesta (o con una sola tecla que responde),
+	;; calculadas en ComputeKbDead
+	ld	hl, (KbDeadLines)
+	ld	de, TxtKbLineDead
 	ld	b, JOY_ROW
-	xor	a
-.or:
-	or	(hl)
-	inc	hl
-	djnz	.or
-	ld	c, a
-	ld	b, 0
-.col:
-	bit	0, c
-	jr	nz, .nextCol
-	push	bc
-	ld	hl, TxtKbColumnDead
-	call	PrintWrapped
-	ld	a, ' '
-	call	PrintChar
-	pop	bc
-	push	bc
-	ld	a, b
-	add	a, '0'
-	call	PrintChar
-	call	WrapNewLine
-	ld	a, 1
-	ld	(KbPatternFound), a
-	pop	bc
-.nextCol:
-	rr	c
-	inc	b
-	ld	a, b
-	cp	8
-	jr	nz, .col
-
+	call	.list
+	ld	a, (KbDeadCols)
+	ld	l, a
+	ld	h, 0
+	ld	de, TxtKbColumnDead
+	ld	b, 8
+	call	.list
 	ld	a, (KbPatternFound)
 	or	a
 	ld	hl, TxtKbPatternAdvice
@@ -1086,5 +1053,37 @@ KbAnalysis:
 	ld	hl, TxtKbScatteredAdvice
 .advice:
 	jp	PrintWrapped
+
+;; IN: HL = bits, B = cuántos, DE = texto. Una línea por bit a 1.
+.list:
+	ld	c, 0
+.listBit:
+	srl	h
+	rr	l
+	jr	nc, .listNext
+	push	hl
+	push	bc
+	push	de
+	ex	de, hl
+	call	PrintWrapped
+	ld	a, ' '
+	call	PrintChar
+	pop	de
+	pop	bc
+	push	bc
+	push	de
+	ld	a, c
+	add	a, '0'
+	call	PrintChar
+	call	WrapNewLine
+	ld	a, 1
+	ld	(KbPatternFound), a
+	pop	de
+	pop	bc
+	pop	hl
+.listNext:
+	inc	c
+	djnz	.listBit
+	ret
 
  ENDMODULE
