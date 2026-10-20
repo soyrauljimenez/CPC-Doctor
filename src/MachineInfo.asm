@@ -261,12 +261,18 @@ CRTCMakers:
 	call	NewLine
 	call	NewLine
 
-	;; ---- Placa
+	;; ---- Placa: lo que se deduce y, si es un Schneider, lo que eso supone
 	call	GetBoardHint
+	push	hl
 	ld	a, h
 	or	l
-	ret	z
-	push	hl
+	jr	nz, .boardHeader
+	ld	a, (VendorName)
+	cp	VENDOR_SCHNEIDER
+	jr	z, .boardHeader
+	pop	hl
+	ret
+.boardHeader:
 	ld	hl, TxtDetailsBoard
 	call	PrintHeader
 	ld	a, (txt_y)
@@ -275,7 +281,20 @@ CRTCMakers:
 	ld	h, 1
 	call	LocateWrap
 	pop	hl
+	ld	a, h
+	or	l
+	jr	z, .schneider
+	call	PrintWrapped
+	call	WrapNewLine
+.schneider:
+	ld	a, (VendorName)
+	cp	VENDOR_SCHNEIDER
+	ret	nz
+	ld	hl, TxtHintSchneider
 	jp	PrintWrapped
+
+;; Marca según los puentes LK1-LK3 (Vendor.asm)
+VENDOR_SCHNEIDER	EQU 2
 
 ;; OUT: HL = texto sobre la placa, o 0 si no hay nada que decir
 GetBoardHint:

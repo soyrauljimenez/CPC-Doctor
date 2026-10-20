@@ -120,6 +120,7 @@ BoardBasic = Board BASIC:
 HintCostDown = Cost-down board (Z80329, gate array 40226), from 1988 or later. Always with low keys.
 HintSpain = Spanish CPC 464 with an Ñ keyboard: this ROM was only fitted to those, from September 1985, so it is not a tall-key model.|| Long or short board: it cannot be measured, both existed with this ROM. Look at the board width (about 40 cm long, 24 cm short) or at where the joystick and stereo connectors are (on the left on the short one).
 Hint472 = 664 ROM without a disc drive: an early CPC 472, with an English keyboard without Ñ. Sold in Spain from September 1985 to 1986, with a long board; the 472 with Ñ had a different ROM, the Spanish 464 one.
+HintSchneider = Schneider brand (from the board links): inside it is the same as the Amstrad, with the same ROM. Long board Z70200 (MC0008) or medium Z70378 (MC0046).
 Hint464 = Whether it has tall or low keys, or a long or short board, cannot be measured. Look at the key height (about 12.5 mm tall, 8 mm low) or at the serial number label, which carries the year and month.
 # ================================================================ guided version
 MenuVideo = Picture

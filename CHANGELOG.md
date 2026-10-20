@@ -1,5 +1,17 @@
 # Cambios
 
+## 1.0.1
+
+### Nuevo
+- Detalles del equipo: con la marca Schneider (puentes de la placa) se
+  explica que por dentro es igual que el Amstrad, con la misma ROM, y qué
+  placas llevaba (larga Z70200 o media Z70378).
+
+### Cambiado
+- El bloque de trabajo de la versión de disco y cinta pasa a #B500 y puede
+  entrar en la casilla de la pila, que usa poco; se comprueba al compilar
+  que deja al menos 768 bytes.
+
 ## 1.0.0
 
 Primera versión estable. Reúne todo lo de las 0.9.x.

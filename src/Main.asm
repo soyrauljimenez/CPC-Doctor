@@ -206,6 +206,9 @@ RAMInitialize:
  IFDEF RAMBuild
 	;; El programa no puede llegar al bloque que se copia en RAMProgramAddr
 	ASSERT RAMBlockEnd <= RAMProgramAddr
+	;; El bloque puede entrar en la casilla de la pila (#BC00-#BFFF), que
+	;; crece hacia abajo desde #C000 y usa poco: se deja un margen de 768
+	ASSERT RAMEnd <= #BD00
 	;; Todo lo que se usa con un banco de RAM alta conectado en #4000-#7FFF
 	;; tiene que estar por debajo de #4000 (ver CheckUpperRAM.asm)
 	ASSERT UpperRAMTestCodeEnd <= #4000
@@ -237,7 +240,7 @@ RAMInitialize:
 ;; arriba para no pisarlo (fuera de la ventana #4000-#7FFF de la RAM alta).
 ;; Por encima de #A67B está el espacio del firmware y AMSDOS, pero el
 ;; programa no los usa una vez cargado (salir al BASIC reinicia en frío).
-RAMProgramAddr EQU #B400
+RAMProgramAddr EQU #B500
  ELSE
 RAMProgramAddr EQU #8000
  ENDIF
