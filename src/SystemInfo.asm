@@ -64,6 +64,21 @@
 
 .noFDC:
  IFDEF GUIDED
+	;; Plus: con RAM alta o disquetera es un 6128 Plus; si no, un 464 Plus o
+	;; una GX4000 (no se distinguen: la GX4000 no tiene teclado)
+	ld	a, (ModelType)
+	cp	MODEL_C6128PLUS
+	jr	nz, .notPlus
+	ld	a, (FDCPresent)
+	ld	hl, ValidBankCount
+	or	(hl)
+	ld	a, MODEL_6128PLUS_SURE
+	jr	nz, .plusSet
+	ld	a, MODEL_464PLUS_GX
+.plusSet:
+	ld	(ModelType), a
+	ret
+.notPlus:
 	;; ROM del 664 sin disquetera ni RAM alta: un CPC 472 (la carcasa y el
 	;; teclado del 464, con la ROM del 664). El 664 lleva la disquetera
 	;; dentro. Lo que haya dicho el usuario manda.

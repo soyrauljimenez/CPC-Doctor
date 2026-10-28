@@ -1,5 +1,16 @@
 # Cambios
 
+## Sin publicar
+
+### Nuevo
+- CPC Plus: con RAM alta o disquetera el modelo es "CPC 6128 PLUS"; si
+  no, "464+/GX4000" (la GX4000 no tiene teclado y no se distinguen). Las
+  versiones ROM siguen diciendo "PLUS/GX4000".
+
+### Corregido
+- Resumen: la primera línea se salía de la pantalla con un Plus o un 6128
+  abaratado; ahí el CRTC lleva "(ASIC)" o "(40226)".
+
 ## 1.0.1
 
 ### Nuevo

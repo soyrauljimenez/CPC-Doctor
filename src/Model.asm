@@ -14,6 +14,10 @@ TxtModelCPC6128: db "CPC 6128", 0
 ;;TxtModelGX4000: db "GX4000", 0 
 TxtModelPlusRange: db "PLUS/GX4000", 0 
 TxtModelCPC472: db "CPC 472", 0
+ IFDEF GUIDED
+TxtModel6128PlusSure: db "CPC 6128 PLUS", 0
+TxtModel464PlusGX: db "464+/GX4000", 0
+ ENDIF
 
 ;; Offsets from ModelNames
 
@@ -26,6 +30,10 @@ TxtModelCPC472: db "CPC 472", 0
 	db TxtModelPlusRange - TxtUnknown
 	db TxtModelPlusRange - TxtUnknown
 	db TxtModelCPC472 - TxtUnknown
+ IFDEF GUIDED
+	db TxtModel6128PlusSure - TxtUnknown
+	db TxtModel464PlusGX - TxtUnknown
+ ENDIF
 
 @MODEL_UNKNOWNCPC	EQU 0
 @MODEL_CPC464 		EQU 1
@@ -35,6 +43,8 @@ TxtModelCPC472: db "CPC 472", 0
 @MODEL_C6128PLUS 	EQU 5
 @MODEL_GX4000	 	EQU 6
 @MODEL_CPC472		EQU 7		; 464 con la ROM del 664 (España, 1985-86)
+@MODEL_6128PLUS_SURE	EQU 8		; Plus con 128 KB o disquetera (versión cargada)
+@MODEL_464PLUS_GX	EQU 9		; Plus con 64 KB y sin disquetera
 
 
 

@@ -178,7 +178,7 @@ if grep -qF "AVISO" $OUT/summary.txt; then FAIL=$((FAIL + 1)); echo "FALLO  summ
 # tipo 1: se cambia la variable a mano (1 xor 5 = 4) antes del resumen.
 CRTCVAR=$(grep -E "^\s*[0-9]+\+?\s+[0-9A-F]{4}\s.*CRTCType:" build/es/RAMBuild.lst | awk '{print $2}' | grep -E "^[A-F]" | head -1)
 $EMU $DISK_ES $BOOT corrupt $CRTCVAR 05 key 4:0 wait 80 vram $OUT/crtc4.vram
-check crtc4 "CRTC 4 (GA 40226)" "(1988+)"
+check crtc4 "CRTC 4 (40226)" "(1988+)"
 
 # Segunda página del resumen: detalles del equipo
 $EMU $DISK_ES $BOOT key 4:0 wait 80 key 2:2 wait 600 vram $OUT/details.vram shot $OUT/details.png

@@ -166,6 +166,21 @@ KeyboardSuffixes:
 CRTCMakers:
 	dw TxtCRTC0Maker, TxtCRTC1Maker, TxtCRTC2Maker, TxtGA40489Long, TxtGA40226Long
 
+;; Igual, pero corto para la línea del resumen, que no puede pasar de 53
+;; columnas: "CPC 6128 PLUS (Ñ), 128KB, CRTC 3 (ASIC), AY-3-8912"
+@PrintCRTCMakerShort:
+	ld	a, (CRTCType)
+	cp	3
+	ld	hl, TxtGAShortASIC
+	jp	z, PrintString
+	cp	4
+	ld	hl, TxtGAShort40226
+	jp	z, PrintString
+	jr	PrintCRTCMaker
+
+TxtGAShortASIC:	db ' (ASIC)', 0
+TxtGAShort40226: db ' (40226)', 0
+
 ;; El nombre de la ROM del sistema en 16 columnas como mucho, o "? XXXX"
 @PrintSystemROMShort:
 	ld	hl, (SysROMCRC)
