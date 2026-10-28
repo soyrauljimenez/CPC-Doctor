@@ -1,6 +1,6 @@
 # Cambios
 
-## Sin publicar
+## 1.0.2
 
 ### Nuevo
 - CPC Plus: con RAM alta o disquetera el modelo es "CPC 6128 PLUS"; si
