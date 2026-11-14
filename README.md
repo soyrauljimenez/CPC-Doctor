@@ -121,7 +121,7 @@ Otras piezas de terceros:
 
 ## Estado
 
-Versión **1.0.2**. Se ha probado en **CPC 464 y 6128 Plus reales** con M4 Board: la carga,
+Versión **1.0.3**. Se ha probado en **CPC 464 y 6128 Plus reales** con M4 Board: la carga,
 la identificación (modelo, ROM del sistema, BASIC y lo que pone la M4 encima),
 el teclado y el joystick (también las teclas que se encienden juntas y las
 líneas o columnas que no responden), el sonido (que encontró una avería real en
@@ -193,7 +193,7 @@ after loading (for example, because the keyboard is dead), the tests that need
 no answers run by themselves and end on the summary.
 
 Build with `./build.sh` (sjasmplus ≥ 1.21, Python 3) and run the automated tests
-with `tests/run.sh`. Version 1.0.2 has been tested on real CPC 464 and 6128 Plus machines with an M4 Board; see
+with `tests/run.sh`. Version 1.0.3 has been tested on real CPC 464 and 6128 Plus machines with an M4 Board; see
 [docs/VALIDACION.md](docs/VALIDACION.md).
 
 **Disclaimer:** CPC Doctor is provided as is, without warranty of any kind (MIT

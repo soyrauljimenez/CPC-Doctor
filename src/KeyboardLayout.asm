@@ -49,6 +49,18 @@ SetKeyboardTables:
 	ldir
 
 	ld	ix, KeyboardLabels
+ IFDEF GUIDED
+	;; El teclado que dice la tabla de la ROM del sistema (MachineInfo.asm),
+	;; que sirve también en los Plus y con ROMs que no se conocen
+	ld	a, (KeyboardKind)
+	cp	2				; KB_ES
+	jr	z, .patchSpanishLabels
+	cp	3				; KB_FR
+	jr	z, .patchFrenchLabels
+	cp	4				; KB_DE
+	jr	z, .patchGermanLabels
+	ret
+ ELSE
 	ld	a, (KeyboardLanguage)
 	cp	KEYBOARD_LANGUAGE_SPANISH
 	jr	z, .patchSpanishLabels
@@ -57,10 +69,19 @@ SetKeyboardTables:
 	jr	z, .patchFrenchLabels
 
 	ret
+ ENDIF
 
 .patchSpanishLabels:
 	ld	(ix+29), #86		; Ñ
 	ret
+
+ IFDEF GUIDED
+;; QWERTZ: la Z y la Y cambiadas (la fuente no tiene Ö, Ä ni ß)
+.patchGermanLabels:
+	ld	(ix+43), 'Z'
+	ld	(ix+71), 'Y'
+	ret
+ ENDIF
 
 .patchFrenchLabels:
 	ld	(ix+25), ')'

@@ -91,6 +91,7 @@ El emulador no puede reproducir estas situaciones:
 | 2026-10-14 | CPC 464 | M4 Board con su propia ROM baja y su BASIC | Disco desde la M4, español | BASIC de la placa leído apagando las ROMs de la M4 (C_ROMSOFF sin reiniciar) y recargándolas (C_ROMSUPDATE): sale el BASIC 1.0 original y la M4 recupera todas sus ROMs (RJExplorer abre después con normalidad). | Raul Jimenez |
 | 2026-10-20 | CPC 464 Schneider | M4 Board con su propia ROM baja y su BASIC | Disco desde la M4, español | Marca SCHNEIDER por los puentes de la placa; ROM del sistema OS 464 EN idéntica byte a byte a la de Amstrad (lleva la lista de marcas y escribe la que dicen los puentes); BASIC de la placa 1.0 inglés; CRTC 0, Z80 Zilog. No hay otra diferencia medible. | Raul Jimenez |
 | 2026-10-28 | CPC 6128 Plus español | M4 Board con su propia ROM baja y su BASIC | Disco desde la M4, español, modo automático | CRTC 3 (ASIC 40489) detectado; ROM del sistema OS PLUS SP (8F7A) y BASIC PLUS 1.1 leídos bajo los de la M4; teclado (Ñ) por la tabla de la ROM; disquetera 765A; RAM baja, RAM alta, ROM baja y ROM alta superadas. | Raul Jimenez |
+| 2026-11-14 | CPC Plus francés (64 KB, sin disquetera) | M4 Board con su propia ROM baja | Disco desde la M4, español | ROM del sistema OS PLUS FR (66D2); su tabla de teclas da AZERTY y el dibujo del teclado coincide con el teclado real. | Raul Jimenez |
 
 ## Fallos del programa encontrados en máquinas reales
 

@@ -1,5 +1,14 @@
 # Cambios
 
+## 1.0.3
+
+### Cambiado
+- El dibujo del teclado en la prueba de teclado se elige por el teclado
+  que indica la tabla de la ROM del sistema: QWERTY con Ñ, AZERTY francés
+  o QWERTZ alemán (nuevo: la Z y la Y cambiadas; la fuente no tiene Ö, Ä
+  ni ß). Antes se miraba el texto de arranque, que en los Plus no se
+  tenía en cuenta.
+
 ## 1.0.2
 
 ### Nuevo
